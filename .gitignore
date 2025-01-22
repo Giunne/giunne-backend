@@ -531,3 +531,11 @@ application-auth.yml
 application-s3.yml
 application-map.yml
 application-db.yml
+./**/application-prod.yml
+./**/application-oauth.yml
+./**/application-auth.yml
+./**/application-s3.yml
+./**/application-map.yml
+./**/application-db.yml
+
+./**/src/main/**/generated/
