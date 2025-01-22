@@ -524,9 +524,6 @@ gradle-app.setting
 # IntelliJ IDE Option
 .idea
 
-### Kotlin ###
-.kotlin
-
 ### env
 application-prod.yml
 application-oauth.yml

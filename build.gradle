@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+subprojects {
+
+    sourceCompatibility = '17'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-test-fixtures'
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext {
+        set('springCloudVersion', "2023.0.0")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+}
+bootRun {
+    enabled = false
+}
+
+bootJar {
+    enabled = false
+}
+
+bootBuildImage{
+    enabled = false
+}
+
+
+project(':member-service') { // 회원 서비스
+    dependencies {
+        implementation project(':common-service')
+        implementation(testFixtures(project(":common-service")))
+    }
+}
+
+project(':item-service') { // 아이템 서비스
+    dependencies {
+        implementation project(':common-service')
+        implementation(testFixtures(project(":common-service")))
+    }
+}
+
+project(':quest-service') { // 퀘스트 서비스
+    dependencies {
+        implementation project(':common-service')
+        implementation(testFixtures(project(":common-service")))
+    }
+}
+
+project(':community-service') { // 커뮤니티 서비스
+    dependencies {
+        implementation project(':common-service')
+        implementation(testFixtures(project(":common-service")))
+    }
+}
