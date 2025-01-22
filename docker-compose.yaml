@@ -1,0 +1,51 @@
+version: '3'
+services:
+
+  giunne-discovery-server:
+    container_name: giunne-discovery-server
+    image: giunne-discovery-server:unspecified
+    ports:
+      - "8761:8761"
+    networks:
+      - giunne_network
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+
+  giunne-api-gateway:
+    depends_on:
+      - redis
+      - giunne-discovery-server
+    container_name: giunne-api-gateway
+    image: giunne-api-gateway:unspecified
+    ports:
+      - "9001:9001"
+    networks:
+      - giunne_network
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+
+  giunne-member:
+    depends_on:
+      - redis
+      - giunne-discovery-server
+      - giunne-api-gateway
+    container_name: giunne-member
+    image: giunne-member-service:0.0.1-SNAPSHOT
+    ports:
+      - "8011:8011"
+    networks:
+      - giunne_network
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+networks:
+  giunne_network:
+    driver: bridge
