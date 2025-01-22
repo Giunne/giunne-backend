@@ -1,0 +1,9 @@
+rootProject.name = 'giunne'
+
+include 'api-gateway'
+include 'discovery-server'
+include 'common-service'
+include 'member-service'
+include 'item-service'
+include 'quest-service'
+include 'community-service'
