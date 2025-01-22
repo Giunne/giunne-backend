@@ -540,4 +540,4 @@ application-db.yml
 ./**/application-map.yml
 ./**/application-db.yml
 
-./**/src/main/**/generated/
+**/generated
