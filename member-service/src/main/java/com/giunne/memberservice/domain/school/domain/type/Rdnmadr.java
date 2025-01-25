@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Rdnmadr {
-    @Column(name = "org_rdnma")
+    @Column(name = "rdnmadr")
     private String value;
 
     private Rdnmadr(final String value) {
