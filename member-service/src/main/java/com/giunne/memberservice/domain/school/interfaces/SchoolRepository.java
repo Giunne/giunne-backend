@@ -11,7 +11,10 @@ import java.util.List;
 public interface SchoolRepository {
     School save(School member);
     void saveAll(List<School> schoolList);
+    void updateSchool(List<School> schoolList);
     School findBySchoolId(String schoolId);
+    List<School> findBySchoolIdListNotIn(List<String> schoolIdList);
+    List<School> findBySchoolIdList(List<String> schoolIdList);
     School findById(Long id);
     PaginationModel<GetSchoolPageResponseDto> findByNameLike(GetSchoolPageRequestDto dto);
 }

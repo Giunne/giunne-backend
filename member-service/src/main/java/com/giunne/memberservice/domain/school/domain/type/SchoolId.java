@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
  */
 
 @Getter
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchoolId {
 
+    @Column(name = "school_id", nullable = false)
     private String schoolId;
 
     public SchoolId(final String value) {
