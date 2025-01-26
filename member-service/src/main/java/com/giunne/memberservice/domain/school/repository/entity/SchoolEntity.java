@@ -32,9 +32,6 @@ public class SchoolEntity extends BaseEntity {
     private SchoolNm schoolNm; // 학교명
 
     @Enumerated(EnumType.STRING)
-    private LctnSc lctnSc; // 시도명
-
-    @Enumerated(EnumType.STRING)
     private SchoolSe schoolSe;   // 학교급구분
 
     @Embedded

@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 public class Exp {
 
     @Column(name = "exp", nullable = false)
-    private Long value;
+    private Long exp;
 
     private Exp(final Long value) {
-        this.value = value;
+        this.exp = value;
     }
 
     public static Exp from(final Long value) {

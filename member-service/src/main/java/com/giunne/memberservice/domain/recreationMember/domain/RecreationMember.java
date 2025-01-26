@@ -1,7 +1,8 @@
 package com.giunne.memberservice.domain.recreationMember.domain;
 
+import com.giunne.commonservice.domain.common.Active;
 import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
-import com.giunne.memberservice.domain.recreation.domain.RecreationEntity;
+import com.giunne.memberservice.domain.recreation.repository.entity.RecreationEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,4 +28,7 @@ public class RecreationMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_no")
     private RecreationEntity recreation; // 레크레이션
+
+    @Embedded
+    private Active isActive = Active.from(true);
 }

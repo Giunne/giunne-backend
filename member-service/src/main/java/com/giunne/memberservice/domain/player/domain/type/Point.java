@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
     @Column(name = "point", nullable = false)
-    private Long value;
+    private Long point;
 
     private Point(final Long value) {
-        this.value = value;
+        this.point = value;
     }
 
     public static Point from(final Long value) {

@@ -10,9 +10,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -49,7 +51,7 @@ public class TokenManager {
     }
 
     public String createAccessToken(Long memberId, MemberRole role, Date expirationTime) {
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(TokenType.ACCESS.name())    // 토큰 제목
                 .setIssuer(tokenIssuer)                 // 토큰 발행자
                 .setIssuedAt(new Date())                // 토큰 발급 시간
@@ -59,11 +61,10 @@ public class TokenManager {
                 .signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
                 .setHeaderParam("typ", "JWT")
                 .compact();
-        return accessToken;
     }
 
     public String createRefreshToken(Long memberId, Date expirationTime) {
-        String refreshToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(TokenType.REFRESH.name())   // 토큰 제목
                 .setIssuedAt(new Date())                // 토큰 발급 시간
                 .setExpiration(expirationTime)          // 토큰 만료 시간
@@ -71,7 +72,6 @@ public class TokenManager {
                 .signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
                 .setHeaderParam("typ", "JWT")
                 .compact();
-        return refreshToken;
     }
 
     public void validateToken(String token) {

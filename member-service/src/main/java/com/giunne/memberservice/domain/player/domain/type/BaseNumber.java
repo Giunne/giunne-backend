@@ -9,10 +9,10 @@ import jakarta.persistence.Column;
 public class BaseNumber {
 
     @Column(name = "base_number")
-    private String value;
+    private String baseNumber;
 
-    private BaseNumber(final String value) {
-        this.value = value;
+    private BaseNumber(final String baseNumber) {
+        this.baseNumber = baseNumber;
     }
 
     public static BaseNumber from(final String value) {

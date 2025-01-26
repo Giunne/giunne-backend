@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 public class RecreationName {
 
     @Column(name = "recreation_name", nullable = false)
-    private String value;
+    private String recreationName;
 
     private RecreationName(final String value) {
-        this.value = value;
+        this.recreationName = value;
     }
 
     public static RecreationName from(final String value) {

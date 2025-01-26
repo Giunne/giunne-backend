@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class Level {
 
     @Column(name = "level", nullable = false)
-    private Long value;
+    private Long level;
 
     private Level(final Long value) {
-        this.value = value;
+        this.level = value;
     }
 
     public static Level from(final Long value) {
