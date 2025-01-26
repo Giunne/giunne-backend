@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CSVService {
 
-    private final int BATCH_SIZE = 100;
+    private final int BATCH_SIZE = 1000;
     private final SchoolRepository schoolRepository;
 
     @Transactional

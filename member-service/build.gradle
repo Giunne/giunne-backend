@@ -8,7 +8,7 @@ configurations {
 	}
 }
 
-group = 'com.giunne.members-ervice'
+group = 'com.giunne.member-service'
 version = '0.0.1-SNAPSHOT'
 
 dependencies {

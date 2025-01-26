@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "community_user_auth")
+@Table(name = "member_auth")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

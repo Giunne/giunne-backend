@@ -9,6 +9,7 @@ import com.giunne.memberservice.domain.auth.application.interfaces.MemberAuthRep
 import com.giunne.memberservice.domain.auth.domain.MemberAuth;
 import com.giunne.memberservice.domain.member.application.interfaces.MemberRepository;
 import com.giunne.memberservice.domain.member.domain.Member;
+import com.giunne.memberservice.domain.member.domain.type.Password;
 import com.giunne.memberservice.domain.school.application.SchoolService;
 import com.giunne.memberservice.domain.school.domain.School;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class AuthService {
         memberRepository.validateDuplicateMember(dto.loginId());
         MemberAuth memberAuth =  MemberAuth.builder()
                 .loginId(dto.loginId())
-                .password(dto.password())
+                .password(Password.createEncryptedPassword(dto.password()).getPassword())
                 .role(MemberRole.ROLE_TEACHER)
                 .build();
 
@@ -56,8 +57,7 @@ public class AuthService {
 //    }
 
     public MemberAccessTokenResponseDto loginMember(LoginRequestDto loginRequestDto) {
-        MemberAuth memberAuth = memberAuthRepository.loginMember(loginRequestDto.memberId(), loginRequestDto.password());
-
+        MemberAuth memberAuth = memberAuthRepository.loginMember(loginRequestDto.loginId(), loginRequestDto.password());
         return createToken(memberAuth);
     }
 

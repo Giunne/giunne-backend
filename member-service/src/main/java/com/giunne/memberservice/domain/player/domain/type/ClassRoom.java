@@ -2,6 +2,7 @@ package com.giunne.memberservice.domain.player.domain.type;
 
 import com.giunne.memberservice.domain.member.domain.type.Grade;
 import com.giunne.memberservice.domain.member.domain.type.StudentNumber;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import lombok.AccessLevel;
@@ -18,19 +19,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClassRoom {
 
-    @Embedded
-    private Grade gradeNo;
-
-    @Embedded
-    private ClassNumber classNo;
-
-    @Embedded
-    private StudentNumber studentNumber;
+    @Column(name = "grade")
+    private Integer grade;
+    @Column(name = "class_number")
+    private Integer classNumber;
+    @Column(name = "student_number")
+    private Integer studentNumber;
 
     @Builder
-    public ClassRoom(Grade gradeNo, ClassNumber classNo, StudentNumber studentNumber) {
-        this.gradeNo = gradeNo;
-        this.classNo = classNo;
+    public ClassRoom(Integer grade, Integer classNumber, Integer studentNumber) {
+        this.grade = grade;
+        this.classNumber = classNumber;
         this.studentNumber = studentNumber;
     }
 }

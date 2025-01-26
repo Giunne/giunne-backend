@@ -7,10 +7,12 @@ import com.giunne.memberservice.domain.auth.repository.jpa.JpaMemberAuthReposito
 import com.giunne.memberservice.domain.member.application.interfaces.MemberRepository;
 import com.giunne.memberservice.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MemberAuthRepositoryImpl implements MemberAuthRepository {
@@ -38,6 +40,7 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
         MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository.findByLoginId(loginId).orElseThrow();
 
         MemberAuth memberAuth = memberAuthEntity.toMemberAuth();
+
         if (!memberAuth.matchPassword(password)) {
             throw new IllegalArgumentException("Invalid password");
         }

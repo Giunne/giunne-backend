@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IsWear {
     @Column(name = "is_wear")
-    private Boolean  value;
+    private Boolean  isWear;
 
     private IsWear(final Boolean  value) {
-        this.value = value;
+        this.isWear = value;
     }
 
     public static IsWear from(final Boolean  value) {

@@ -78,16 +78,6 @@ public class MemberEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-//    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Profile profile; // 프로필정보
-//
-//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private Set<Player> players; // 캐릭터
-//
-//    // 양방향 매핑
-//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private Set<RecreationMember> recreations = new HashSet<>();
-
     public MemberEntity(Member member) {
         this.id = member.getId();
         this.loginId = member.getLoginId();

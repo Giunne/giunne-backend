@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class MemberPrincipal {
-
     private final Long memberId;
     private final MemberRole role;
 

@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 public class Quantity {
 
     @Column(name = "quantity", nullable = false)
-    private Long value;
+    private Long quantity;
 
     private Quantity(final Long value) {
-        this.value = value;
+        this.quantity = value;
     }
 
     public static Quantity from(final Long value) {

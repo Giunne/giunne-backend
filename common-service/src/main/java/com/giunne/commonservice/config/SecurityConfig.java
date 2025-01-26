@@ -10,17 +10,17 @@ import org.springframework.context.annotation.Bean;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    //    @Value("${token.access-token-expiration-time}")
-    private String accessTokenExpirationTime = "83EpCFvnOEcRbvJBNbF4l1Z3ShcJlU4K";
+    @Value("${token.access-token-expiration-time}")
+    private String accessTokenExpirationTime;
 
-//    @Value("${token.refresh-token-expiration-time}")
-    private String refreshTokenExpirationTime = "cYEvCFc00YJjUV2uaksV10dU3OUBASS1";
+    @Value("${token.refresh-token-expiration-time}")
+    private String refreshTokenExpirationTime ;
 
-//    @Value("${token.secret}")
-    private String tokenSecret= "900000";
+    @Value("${token.secret}")
+    private String tokenSecret;
 
-//    @Value("${token.issuer}")
-    private String tokenIssuer = "1209600000";
+    @Value("${token.issuer}")
+    private String tokenIssuer;
 
     @Bean
     public TokenManager tokenManager() {

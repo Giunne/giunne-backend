@@ -102,7 +102,7 @@ public class SchoolRepositoryImpl implements SchoolRepository {
                 .select(schoolEntity.id)
                 .from(schoolEntity)
                 .where(
-                        likeName(dto.getName())
+                        likeName(dto.getSchoolNm())
                 );
 
         List<GetSchoolPageResponseDto> fetch = queryFactory
@@ -110,12 +110,13 @@ public class SchoolRepositoryImpl implements SchoolRepository {
                         Projections.fields(
                                 GetSchoolPageResponseDto.class,
                                 schoolEntity.id.as("id"),
-                                schoolEntity.schoolNm.value.as("name")
+                                schoolEntity.schoolNm.value.as("schoolNm"),
+                                schoolEntity.address.rdnmadr.value.as("rdnmadr")
                         )
                 )
                 .from(schoolEntity)
                 .where(
-                        likeName(dto.getName())
+                        likeName(dto.getSchoolNm())
                 )
                 .orderBy(schoolEntity.id.desc())
                 .offset(pageable.getOffset())
