@@ -1,6 +1,5 @@
 package com.giunne.commonservice.ui;
 
-import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;

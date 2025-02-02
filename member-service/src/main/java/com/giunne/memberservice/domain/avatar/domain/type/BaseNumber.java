@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.player.domain.type;
+package com.giunne.memberservice.domain.avatar.domain.type;
 
 import jakarta.persistence.Column;
 
@@ -9,13 +9,13 @@ import jakarta.persistence.Column;
 public class BaseNumber {
 
     @Column(name = "base_number")
-    private String baseNumber;
+    private Long baseNumber;
 
-    private BaseNumber(final String baseNumber) {
+    private BaseNumber(final Long baseNumber) {
         this.baseNumber = baseNumber;
     }
 
-    public static BaseNumber from(final String value) {
+    public static BaseNumber from(final Long value) {
         return new BaseNumber(value);
     }
 }

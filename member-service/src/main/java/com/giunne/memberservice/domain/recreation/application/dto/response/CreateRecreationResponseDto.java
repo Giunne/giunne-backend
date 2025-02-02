@@ -1,8 +1,9 @@
 package com.giunne.memberservice.domain.recreation.application.dto.response;
 
-import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
+@Builder
 public record CreateRecreationResponseDto(
         @Schema(
                 description = "레크레이션 번호",
@@ -18,7 +19,11 @@ public record CreateRecreationResponseDto(
                 description = "레크레이션 코드",
                 example = "123456789012345(15자리)"
         )
-        String recreationCode
+        String recreationCode,
+        @Schema(
+                description = "기수번호",
+                example = "1"
+        )
+        Long baseNumber
 ) {
-
 }

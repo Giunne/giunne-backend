@@ -1,10 +1,7 @@
-package com.giunne.memberservice.domain.player.domain.type;
+package com.giunne.memberservice.domain.avatar.domain.type;
 
-import com.giunne.memberservice.domain.member.domain.type.Grade;
-import com.giunne.memberservice.domain.member.domain.type.StudentNumber;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

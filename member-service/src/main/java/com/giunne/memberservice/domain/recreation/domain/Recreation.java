@@ -1,6 +1,7 @@
 package com.giunne.memberservice.domain.recreation.domain;
 
 import com.giunne.memberservice.domain.member.domain.Member;
+import com.giunne.memberservice.domain.recreation.domain.type.BaseNumber;
 import com.giunne.memberservice.domain.recreation.domain.type.RecreationCode;
 import com.giunne.memberservice.domain.recreation.domain.type.RecreationName;
 import com.giunne.memberservice.domain.school.domain.School;
@@ -17,4 +18,5 @@ public class Recreation {
     private RecreationCode recreationCode; // 레크레이션 코드
     private School school; // 학교
     private Member member; // 회원
+    private BaseNumber baseNumber; // 기수번호
 }
