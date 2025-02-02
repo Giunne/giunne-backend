@@ -7,6 +7,7 @@ import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.avatar.domain.type.*;
 import com.giunne.memberservice.domain.inventory.domain.Inventory;
 import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
+import com.giunne.memberservice.domain.recreation.repository.entity.RecreationEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,6 +47,13 @@ public class AvatarEntity extends BaseEntity {
     @Embedded
     private Point point; // 포인트
 
+    @Column(name = "character_no")
+    private Long characterNo; // 캐릭터 번호
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recreation_no")
+    private RecreationEntity recreation; // 레크레이션
+
 //    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
 //    private Set<Inventory> inventories = new HashSet<>(); // 인벤토리
 
@@ -65,7 +73,9 @@ public class AvatarEntity extends BaseEntity {
         this.exp = avatar.getExp();
         this.level = avatar.getLevel();
         this.point = avatar.getPoint();
+        this.characterNo = avatar.getCharacterNo();
         this.member = new MemberEntity(avatar.getMember());
+        this.recreation = new RecreationEntity(avatar.getRecreation());
     }
 
     public Avatar toAvatar(){
@@ -77,7 +87,9 @@ public class AvatarEntity extends BaseEntity {
                 .exp(exp)
                 .level(level)
                 .point(point)
+                .characterNo(characterNo)
                 .member(member.toMember())
+                .recreation(recreation.toRecreation())
                 .build();
     }
 

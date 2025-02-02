@@ -1,6 +1,8 @@
 package com.giunne.memberservice.domain.recreation.repository;
 
 import com.giunne.commonservice.ui.PaginationModel;
+import com.giunne.memberservice.domain.avatar.repository.entity.QAvatarEntity;
+import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.member.repository.entity.QMemberEntity;
 import com.giunne.memberservice.domain.recreation.application.dto.request.GetRecreationRequestDto;
 import com.giunne.memberservice.domain.recreation.application.dto.response.GetRecreationResponseDto;
@@ -33,6 +35,7 @@ public class RecreationRepositoryImpl implements RecreationRepository {
     private final JpaRecreationRepository jpaRecreationRepository;
     private final JPAQueryFactory queryFactory;
     private static final QMemberEntity memberEntity = QMemberEntity.memberEntity;
+    private static final QAvatarEntity avatarEntity = QAvatarEntity.avatarEntity;
     private static final QRecreationEntity recreationEntity = QRecreationEntity.recreationEntity;
 
     @Override
@@ -61,7 +64,6 @@ public class RecreationRepositoryImpl implements RecreationRepository {
                         recreationEntity.baseNumber.baseNumber.eq(dto.getBaseNumber())
                         );
 
-
         List<GetRecreationResponseDto> fetch = queryFactory
                 .select(
                         Projections.fields(
@@ -87,6 +89,50 @@ public class RecreationRepositoryImpl implements RecreationRepository {
 
         Page<GetRecreationResponseDto> pageResult = PageableExecutionUtils.getPage(fetch, pageable, count::fetchCount);
         return toPaginationModel(pageResult);
+    }
+
+    @Override
+    public PaginationModel<GetRecreationResponseDto> getMyRecreation(Member member, com.giunne.commonservice.domain.common.Pageable dto) {
+        Pageable pageable = getPageRequest(
+                dto.getPageIndex()
+                , dto.getPageSize()
+                , Sort.by(Sort.Direction.valueOf(dto.getDirection()), dto.getSortProperty())
+        );
+        JPAQuery<Long> count = queryFactory
+                .select(recreationEntity.id)
+                .from(recreationEntity)
+                .join(avatarEntity).on(avatarEntity.member.id.eq(member.getId()))
+        ;
+
+        List<GetRecreationResponseDto> fetch = queryFactory
+                .select(
+                        Projections.fields(
+                                GetRecreationResponseDto.class,
+                                recreationEntity.id.as("id"),
+                                recreationEntity.recreationName.recreationName.as("recreationName"),
+                                recreationEntity.recreationCode.recreationCode.as("recreationCode"),
+                                memberEntity.id.as("teacherId"),
+                                memberEntity.loginId.loginId.as("teacherLoginId"),
+                                memberEntity.userName.userName.as("teacherName")
+                        )
+                ).from(recreationEntity)
+                .join(avatarEntity).on(avatarEntity.member.id.eq(member.getId()))
+                .orderBy(recreationEntity.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Page<GetRecreationResponseDto> pageResult = PageableExecutionUtils.getPage(fetch, pageable, count::fetchCount);
+        return toPaginationModel(pageResult);
+    }
+
+
+    @Override
+    public Recreation findById(Long id) {
+        RecreationEntity recreationEntity = jpaRecreationRepository
+                .findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+        return recreationEntity.toRecreation();
     }
 
     private BooleanExpression likeRecreationName(String name) {

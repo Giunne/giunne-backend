@@ -1,5 +1,6 @@
 package com.giunne.memberservice.domain.recreation.application;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.memberservice.domain.member.application.MemberService;
@@ -53,6 +54,16 @@ public class RecreationService {
         School school = schoolService.getSchool(member.getSchool().getId());
 
         return recreationRepository.findRecreation(dto);
+    }
+
+    public Recreation getRecreation(Long id) {
+        return recreationRepository.findById(id);
+    }
+
+    public PaginationModel<GetRecreationResponseDto> getMyRecreation(MemberPrincipal memberPrincipal, Pageable dto) {
+        Member member = memberService.getMember(memberPrincipal.getMemberId());
+
+        return recreationRepository.getMyRecreation(member, dto);
     }
 
 }

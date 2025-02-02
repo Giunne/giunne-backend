@@ -2,6 +2,7 @@ package com.giunne.memberservice.domain.avatar.domain;
 
 import com.giunne.memberservice.domain.avatar.domain.type.*;
 import com.giunne.memberservice.domain.member.domain.Member;
+import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,5 +18,7 @@ public class Avatar {
     private Exp exp; // 경험치
     private Level level; // 레벨
     private Point point; // 포인트
+    private Long characterNo; // 캐릭터 번호
     private Member member; //회원
+    private Recreation recreation; //레크레이션
 }
