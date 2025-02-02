@@ -1,5 +1,6 @@
 package com.giunne.memberservice.domain.recreation.ui;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -9,8 +10,6 @@ import com.giunne.memberservice.domain.recreation.application.dto.request.Create
 import com.giunne.memberservice.domain.recreation.application.dto.request.GetRecreationRequestDto;
 import com.giunne.memberservice.domain.recreation.application.dto.response.CreateRecreationResponseDto;
 import com.giunne.memberservice.domain.recreation.application.dto.response.GetRecreationResponseDto;
-import com.giunne.memberservice.domain.school.api.request.GetSchoolPageRequestDto;
-import com.giunne.memberservice.domain.school.api.response.GetSchoolPageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,9 +54,24 @@ public class RecreationController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping
-    public Response<PaginationModel<GetRecreationResponseDto>> findByNameLike(@AuthPrincipal @Parameter(hidden=true)MemberPrincipal memberPrincipal,
+    public Response<PaginationModel<GetRecreationResponseDto>> findByLike(@AuthPrincipal @Parameter(hidden=true)MemberPrincipal memberPrincipal,
             @ParameterObject GetRecreationRequestDto dto) {
         PaginationModel<GetRecreationResponseDto> recreations = recreationService.getRecreation(memberPrincipal, dto);
+        return Response.ok(recreations);
+    }
+
+    @Operation(summary = "회원이 가입한 레크레이션 조회", description = """
+            ## 기능설명
+            * 현재 회원이 가입한 레크레이션 조회합니다.
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping
+    public Response<PaginationModel<GetRecreationResponseDto>> findMyRecreation(@AuthPrincipal @Parameter(hidden=true)MemberPrincipal memberPrincipal,
+                                                                                @ParameterObject Pageable dto
+                                                                                ) {
+        PaginationModel<GetRecreationResponseDto> recreations = recreationService.getMyRecreation(memberPrincipal, dto);
         return Response.ok(recreations);
     }
 

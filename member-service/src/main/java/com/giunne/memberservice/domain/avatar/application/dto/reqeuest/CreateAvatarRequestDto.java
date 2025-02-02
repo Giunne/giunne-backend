@@ -5,6 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "아바타 생성 요청DTO")
 public record CreateAvatarRequestDto(
         @Schema(
+                description = "레크레이션 번호",
+                example = "1"
+        )
+        Long recreationId,
+        @Schema(
                 description = "아바타 닉네임",
                 example = "아하!어린이!"
         )
@@ -25,9 +30,9 @@ public record CreateAvatarRequestDto(
         )
         Integer studentNumber,
         @Schema(
-                description = "기수번호",
+                description = "캐릭터 번호",
                 example = "10"
         )
-        Long baseNumber
+        Long characterNo
 ) {
 }

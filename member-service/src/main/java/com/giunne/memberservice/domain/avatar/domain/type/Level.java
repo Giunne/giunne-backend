@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Level {
 
     @Column(name = "level", nullable = false)
-    private Long level = 0L;
+    private Long level = 1L;
 
     private Level(final Long value) {
         this.level = value;
