@@ -37,7 +37,6 @@ public class SchoolRepositoryImpl implements SchoolRepository {
     private final JpaSchoolRepository jpaSchoolRepository;
     private final JPAQueryFactory queryFactory;
     private static final QSchoolEntity schoolEntity = QSchoolEntity.schoolEntity;
-    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)

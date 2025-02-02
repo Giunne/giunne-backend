@@ -4,6 +4,7 @@ import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
 import com.giunne.memberservice.domain.recreation.domain.Recreation;
+import com.giunne.memberservice.domain.recreation.domain.type.BaseNumber;
 import com.giunne.memberservice.domain.recreation.domain.type.RecreationCode;
 import com.giunne.memberservice.domain.recreation.domain.type.RecreationName;
 import com.giunne.memberservice.domain.school.repository.entity.SchoolEntity;
@@ -40,12 +41,16 @@ public class RecreationEntity extends BaseEntity {
     private MemberEntity teacher; // 선생님
 
     @Embedded
+    private BaseNumber baseNumber; // 기수번호
+
+    @Embedded
     private Active isActive = Active.from(true);
 
     public RecreationEntity(Recreation recreation) {
         this.id = recreation.getId();
         this.recreationName = recreation.getRecreationName();
         this.recreationCode = recreation.getRecreationCode();
+        this.baseNumber = recreation.getBaseNumber();
         this.school = new SchoolEntity(recreation.getSchool());
         this.teacher = new MemberEntity(recreation.getMember());
     }
@@ -55,6 +60,7 @@ public class RecreationEntity extends BaseEntity {
                 .id(this.id)
                 .recreationName(this.recreationName)
                 .recreationCode(this.recreationCode)
+                .baseNumber(baseNumber)
                 .school(this.school.toSchool())
                 .member(this.teacher.toMember())
                 .build();

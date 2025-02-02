@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.player.domain.type;
+package com.giunne.memberservice.domain.avatar.domain.type;
 
 
 import jakarta.persistence.Column;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Level {
 
     @Column(name = "level", nullable = false)
-    private Long level;
+    private Long level = 0L;
 
     private Level(final Long value) {
         this.level = value;

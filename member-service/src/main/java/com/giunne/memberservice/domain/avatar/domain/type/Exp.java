@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.player.domain.type;
+package com.giunne.memberservice.domain.avatar.domain.type;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Exp {
 
     @Column(name = "exp", nullable = false)
-    private Long exp;
+    private Long exp = 0L;
 
     private Exp(final Long value) {
         this.exp = value;

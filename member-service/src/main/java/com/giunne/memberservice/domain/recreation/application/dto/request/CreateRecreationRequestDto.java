@@ -7,7 +7,12 @@ public record  CreateRecreationRequestDto(
                 description = "레크레이션 이름",
                 example = "기능성 운동 교실"
         )
-        String recreationName
+        String recreationName,
+         @Schema(
+                 description = "기수번호",
+                 example = "1"
+         )
+          Long baseNumber
 ) {
 
 }
