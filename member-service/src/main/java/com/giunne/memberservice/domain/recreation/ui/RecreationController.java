@@ -67,7 +67,7 @@ public class RecreationController {
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    @GetMapping
+    @GetMapping("/join")
     public Response<PaginationModel<GetRecreationResponseDto>> findMyRecreation(@AuthPrincipal @Parameter(hidden=true)MemberPrincipal memberPrincipal,
                                                                                 @ParameterObject Pageable dto
                                                                                 ) {
