@@ -19,7 +19,6 @@ import java.util.Set;
 @Entity
 @Table(name = "quest")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Quest extends BaseEntity {
 

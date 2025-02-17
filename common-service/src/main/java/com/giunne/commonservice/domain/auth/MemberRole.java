@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public enum MemberRole {
 
     ROLE_STUDENT("STUDENT"),
@@ -15,7 +16,6 @@ public enum MemberRole {
     ROLE_WITHDRAW("WITHDRAW")
     ;
 
-    @Getter
     private final String role;
 
     MemberRole(String description) {

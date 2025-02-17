@@ -1,26 +1,17 @@
-package com.giunne.itemservice.domain.category.domain;
+package com.giunne.itemservice.domain.category.repository.entity;
 
 import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
+import com.giunne.itemservice.domain.category.domain.Category;
 import com.giunne.itemservice.domain.category.domain.type.CategoryName;
-import com.giunne.itemservice.domain.item.domain.Item;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.*;
 
 @Entity
 @Table(name = "category")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category extends BaseEntity {
+public class CategoryEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_no")
@@ -29,24 +20,27 @@ public class Category extends BaseEntity {
     @Embedded
     private CategoryName categoryName;
 
-    // 최상위 부모 정의
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "root_no")
-    private Category root;
-
-    // 부모 정의
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_no")
-    private Category parent;
-
-    // 자식 정의
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Category> children = new ArrayList<>();
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
-
     @Embedded
     private Active isActive = Active.from(true);
 
+    public CategoryEntity(Category category) {
+        this.id = category.getId();
+        this.categoryName = category.getCategoryName();
+    }
+
+    public Category toCategory() {
+        return Category.builder()
+                .id(id)
+                .categoryName(categoryName)
+                .build();
+    }
+
+    public Category toCategory(boolean isRoot, boolean isLeaf) {
+        return Category.builder()
+                .id(id)
+                .categoryName(categoryName)
+                .isRoot(isRoot)
+                .isLeaf(isLeaf)
+                .build();
+    }
 }
