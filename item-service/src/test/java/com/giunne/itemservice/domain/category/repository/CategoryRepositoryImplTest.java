@@ -88,7 +88,7 @@ class CategoryRepositoryImplTest {
 //    }
 
     @Test
-    @Rollback(false)
+//    @Rollback(false)
     void initCategory() {
         CategoryEntity avatar = new CategoryEntity(Category.builder()
                 .categoryName(
