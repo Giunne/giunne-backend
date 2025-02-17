@@ -1,8 +1,15 @@
+plugins {
+    id("com.palantir.docker") version "0.36.0"
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
+
+group = 'com.giunne.item-service'
+version = '0.0.1-SNAPSHOT'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
