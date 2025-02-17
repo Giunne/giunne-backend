@@ -1,10 +1,10 @@
 package com.giunne.itemservice.domain.item.application;
 
+import com.giunne.commonservice.error.ErrorCode;
 import com.giunne.commonservice.error.exception.BusinessException;
 import com.giunne.itemservice.domain.item.application.dto.request.ItemCsvDto;
 import com.giunne.itemservice.domain.item.application.interfaces.ItemRepository;
 import com.giunne.itemservice.domain.item.domain.Item;
-import com.giunne.memberservice.domain.member.domain.exception.ErrorCode;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -30,7 +30,7 @@ public class ItemCsvService {
     @Transactional
     public void itemCsvToEntity(MultipartFile file) {
         if (!StringUtils.endsWithIgnoreCase(file.getOriginalFilename(), ".csv")) {
-            throw new BusinessException(ErrorCode.INVALID_SCHOOL);
+            throw new BusinessException(ErrorCode.INVALID_CSV);
         }
 
         try {
