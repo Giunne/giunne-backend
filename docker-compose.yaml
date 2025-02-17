@@ -41,6 +41,21 @@ services:
       - TZ=Asia/Seoul
     restart: on-failure
 
+  giunne-item:
+    depends_on:
+      - redis
+      - giunne-discovery-server
+      - giunne-api-gateway
+    container_name: giunne-item
+    image: giunne-item-service:0.0.1-SNAPSHOT
+    ports:
+      - "8022:8022"
+    networks:
+      - giunne_network
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+
   redis:
     image: "redis:latest"
     ports:
