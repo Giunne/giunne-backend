@@ -15,7 +15,6 @@ import java.util.Set;
 @Entity
 @Table(name = "station")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Station extends BaseEntity {
 

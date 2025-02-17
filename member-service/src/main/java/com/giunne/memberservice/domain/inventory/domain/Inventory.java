@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "inventory")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Inventory extends BaseEntity {
 

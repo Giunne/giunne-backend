@@ -12,7 +12,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "section")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Section extends BaseEntity {
     @Id

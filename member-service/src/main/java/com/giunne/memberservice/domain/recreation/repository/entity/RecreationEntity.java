@@ -17,7 +17,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "recreation")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecreationEntity extends BaseEntity {
 

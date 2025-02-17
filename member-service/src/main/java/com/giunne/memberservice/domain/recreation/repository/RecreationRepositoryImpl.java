@@ -11,7 +11,6 @@ import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import com.giunne.memberservice.domain.recreation.repository.entity.QRecreationEntity;
 import com.giunne.memberservice.domain.recreation.repository.entity.RecreationEntity;
 import com.giunne.memberservice.domain.recreation.repository.jpa.JpaRecreationRepository;
-import com.giunne.memberservice.domain.school.api.response.GetSchoolPageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;

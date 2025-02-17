@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 @Table(name = "avatar")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AvatarEntity extends BaseEntity {
 

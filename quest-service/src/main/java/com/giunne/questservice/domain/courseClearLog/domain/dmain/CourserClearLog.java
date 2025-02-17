@@ -12,7 +12,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "course_clear_log")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourserClearLog extends BaseEntity {
     @Id
