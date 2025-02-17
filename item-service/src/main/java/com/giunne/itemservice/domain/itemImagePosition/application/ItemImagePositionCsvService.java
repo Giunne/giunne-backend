@@ -1,5 +1,6 @@
 package com.giunne.itemservice.domain.itemImagePosition.application;
 
+import com.giunne.commonservice.error.ErrorCode;
 import com.giunne.commonservice.error.exception.BusinessException;
 import com.giunne.itemservice.domain.item.application.interfaces.ItemRepository;
 import com.giunne.itemservice.domain.itemImage.application.interfaces.ItemImageRepository;
@@ -7,7 +8,6 @@ import com.giunne.itemservice.domain.itemImage.domain.ItemImage;
 import com.giunne.itemservice.domain.itemImagePosition.application.dto.request.ItemImagePositionCsvDto;
 import com.giunne.itemservice.domain.itemImagePosition.application.interfaces.ItemImagePositionRepository;
 import com.giunne.itemservice.domain.itemImagePosition.domain.ItemImagePosition;
-import com.giunne.memberservice.domain.member.domain.exception.ErrorCode;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -36,7 +36,7 @@ public class ItemImagePositionCsvService {
     @Transactional
     public void itemImagePositionCsvToEntity(MultipartFile file) {
         if (!StringUtils.endsWithIgnoreCase(file.getOriginalFilename(), ".csv")) {
-            throw new BusinessException(ErrorCode.INVALID_SCHOOL);
+            throw new BusinessException(ErrorCode.INVALID_CSV);
         }
         try {
 
