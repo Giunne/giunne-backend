@@ -6,8 +6,6 @@ import com.giunne.itemservice.domain.item.application.ItemCsvService;
 import com.giunne.itemservice.domain.item.application.ItemService;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
 import com.giunne.itemservice.domain.item.application.dto.response.GetItemPageResponseDto;
-import com.giunne.memberservice.domain.school.api.request.GetSchoolPageRequestDto;
-import com.giunne.memberservice.domain.school.api.response.GetSchoolPageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

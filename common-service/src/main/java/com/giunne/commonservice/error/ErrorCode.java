@@ -39,6 +39,8 @@ public enum ErrorCode implements EnumMapperType {
 
     // 프로필
     PROFILE_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "제출할 수 있는 파일 사이즈를 초과했습니다."),
+    FILE_FORMAT(HttpStatus.BAD_REQUEST,  "파일 형식이 잘못되었습니다."),
+    INVALID_CSV(HttpStatus.BAD_REQUEST, "제출할 수 있는 CSV입니다."),
     ;
 
     private final HttpStatus httpStatus;
