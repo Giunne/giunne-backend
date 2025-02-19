@@ -2,7 +2,6 @@ package com.giunne.itemservice.domain.item.domain;
 
 import com.giunne.itemservice.domain.category.domain.Category;
 import com.giunne.itemservice.domain.item.domain.type.*;
-import com.giunne.itemservice.domain.itemImage.domain.ItemImage;
 import com.giunne.itemservice.domain.store.domain.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

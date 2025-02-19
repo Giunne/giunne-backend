@@ -1,4 +1,4 @@
-package com.giunne.itemservice.domain.orders.domain;
+package com.giunne.itemservice.domain.orders.respository.entity;
 
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.itemservice.domain.item.repository.entity.ItemEntity;
@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "orders")
