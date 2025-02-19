@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface JpaMemberAuthRepository extends JpaRepository<MemberAuthEntity, Long> {
 
     Optional<MemberAuthEntity> findByLoginId(String loginId);
+    Optional<MemberAuthEntity> findByRefreshToken(String refreshToken);
+    Optional<MemberAuthEntity> findByMemberId(Long memberId);
 }

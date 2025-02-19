@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryName {
     @Column(name = "category_name", nullable = false)
-    private String value;
+    private String categoryName;
 
     public CategoryName(String value) {
-        this.value = value;
+        this.categoryName = value;
     }
 
     public static CategoryName from(final String value) {

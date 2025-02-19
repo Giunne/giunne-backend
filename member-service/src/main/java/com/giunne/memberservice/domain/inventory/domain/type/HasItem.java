@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HasItem {
     @Column(name = "has_item")
-    private Boolean  value;
+    private Boolean  hasItem;
 
     private HasItem(final Boolean  value) {
-        this.value = value;
+        this.hasItem = value;
     }
 
     public static HasItem from(final Boolean  value) {

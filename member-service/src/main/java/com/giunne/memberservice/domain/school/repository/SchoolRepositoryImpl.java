@@ -2,7 +2,6 @@ package com.giunne.memberservice.domain.school.repository;
 
 
 import com.giunne.commonservice.ui.PaginationModel;
-import com.giunne.memberservice.domain.recreation.domain.RecreationEntity;
 import com.giunne.memberservice.domain.school.api.request.GetSchoolPageRequestDto;
 import com.giunne.memberservice.domain.school.api.response.GetSchoolPageResponseDto;
 import com.giunne.memberservice.domain.school.domain.School;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -37,9 +37,9 @@ public class SchoolRepositoryImpl implements SchoolRepository {
     private final JpaSchoolRepository jpaSchoolRepository;
     private final JPAQueryFactory queryFactory;
     private static final QSchoolEntity schoolEntity = QSchoolEntity.schoolEntity;
-    private final JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public School save(School school) {
         SchoolEntity entity = new SchoolEntity(school);
         entity = jpaSchoolRepository.save(entity);
@@ -47,17 +47,38 @@ public class SchoolRepositoryImpl implements SchoolRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveAll(List<School> schoolList) {
         List<SchoolEntity> schoolEntities = schoolList.stream().map(SchoolEntity::new).toList();
         jpaSchoolRepository.saveAll(schoolEntities);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateSchool(List<School> schoolList) {
+        List<SchoolEntity> schoolEntities = schoolList.stream().map(SchoolEntity::new).toList();
+        schoolEntities.forEach(jpaSchoolRepository::updateSchool);
+    }
+
+
+    @Override
     public School findBySchoolId(String schoolId) {
         Optional<SchoolEntity> optionalSchoolEntity = jpaSchoolRepository.findBySchoolId_SchoolId(schoolId);
         return optionalSchoolEntity.map(SchoolEntity::toSchool).orElse(null);
 
+    }
+
+    @Override
+    public List<School> findBySchoolIdList(List<String> schoolIdList) {
+        List<SchoolEntity> schoolEntities = jpaSchoolRepository.findBySchoolIdList(schoolIdList);
+
+        return schoolEntities.stream().map(SchoolEntity::toSchool).toList();
+    }
+
+    @Override
+    public List<School> findBySchoolIdListNotIn(List<String> schoolIdList) {
+        List<SchoolEntity> schoolEntities = jpaSchoolRepository.findBySchoolIdListNotIn(schoolIdList);
+        return schoolEntities.stream().map(SchoolEntity::toSchool).toList();
     }
 
     @Override
@@ -80,7 +101,7 @@ public class SchoolRepositoryImpl implements SchoolRepository {
                 .select(schoolEntity.id)
                 .from(schoolEntity)
                 .where(
-                        likeName(dto.getName())
+                        likeName(dto.getSchoolNm())
                 );
 
         List<GetSchoolPageResponseDto> fetch = queryFactory
@@ -88,12 +109,13 @@ public class SchoolRepositoryImpl implements SchoolRepository {
                         Projections.fields(
                                 GetSchoolPageResponseDto.class,
                                 schoolEntity.id.as("id"),
-                                schoolEntity.schoolNm.value.as("name")
+                                schoolEntity.schoolNm.value.as("schoolNm"),
+                                schoolEntity.address.rdnmadr.value.as("rdnmadr")
                         )
                 )
                 .from(schoolEntity)
                 .where(
-                        likeName(dto.getName())
+                        likeName(dto.getSchoolNm())
                 )
                 .orderBy(schoolEntity.id.desc())
                 .offset(pageable.getOffset())

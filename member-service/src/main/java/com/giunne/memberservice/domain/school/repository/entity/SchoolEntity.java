@@ -5,7 +5,6 @@ import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.memberservice.domain.school.domain.School;
 import com.giunne.memberservice.domain.school.domain.constant.*;
 import com.giunne.memberservice.domain.school.domain.constant.SchoolSe;
-import com.giunne.memberservice.domain.school.domain.converter.*;
 import com.giunne.memberservice.domain.school.domain.type.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,14 +23,13 @@ public class SchoolEntity extends BaseEntity {
     private Long id; // 학교번호
 
     @Embedded
-    @AttributeOverride(name = "schoolId", column = @Column(name = "login_id"))
+    @AttributeOverrides(
+            @AttributeOverride(name = "schoolId", column = @Column(name = "school_id"))
+    )
     private SchoolId schoolId; // 학교ID
 
     @Embedded
     private SchoolNm schoolNm; // 학교명
-
-    @Enumerated(EnumType.STRING)
-    private LctnSc lctnSc; // 시도명
 
     @Enumerated(EnumType.STRING)
     private SchoolSe schoolSe;   // 학교급구분

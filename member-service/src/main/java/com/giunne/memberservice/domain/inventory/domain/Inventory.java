@@ -2,7 +2,7 @@ package com.giunne.memberservice.domain.inventory.domain;
 
 
 import com.giunne.commonservice.domain.common.BaseEntity;
-import com.giunne.memberservice.domain.player.domain.Player;
+import com.giunne.memberservice.domain.avatar.repository.entity.AvatarEntity;
 import com.giunne.memberservice.domain.inventory.domain.type.IsWear;
 import com.giunne.memberservice.domain.inventory.domain.type.Quantity;
 import com.giunne.memberservice.domain.inventory.domain.type.HasItem;
@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "inventory")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Inventory extends BaseEntity {
 
@@ -42,6 +41,6 @@ public class Inventory extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_no")
-    private Player player; // 캐릭터
+    private AvatarEntity avatarEntity; // 캐릭터
 
 }

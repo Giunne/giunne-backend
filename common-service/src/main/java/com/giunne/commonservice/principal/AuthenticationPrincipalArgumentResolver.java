@@ -45,7 +45,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                     .role(role)
                     .build();
         } catch (Exception e) {
-
             throw new IllegalArgumentException("Invalid token");
         }
     }

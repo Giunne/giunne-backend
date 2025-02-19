@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 public class SortSeq {
 
     @Column(name = "sort_seq", nullable = false)
-    private Long value;
+    private Long sortSeq;
 
     private SortSeq(final Long value) {
-        this.value = value;
+        this.sortSeq = value;
     }
 
     public static SortSeq from(final Long value) {

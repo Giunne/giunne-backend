@@ -35,8 +35,8 @@ public class WebConfig implements WebMvcConfigurer {
                 "http://localhost",
                 "http://localhost:9001",
                 "http://192.168.1.90:9001",
-                "http://giunne.com",
-                "https://giunne.com"));
+                "http://localhost",
+                "https://localhost"));
 
         configuration.setAllowedMethods(Arrays.asList(
                 HttpMethod.GET.name(),
@@ -56,18 +56,18 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .order(1) // 가장 먼저 인증 인터셉터가 실행
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/oauth/login",
-                        "/api/access-token/issue",
-                        "/api/logout",
-                        "/api/health",
-                        "/api/members/health-check",
-                        "/api/members/register",
-                        "/api/members/login",
-                        "/api/members/**",
-                        "/api/items/**",
-                        "/api/quest/**",
-                        "/api/community/**"
+                .addPathPatterns("/v1/api/**")
+                .excludePathPatterns("/v1/api/oauth/login",
+                        "/v1/api/access-token/issue",
+                        "/v1/api/logout",
+                        "/v1/api/health",
+                        "/v1/api/members/health-check",
+                        "/v1/api/members/register",
+                        "/v1/api/members/login",
+                        "/v1/api/member/**",
+                        "/v1/api/items/**",
+                        "/v1/api/quest/**",
+                        "/v1/api/community/**"
                         );
 
         registry.addInterceptor(adminAuthorizationInterceptor)

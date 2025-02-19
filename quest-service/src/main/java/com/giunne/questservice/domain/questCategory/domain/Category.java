@@ -18,7 +18,6 @@ import java.util.Set;
 @Entity
 @Table(name = "category")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseEntity {
 

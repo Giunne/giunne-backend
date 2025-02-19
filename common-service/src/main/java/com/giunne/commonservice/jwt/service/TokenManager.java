@@ -49,7 +49,7 @@ public class TokenManager {
     }
 
     public String createAccessToken(Long memberId, MemberRole role, Date expirationTime) {
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(TokenType.ACCESS.name())    // 토큰 제목
                 .setIssuer(tokenIssuer)                 // 토큰 발행자
                 .setIssuedAt(new Date())                // 토큰 발급 시간
@@ -59,11 +59,10 @@ public class TokenManager {
                 .signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
                 .setHeaderParam("typ", "JWT")
                 .compact();
-        return accessToken;
     }
 
     public String createRefreshToken(Long memberId, Date expirationTime) {
-        String refreshToken = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(TokenType.REFRESH.name())   // 토큰 제목
                 .setIssuedAt(new Date())                // 토큰 발급 시간
                 .setExpiration(expirationTime)          // 토큰 만료 시간
@@ -71,7 +70,6 @@ public class TokenManager {
                 .signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
                 .setHeaderParam("typ", "JWT")
                 .compact();
-        return refreshToken;
     }
 
     public void validateToken(String token) {
@@ -97,6 +95,11 @@ public class TokenManager {
             throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
         }
         return claims;
+    }
+
+    public Long getTokenExpiration(String token) {
+        Date expiration = getTokenClaims(token).getExpiration();
+        return expiration.getTime();
     }
 
 }

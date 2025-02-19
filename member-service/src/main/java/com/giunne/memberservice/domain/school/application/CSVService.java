@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CSVService {
 
-    private final int BATCH_SIZE = 100000;
+    private final int BATCH_SIZE = 1000;
     private final SchoolRepository schoolRepository;
 
     @Transactional
@@ -57,26 +57,27 @@ public class CSVService {
             for (int i = 0; i < listSize; i += BATCH_SIZE) {
                 int toIndex = Math.min(i + BATCH_SIZE, listSize);
                 List<School> sublist = schoolCsvDtoList.subList(i, toIndex);
-                resultList.add(sublist);
+                processBatch(sublist);
             }
 
-            for (List<School> schoolList : resultList) {
-//                schoolRepository.saveAll(schoolList);
-                processBatch(schoolList);
-            }
+//            for (List<School> schoolList : resultList) {
+////                schoolRepository.saveAll(schoolList);
+//                processBatch(schoolList);
+//            }
         } catch (IOException e) {
             throw new BusinessException(ErrorCode.FILE_FORMAT);
         }
     }
 
     private void processBatch(List<School> schoolList) {
-        for (School school : schoolList) {
-            School schoolDomain = schoolRepository.findBySchoolId(school.getSchoolId().getSchoolId());
-            if (schoolDomain != null ) {
-                schoolRepository.save(schoolDomain);
-            } else {
-                schoolRepository.save(school);
-            }
-        }
+        List<String> schoolIdList = schoolList.stream().map(item -> item.getSchoolId().getSchoolId())
+                .toList();
+        List<School> updateList = schoolRepository.findBySchoolIdList(schoolIdList);
+        List<String> updateIdList = updateList.stream().map(item -> item.getSchoolId().getSchoolId()).toList();
+
+        List<School> insertList = schoolList.stream().filter(item -> !updateIdList.contains(item.getSchoolId().getSchoolId())).toList();
+        schoolRepository.saveAll(insertList);
+        schoolRepository.updateSchool(updateList);
+
     }
 }

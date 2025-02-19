@@ -541,3 +541,5 @@ application-db.yml
 ./**/application-db.yml
 
 **/generated
+application.yml
+./**/application.yml

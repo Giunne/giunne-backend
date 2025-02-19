@@ -11,7 +11,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "quest_clear_log")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestClearLog extends BaseEntity {
 
