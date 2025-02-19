@@ -1,5 +1,6 @@
 package com.giunne.itemservice.domain.item.domain.type;
 
+import com.giunne.commonservice.domain.common.EnumMapperType;
 import com.giunne.commonservice.error.ErrorCode;
 import com.giunne.commonservice.error.exception.BusinessException;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public enum ItemGrade {
+public enum ItemGrade implements EnumMapperType {
 
     S("S등급"),
     A("A등급"),
@@ -41,18 +42,27 @@ public enum ItemGrade {
         }
     }
 
-    public Double getWeight(GachaType gachaType) {
+    public Integer getWeight(GachaType gachaType) {
         return switch (this) {
             case S -> gachaType == GachaType.PREMIUM ?
-                    0.1 : 0.0;
+                    10 : 0;
             case A -> gachaType == GachaType.PREMIUM ?
-                    0.2 : 0.1;
+                    20 : 10;
             case B -> gachaType == GachaType.PREMIUM ?
-                    0.3 : 0.4;
+                    30 : 40;
             case C -> gachaType == GachaType.PREMIUM ?
-                    0.4 : 0.5;
+                    40 : 50;
             default -> throw new BusinessException(ErrorCode.PROFILE_SIZE_LIMIT);
         };
     }
 
+    @Override
+    public String getCode() {
+        return this.name();
+    }
+
+    @Override
+    public String getTitle() {
+        return this.grade;
+    }
 }

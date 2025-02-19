@@ -5,18 +5,36 @@ import com.giunne.commonservice.error.exception.BusinessException;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Getter
 public enum GachaType {
-    GENERAL("일반"),
-    PREMIUM("고급")
-    ;
+    GENERAL("일반", 100L, new LinkedHashMap<>() {{
+        put(ItemGrade.S, 10);
+        put(ItemGrade.A, 20);
+        put(ItemGrade.B, 30);
+        put(ItemGrade.C, 40);
+    }}
+    ),
+
+    PREMIUM("고급", 200L, new LinkedHashMap<>() {{
+        put(ItemGrade.A, 10);
+        put(ItemGrade.B, 40);
+        put(ItemGrade.C, 50);
+    }}
+    );
 
     private final String type;
+    private final Long price;
+    private final Map<ItemGrade, Integer> itemGradeMap;
 
-    GachaType(String description) {
-        this.type = description;
+    GachaType(String type, Long price, Map<ItemGrade, Integer> itemGradeMap) {
+        this.type = type;
+        this.price = price;
+        this.itemGradeMap = itemGradeMap;
     }
 
     public static GachaType from(String type) {
@@ -33,8 +51,9 @@ public enum GachaType {
     }
 
     private static void validate(String role) {
-        if(!GachaType.isItemGrad(role.toUpperCase())) {
+        if (!GachaType.isItemGrad(role.toUpperCase())) {
             throw new BusinessException(ErrorCode.PROFILE_SIZE_LIMIT);
         }
     }
+
 }

@@ -38,15 +38,6 @@ public class GetItemPageResponseDto {
     @Schema(description = "카테고리 번호" ,
             example = "1")
     private Long categoryId;
-//    @Schema(description = "카테고리 명" ,
-//            example = "옷")
-//    private String categoryName;
-//    @Schema(description = "상점 ID" ,
-//            example = "1")
-//    private String storeId;
-//    @Schema(description = "상점 ID" ,
-//            example = "기운내 상점")
-//    private String storeIdName;
     @Schema(description = "아이템 등급" ,
             example = "B")
     private ItemGrade itemGrade;
