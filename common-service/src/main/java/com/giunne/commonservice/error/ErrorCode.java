@@ -10,6 +10,7 @@ public enum ErrorCode implements EnumMapperType {
     TEST(HttpStatus.INTERNAL_SERVER_ERROR, "business exception test"),
 
     // 인증 && 인가
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,  "해당 access token은 만료됐습니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "해당 토큰은 유효한 토큰이 아닙니다."),
     NOT_EXISTS_AUTHORIZATION(HttpStatus.UNAUTHORIZED, "Authorization Header가 빈값입니다."),
@@ -41,6 +42,9 @@ public enum ErrorCode implements EnumMapperType {
     PROFILE_SIZE_LIMIT(HttpStatus.BAD_REQUEST, "제출할 수 있는 파일 사이즈를 초과했습니다."),
     FILE_FORMAT(HttpStatus.BAD_REQUEST,  "파일 형식이 잘못되었습니다."),
     INVALID_CSV(HttpStatus.BAD_REQUEST, "제출할 수 있는 CSV입니다."),
+
+    INVALID_GACHA_TYPE(HttpStatus.BAD_REQUEST, "뽑기 타입이 잘못됐습니다."),
+
     ;
 
     private final HttpStatus httpStatus;
