@@ -10,11 +10,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -97,6 +95,11 @@ public class TokenManager {
             throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
         }
         return claims;
+    }
+
+    public Long getTokenExpiration(String token) {
+        Date expiration = getTokenClaims(token).getExpiration();
+        return expiration.getTime();
     }
 
 }
