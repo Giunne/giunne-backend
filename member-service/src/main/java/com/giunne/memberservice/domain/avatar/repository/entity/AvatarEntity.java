@@ -5,17 +5,12 @@ import com.giunne.commonservice.domain.common.BaseEntity;
 
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.avatar.domain.type.*;
-import com.giunne.memberservice.domain.inventory.domain.Inventory;
 import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
 import com.giunne.memberservice.domain.recreation.repository.entity.RecreationEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "avatar")
@@ -38,13 +33,13 @@ public class AvatarEntity extends BaseEntity {
     private ClassRoom classRoom; // 교실
 
     @Embedded
-    private Exp exp; // 경험치
+    private Exp exp = Exp.from(1L); // 경험치
 
     @Embedded
-    private Level level; // 레벨
+    private Level level = Level.from(1L); // 레벨
 
     @Embedded
-    private Point point; // 포인트
+    private Point point = Point.from(0L); // 포인트
 
     @Column(name = "character_no")
     private Long characterNo; // 캐릭터 번호
@@ -52,9 +47,6 @@ public class AvatarEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_no")
     private RecreationEntity recreation; // 레크레이션
-
-//    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private Set<Inventory> inventories = new HashSet<>(); // 인벤토리
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")

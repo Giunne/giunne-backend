@@ -1,4 +1,4 @@
-package com.giunne.itemservice.domain.item.domain.type;
+package com.giunne.commonservice.domain.item;
 
 import com.giunne.commonservice.domain.common.EnumMapperType;
 import com.giunne.commonservice.error.ErrorCode;
@@ -42,19 +42,19 @@ public enum ItemGrade implements EnumMapperType {
         }
     }
 
-    public Integer getWeight(GachaType gachaType) {
-        return switch (this) {
-            case S -> gachaType == GachaType.PREMIUM ?
-                    10 : 0;
-            case A -> gachaType == GachaType.PREMIUM ?
-                    20 : 10;
-            case B -> gachaType == GachaType.PREMIUM ?
-                    30 : 40;
-            case C -> gachaType == GachaType.PREMIUM ?
-                    40 : 50;
-            default -> throw new BusinessException(ErrorCode.PROFILE_SIZE_LIMIT);
-        };
-    }
+//    public Integer getWeight(GachaType gachaType) {
+//        return switch (this) {
+//            case S -> gachaType == GachaType.PREMIUM ?
+//                    10 : 0;
+//            case A -> gachaType == GachaType.PREMIUM ?
+//                    20 : 10;
+//            case B -> gachaType == GachaType.PREMIUM ?
+//                    30 : 40;
+//            case C -> gachaType == GachaType.PREMIUM ?
+//                    40 : 50;
+//            default -> throw new BusinessException(ErrorCode.PROFILE_SIZE_LIMIT);
+//        };
+//    }
 
     @Override
     public String getCode() {

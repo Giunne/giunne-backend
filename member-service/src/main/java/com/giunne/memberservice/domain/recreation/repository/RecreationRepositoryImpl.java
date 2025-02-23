@@ -13,6 +13,7 @@ import com.giunne.memberservice.domain.recreation.repository.entity.RecreationEn
 import com.giunne.memberservice.domain.recreation.repository.jpa.JpaRecreationRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,17 @@ public class RecreationRepositoryImpl implements RecreationRepository {
     private static final QRecreationEntity recreationEntity = QRecreationEntity.recreationEntity;
 
     @Override
+    public Recreation findByRecreationCode(String recreationCode) {
+        List<RecreationEntity> byRecreationCodeRecreationCode = jpaRecreationRepository.findByRecreationCode_RecreationCode(recreationCode);
+        if (byRecreationCodeRecreationCode.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 코드입니다.");
+        }
+
+
+        return byRecreationCodeRecreationCode.get(0).toRecreation();
+    }
+
+    @Override
     public Recreation createRecreation(Recreation recreation) {
         RecreationEntity recreationEntity = new RecreationEntity(recreation);
         RecreationEntity entity = jpaRecreationRepository.save(recreationEntity);
@@ -57,10 +69,10 @@ public class RecreationRepositoryImpl implements RecreationRepository {
                 .from(recreationEntity)
                 .join(memberEntity).on(memberEntity.id.eq(recreationEntity.teacher.id))
                 .where(
-                        likeRecreationName(dto.getRecreationName()),
-                        likeTeacherName(dto.getRecreationName()),
-                        recreationEntity.recreationCode.recreationCode.eq(dto.getRecreationCode()),
-                        recreationEntity.baseNumber.baseNumber.eq(dto.getBaseNumber())
+                                likeRecreationName(dto.getRecreationName())
+//                        likeTeacherName(dto.getRecreationName()),
+//                        recreationEntity.recreationCode.recreationCode.eq(dto.getRecreationCode()),
+//                        recreationEntity.baseNumber.baseNumber.eq(dto.getBaseNumber())
                         );
 
         List<GetRecreationResponseDto> fetch = queryFactory
@@ -77,10 +89,10 @@ public class RecreationRepositoryImpl implements RecreationRepository {
                 ).from(recreationEntity)
                 .join(memberEntity).on(memberEntity.id.eq(recreationEntity.teacher.id))
                 .where(
-                        likeRecreationName(dto.getRecreationName()),
-                        likeTeacherName(dto.getRecreationName()),
-                        recreationEntity.recreationCode.recreationCode.eq(dto.getRecreationCode()),
-                        recreationEntity.baseNumber.baseNumber.eq(dto.getBaseNumber())
+                        likeRecreationName(dto.getRecreationName())
+//                        likeTeacherName(dto.getRecreationName()),
+//                        recreationEntity.recreationCode.recreationCode.eq(dto.getRecreationCode()),
+//                        recreationEntity.baseNumber.baseNumber.eq(dto.getBaseNumber())
                 ) .orderBy(recreationEntity.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -136,7 +148,7 @@ public class RecreationRepositoryImpl implements RecreationRepository {
 
     private BooleanExpression likeRecreationName(String name) {
         if (name == null || name.isBlank()) {
-            return null;
+            return Expressions.TRUE;
         }
         return recreationEntity.recreationName.recreationName.like(name + "%");
     }

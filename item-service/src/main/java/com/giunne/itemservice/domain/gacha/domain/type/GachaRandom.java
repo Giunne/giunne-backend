@@ -1,6 +1,6 @@
 package com.giunne.itemservice.domain.gacha.domain.type;
 
-import com.giunne.itemservice.domain.item.domain.type.ItemGrade;
+import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.itemservice.domain.item.domain.type.ItemName;
 import lombok.*;
 

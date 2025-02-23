@@ -6,15 +6,13 @@ import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.commonservice.util.AuthorizationHeaderUtils;
 import com.giunne.memberservice.domain.auth.application.AuthService;
+import com.giunne.memberservice.domain.auth.application.dto.request.AccessTokenRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.request.LoginRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.AccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Nullable;
 
 @Tag(name = "로그인", description = "선생님 및 학생 로그인")
 @RestController
@@ -56,12 +56,12 @@ public class LoginController {
 
     @Operation(summary = "refresh-token으로 access-token 재발급", description = "start/v1/member/access-token/issue\n\n" )
     @PostMapping("/access-token/issue")
-    public Response<AccessTokenResponseDto> reissueAccessToken(HttpServletRequest httpServletRequest) {
+    public Response<AccessTokenResponseDto> reissueAccessToken(HttpServletRequest httpServletRequest, @RequestBody @Nullable AccessTokenRequestDto accessTokenRequestDto) {
         String authorizationHeader = httpServletRequest.getHeader("Authorization");
         AuthorizationHeaderUtils.validateAuthorization(authorizationHeader);
 
         String refreshToken = authorizationHeader.split(" ")[1];
-        AccessTokenResponseDto response = authService.createAccessTokenByRefreshToken(refreshToken);
+        AccessTokenResponseDto response = authService.createAccessTokenByRefreshToken(refreshToken, accessTokenRequestDto);
         return Response.ok(response);
     }
 
