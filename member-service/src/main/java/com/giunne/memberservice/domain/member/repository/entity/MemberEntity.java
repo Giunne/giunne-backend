@@ -12,7 +12,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -60,7 +59,7 @@ public class MemberEntity extends BaseEntity {
     @Column(name = "role", nullable = false)
     private MemberRole role = MemberRole.ROLE_STUDENT;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_no")
     private SchoolEntity school; // 학교정보
 

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -37,11 +38,16 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             String token = authorizationHeader.split(" ")[1];
 
             Claims tokenClaims = tokenManager.getTokenClaims(token);
+            Long playerId = null;
+            if (tokenClaims.get("playerId") != null) {
+                playerId = Long.valueOf((Integer) tokenClaims.get("playerId"));
+            }
             Long memberId = Long.valueOf((Integer) tokenClaims.get("memberId"));
             String role = (String) tokenClaims.get("role");
 
             return MemberPrincipal.builder()
                     .memberId(memberId)
+                    .playerId(playerId)
                     .role(role)
                     .build();
         } catch (Exception e) {

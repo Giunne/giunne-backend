@@ -66,4 +66,7 @@ public class RecreationService {
         return recreationRepository.getMyRecreation(member, dto);
     }
 
+    public Recreation findByRecreationCode(String recreationCode){
+        return recreationRepository.findByRecreationCode(recreationCode);
+    }
 }

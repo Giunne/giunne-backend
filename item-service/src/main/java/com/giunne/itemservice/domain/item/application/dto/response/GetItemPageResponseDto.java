@@ -1,6 +1,6 @@
 package com.giunne.itemservice.domain.item.application.dto.response;
 
-import com.giunne.itemservice.domain.item.domain.type.ItemGrade;
+import com.giunne.commonservice.domain.item.ItemGrade;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "아이템 검색 응답DTO")
+@Schema(description = "아이템 카테고리 검색 응답DTO")
 public class GetItemPageResponseDto {
     @Schema(description = "아이템 ID",
             example = "1000")

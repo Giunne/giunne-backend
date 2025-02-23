@@ -12,4 +12,5 @@ public interface RecreationRepository {
     PaginationModel<GetRecreationResponseDto> findRecreation(GetRecreationRequestDto dto);
     PaginationModel<GetRecreationResponseDto> getMyRecreation(Member member, Pageable dto);
     Recreation findById(Long id);
+    Recreation findByRecreationCode(String recreationCode);
 }

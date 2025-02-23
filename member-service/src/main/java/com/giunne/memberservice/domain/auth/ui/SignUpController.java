@@ -3,6 +3,7 @@ package com.giunne.memberservice.domain.auth.ui;
 
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.auth.application.AuthService;
+import com.giunne.memberservice.domain.auth.application.dto.request.CreateStudentAuthRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.request.CreateTeacherAuthRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +35,15 @@ public class SignUpController {
         return Response.ok(authService.registerTeacher(dto));
     }
 
-//    @PostMapping("/signup/student")
-//    public Response<MemberAccessTokenResponseDto> registerStudent(@RequestBody CreateStudentRequestDto dto) {
-//        return Response.ok(authService.registerStudent(dto));
-//    }
+    @Operation(summary = "학생 회원가입", description = """
+            ## 기능설명
+            * 학생 회원가입
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/signup/student")
+    public Response<MemberAccessTokenResponseDto> registerStudent(@RequestBody CreateStudentAuthRequestDto dto) {
+        return Response.ok(authService.registerStudent(dto));
+    }
 }

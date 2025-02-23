@@ -25,11 +25,11 @@ public class TokenManager {
     private final String tokenSecret;
     private final String tokenIssuer;
 
-    public JwtTokenDto createJwtTokenDto(Long memberId, MemberRole role) {
+    public JwtTokenDto createJwtTokenDto(Long memberId, Long playId,MemberRole role) {
         Date accessTokenExpireTime = createAccessTokenExpireTime();
         Date refreshTokenExpireTime = createRefreshTokenExpireTime();
 
-        String accessToken = createAccessToken(memberId, role, accessTokenExpireTime);
+        String accessToken = createAccessToken(memberId, playId, role, accessTokenExpireTime);
         String refreshToken = createRefreshToken(memberId, refreshTokenExpireTime);
         return JwtTokenDto.builder()
                 .grantType(GrantType.BEARER.getType())
@@ -48,13 +48,15 @@ public class TokenManager {
         return new Date(System.currentTimeMillis() + Long.parseLong(refreshTokenExpirationTime));
     }
 
-    public String createAccessToken(Long memberId, MemberRole role, Date expirationTime) {
+    public String createAccessToken(Long memberId, Long playerId, MemberRole role, Date expirationTime) {
+        
         return Jwts.builder()
                 .setSubject(TokenType.ACCESS.name())    // 토큰 제목
                 .setIssuer(tokenIssuer)                 // 토큰 발행자
                 .setIssuedAt(new Date())                // 토큰 발급 시간
                 .setExpiration(expirationTime)          // 토큰 만료 시간
                 .claim("memberId", memberId)         // 회원 아이디
+                .claim("playerId", playerId)         // 캐릭터 아이디
                 .claim("role", role)                 // 유저 role
                 .signWith(SignatureAlgorithm.HS512, tokenSecret.getBytes(StandardCharsets.UTF_8))
                 .setHeaderParam("typ", "JWT")

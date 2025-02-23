@@ -1,12 +1,15 @@
 package com.giunne.memberservice.domain.avatar.application.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+import java.util.Date;
+
 @Builder
-public record CreateAvatarResponseDto (
+public record CreateAvatarResponseDto(
         @Schema(
-                description = "아바타 번호",
+                description = "플레이어 ID",
                 example = "1"
         )
         Long id,
@@ -16,7 +19,7 @@ public record CreateAvatarResponseDto (
         )
         String nickname,
         @Schema(
-                description = "레크레이션 id",
+                description = "레크레이션 ID",
                 example = "1234"
         )
         Long recreationId,
@@ -39,6 +42,16 @@ public record CreateAvatarResponseDto (
                 description = "캐릭터 번호",
                 example = "1"
         )
-        Long characterNo
-) {
+        Long characterNo,
+        @Schema(
+                description = "인증타입")
+        String grantType,
+        @Schema(description = "access 토큰")
+        String accessToken,
+        @JsonFormat(shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd HH:mm:ss",
+                timezone = "Asia/Seoul")
+        Date accessTokenExpireTime
+
+        ) {
 }

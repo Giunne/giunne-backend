@@ -1,5 +1,7 @@
 package com.giunne.itemservice.domain.item.repository;
 
+import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
+import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.category.repository.entity.QCategoryEntity;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
@@ -108,7 +110,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .fetch();
 
         List<Long> idList = results.stream().map(i -> i.get(itemEntity.id)).toList();
-        System.out.println("results: "+idList);
+
         List<Tuple> joinResults = queryFactory
                 .select(
                         itemEntity.id,
@@ -195,6 +197,111 @@ public class ItemRepositoryImpl implements ItemRepository {
         Page<GetItemPageResponseDto> pageResult = PageableExecutionUtils.getPage(itemList, pageable, countQuery::fetchCount);
 
         return toPaginationModel(pageResult);
+    }
+
+    @Override
+    public List<GetWearingItemResponseDto> findWearingItems(GetWearingItemsRequestDto dto) {
+        List<Tuple> results = queryFactory
+                .select(
+                        itemEntity.id,
+                        itemEntity.itemName.itemName,
+                        itemEntity.itemDescription.description,
+                        itemEntity.price.value,
+                        itemEntity.needLevel.value,
+                        itemEntity.sortSeq.value,
+                        itemEntity.category.id,
+                        itemEntity.category.categoryName.categoryName,
+                        itemEntity.itemGrade
+                )
+                .from(itemEntity)
+                .where(itemEntity.id.in(dto.getItemIds()))
+                .fetch();
+
+        List<Long> idList = results.stream().map(i -> i.get(itemEntity.id)).toList();
+
+        List<Tuple> joinResults = queryFactory
+                .select(
+                        itemEntity.id,
+                        itemEntity.itemName.itemName,
+                        itemEntity.itemDescription.description,
+                        itemEntity.price.value,
+                        itemEntity.needLevel.value,
+                        itemEntity.sortSeq.value,
+                        itemEntity.category.id,
+                        itemEntity.category.categoryName.categoryName,
+                        itemEntity.itemGrade,
+
+                        itemImageEntity.id,
+                        itemImageEntity.fileUrl.value,
+                        itemImageEntity.isRepresent.value,
+
+                        itemImagePositionEntity.id,
+                        itemImagePositionEntity.position.positionX,
+                        itemImagePositionEntity.position.positionY,
+                        itemImagePositionEntity.position.positionZ,
+                        itemImagePositionEntity.level
+                )
+                .from(itemEntity)
+                .leftJoin(itemImageEntity).on(itemEntity.id.eq(itemImageEntity.item.id))
+                .leftJoin(itemImagePositionEntity).on(itemImageEntity.id.eq(itemImagePositionEntity.itemImage.id))
+                .where(itemEntity.id.in(idList))
+                .fetch();
+
+        // 3. 결과를 Map<Long, GetWearingItemResponseDto> 형태로 변환
+        Map<Long, GetWearingItemResponseDto> itemMap = new LinkedHashMap<>();
+
+        for (Tuple tuple : joinResults) {
+            Long itemId = tuple.get(itemEntity.id);
+            GetWearingItemResponseDto itemDto = itemMap.get(itemId);
+
+            // 아이템이 처음 추가될 때만 생성
+            if (itemDto == null) {
+                itemDto = new GetWearingItemResponseDto();
+                itemDto.setId(itemId);
+                itemDto.setItemName(tuple.get(itemEntity.itemName.itemName));
+                itemDto.setItemDescription(tuple.get(itemEntity.itemDescription.description));
+                itemDto.setPrice(tuple.get(itemEntity.price.value));
+                itemDto.setNeedLevel(tuple.get(itemEntity.needLevel.value));
+                itemDto.setSortSeq(tuple.get(itemEntity.sortSeq.value));
+                itemDto.setCategoryId(tuple.get(itemEntity.category.id));
+                itemDto.setItemGrade(tuple.get(itemEntity.itemGrade));
+                itemDto.setItemImages(new ArrayList<>()); // 이미지 리스트 초기화
+                itemMap.put(itemId, itemDto);
+            }
+
+            // 4. 이미지 정보 추가
+            if (tuple.get(itemImageEntity.id) != null) {
+                Long imageId = tuple.get(itemImageEntity.id);
+                GetWearingItemResponseDto.ItemImage image = itemDto.getItemImages().stream()
+                        .filter(img -> img.getId().equals(imageId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (image == null) {
+                    image = new GetWearingItemResponseDto.ItemImage();
+                    image.setId(imageId);
+                    image.setFileUrl(tuple.get(itemImageEntity.fileUrl.value));
+                    image.setIsRepresent(tuple.get(itemImageEntity.isRepresent.value));
+                    image.setItemImagePositions(new ArrayList<>()); // 위치 리스트 초기화
+                    itemDto.getItemImages().add(image);
+                }
+
+                // 5. 이미지 위치 정보 추가
+                if (tuple.get(itemImagePositionEntity.id) != null) {
+                    GetWearingItemResponseDto.ItemImage.ItemImagePosition position = new GetWearingItemResponseDto.ItemImage.ItemImagePosition();
+                    position.setId(tuple.get(itemImagePositionEntity.id));
+                    position.setPositionX(tuple.get(itemImagePositionEntity.position.positionX));
+                    position.setPositionY(tuple.get(itemImagePositionEntity.position.positionY));
+                    position.setPositionZ(tuple.get(itemImagePositionEntity.position.positionZ));
+                    position.setLevel(tuple.get(itemImagePositionEntity.level));
+                    image.getItemImagePositions().add(position);
+                }
+            }
+        }
+
+        // 6. 리스트 변환 후 페이징 적용
+        List<GetWearingItemResponseDto> itemList = new ArrayList<>(itemMap.values());
+        return itemList;
     }
 
 }

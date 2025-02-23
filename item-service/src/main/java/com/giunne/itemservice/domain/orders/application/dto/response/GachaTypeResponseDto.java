@@ -1,7 +1,7 @@
 package com.giunne.itemservice.domain.orders.application.dto.response;
 
 import com.giunne.itemservice.domain.item.domain.type.GachaType;
-import com.giunne.itemservice.domain.item.domain.type.ItemGrade;
+import com.giunne.commonservice.domain.item.ItemGrade;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

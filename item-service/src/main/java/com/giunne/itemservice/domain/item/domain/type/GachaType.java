@@ -1,5 +1,6 @@
 package com.giunne.itemservice.domain.item.domain.type;
 
+import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.commonservice.error.ErrorCode;
 import com.giunne.commonservice.error.exception.BusinessException;
 import lombok.Getter;
@@ -13,17 +14,17 @@ import java.util.Map;
 @Getter
 public enum GachaType {
     GENERAL("일반", 100L, new LinkedHashMap<>() {{
-        put(ItemGrade.S, 10);
-        put(ItemGrade.A, 20);
-        put(ItemGrade.B, 30);
-        put(ItemGrade.C, 40);
+        put(ItemGrade.A, 10);
+        put(ItemGrade.B, 40);
+        put(ItemGrade.C, 50);
     }}
     ),
 
     PREMIUM("고급", 200L, new LinkedHashMap<>() {{
-        put(ItemGrade.A, 10);
-        put(ItemGrade.B, 40);
-        put(ItemGrade.C, 50);
+        put(ItemGrade.S, 10);
+        put(ItemGrade.A, 20);
+        put(ItemGrade.B, 30);
+        put(ItemGrade.C, 40);
     }}
     );
 
