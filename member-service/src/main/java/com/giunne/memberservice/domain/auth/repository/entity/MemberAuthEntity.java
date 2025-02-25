@@ -43,6 +43,10 @@ public class MemberAuthEntity extends BaseEntity {
         this.refreshTokenExpirationTime = refreshTokenExpirationTime;
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
     public void updateRefreshToken(JwtTokenDto jwtTokenDto) {
         this.refreshToken = jwtTokenDto.getRefreshToken();
         this.refreshTokenExpirationTime = DateTimeUtils.convertToLocalDateTime(jwtTokenDto.getRefreshTokenExpireTime());

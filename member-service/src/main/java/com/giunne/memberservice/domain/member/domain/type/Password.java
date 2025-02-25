@@ -29,6 +29,10 @@ public class Password {
         return new Password(encryptedPassword);
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
     public boolean matchPassword(String password) {
         return this.password.equals(SHA256.encrypt(password));
     }

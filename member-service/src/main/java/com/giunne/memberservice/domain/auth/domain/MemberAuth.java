@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 public class MemberAuth {
 
-    private final LoginId loginId;
-    private final Password password;
-    private final MemberRole role;
-    private final Long memberId;
-    private final String refreshToken;
-    private final LocalDateTime refreshTokenExpirationTime;
+    private LoginId loginId;
+    private Password password;
+    private MemberRole role;
+    private Long memberId;
+    private String refreshToken;
+    private LocalDateTime refreshTokenExpirationTime;
 
     @Builder
     public MemberAuth(Long memberId, String loginId, String password, MemberRole role, String refreshToken, LocalDateTime refreshTokenExpirationTime) {
@@ -39,6 +39,10 @@ public class MemberAuth {
 
     public String getPassword() {
         return password.getPassword();
+    }
+
+    public void changePassword(String password) {
+        this.password = Password.createEncryptedPassword(password);
     }
 
 }

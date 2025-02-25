@@ -29,4 +29,9 @@ public class Member {
     private String refreshToken; // 리프레시토큰
     private LocalDateTime refreshTokenExpirationTime; // 리프레시토큰 만료날짜
     private OAuthType oAuthType; // OAuth 구분
+
+
+    public void changePassword(String password) {
+        this.password = Password.createEncryptedPassword(password);
+    }
 }

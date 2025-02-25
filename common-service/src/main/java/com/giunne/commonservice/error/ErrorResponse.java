@@ -11,20 +11,34 @@ import java.util.List;
 @Builder
 public class ErrorResponse {
 
-    private String errorCode;
-    private String errorMessage;
+    private String code;
+    private String message;
 
     public static ErrorResponse of(String errorCode, String errorMessage) {
         return ErrorResponse.builder()
-                .errorCode(errorCode)
-                .errorMessage(errorMessage)
+                .code(errorCode)
+                .message(errorMessage)
+                .build();
+    }
+
+    public static ErrorResponse of(int errorCode, String errorMessage) {
+        return ErrorResponse.builder()
+                .code(Integer.toString(errorCode))
+                .message(errorMessage)
+                .build();
+    }
+
+    public static ErrorResponse of(int errorCode, BindingResult bindingResult) {
+        return ErrorResponse.builder()
+                .code(Integer.toString(errorCode))
+                .message(createErrorMessage(bindingResult))
                 .build();
     }
 
     public static ErrorResponse of(String errorCode, BindingResult bindingResult) {
         return ErrorResponse.builder()
-                .errorCode(errorCode)
-                .errorMessage(createErrorMessage(bindingResult))
+                .code(errorCode)
+                .message(createErrorMessage(bindingResult))
                 .build();
     }
 
