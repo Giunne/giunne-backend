@@ -4,6 +4,7 @@ import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.itemservice.domain.category.repository.entity.CategoryEntity;
+import com.giunne.itemservice.domain.item.application.ThumbnailUrl;
 import com.giunne.itemservice.domain.item.domain.Item;
 import com.giunne.itemservice.domain.item.domain.type.*;
 import com.giunne.itemservice.domain.store.repository.entity.StoreEntity;
@@ -50,6 +51,9 @@ public class ItemEntity extends BaseEntity {
     private StoreEntity store; // 상점
 
     @Embedded
+    private ThumbnailUrl thumbnailUrl;
+
+    @Embedded
     private Active isActive = Active.from(true);
 
     @Enumerated(EnumType.STRING)
@@ -79,6 +83,7 @@ public class ItemEntity extends BaseEntity {
         this.category = new CategoryEntity(item.getCategory());
         this.store = new StoreEntity(item.getStore());
         this.itemGrade = item.getItemGrade();
+        this.thumbnailUrl = item.getThumbnailUrl();
     }
 
     public Item toItem(){
@@ -93,6 +98,7 @@ public class ItemEntity extends BaseEntity {
                 .category(category.toCategory())
                 .store(store.toStore())
                 .itemGrade(itemGrade)
+                .thumbnailUrl(thumbnailUrl)
                 .build();
     }
 

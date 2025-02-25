@@ -55,7 +55,7 @@ public class AvatarService {
                         .studentNumber(dto.studentNumber())
                         .build())
                 .exp(Exp.from(0L))
-                .level(Level.from(0L))
+                .level(Level.from(1L))
                 .point(Point.from(0L))
                 .member(member)
                 .characterNo(itemInfoResponseDto.getId())
@@ -109,7 +109,7 @@ public class AvatarService {
         List<AvatarWithWearingItemResponseDto> myAvatarList = avatarRepository.getMyAvatarList(member);
 
         for (int i = 0; i < myAvatarList.size(); i++) {
-            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds());
+            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds(), myAvatarList.get(i).getLevel());
             Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
             myAvatarList.get(i).setWearingItems(listResponse.value());
         }

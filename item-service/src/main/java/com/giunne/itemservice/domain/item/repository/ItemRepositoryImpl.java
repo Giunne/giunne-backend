@@ -25,10 +25,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
@@ -101,7 +98,9 @@ public class ItemRepositoryImpl implements ItemRepository {
                         itemEntity.sortSeq.value,
                         itemEntity.category.id,
                         itemEntity.category.categoryName.categoryName,
-                        itemEntity.itemGrade
+                        itemEntity.itemGrade,
+                        itemEntity.thumbnailUrl.value
+
                 )
                 .from(itemEntity)
                 .where(itemEntity.category.id.eq(dto.getCategoryId()))
@@ -122,10 +121,12 @@ public class ItemRepositoryImpl implements ItemRepository {
                         itemEntity.category.id,
                         itemEntity.category.categoryName.categoryName,
                         itemEntity.itemGrade,
+                        itemEntity.thumbnailUrl.value,
 
                         itemImageEntity.id,
                         itemImageEntity.fileUrl.value,
                         itemImageEntity.isRepresent.value,
+                        itemImageEntity.level.value,
 
                         itemImagePositionEntity.id,
                         itemImagePositionEntity.position.positionX,
@@ -158,6 +159,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 itemDto.setSortSeq(tuple.get(itemEntity.sortSeq.value));
                 itemDto.setCategoryId(tuple.get(itemEntity.category.id));
                 itemDto.setItemGrade(tuple.get(itemEntity.itemGrade));
+                itemDto.setThumbnailUrl(tuple.get(itemEntity.thumbnailUrl.value));
                 itemDto.setItemImages(new ArrayList<>()); // 이미지 리스트 초기화
                 itemMap.put(itemId, itemDto);
             }
@@ -175,6 +177,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                     image.setId(imageId);
                     image.setFileUrl(tuple.get(itemImageEntity.fileUrl.value));
                     image.setIsRepresent(tuple.get(itemImageEntity.isRepresent.value));
+                    image.setLevel(tuple.get(itemImageEntity.level.value));
                     image.setItemImagePositions(new ArrayList<>()); // 위치 리스트 초기화
                     itemDto.getItemImages().add(image);
                 }
@@ -214,7 +217,10 @@ public class ItemRepositoryImpl implements ItemRepository {
                         itemEntity.itemGrade
                 )
                 .from(itemEntity)
-                .where(itemEntity.id.in(dto.getItemIds()))
+                .where(itemEntity.id.in(dto.getItemIds()),
+                        itemEntity.needLevel.value.loe(dto.getLevel())
+
+                )
                 .fetch();
 
         List<Long> idList = results.stream().map(i -> i.get(itemEntity.id)).toList();
@@ -234,6 +240,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                         itemImageEntity.id,
                         itemImageEntity.fileUrl.value,
                         itemImageEntity.isRepresent.value,
+                        itemImageEntity.level.value,
 
                         itemImagePositionEntity.id,
                         itemImagePositionEntity.position.positionX,
@@ -244,7 +251,9 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .from(itemEntity)
                 .leftJoin(itemImageEntity).on(itemEntity.id.eq(itemImageEntity.item.id))
                 .leftJoin(itemImagePositionEntity).on(itemImageEntity.id.eq(itemImagePositionEntity.itemImage.id))
-                .where(itemEntity.id.in(idList))
+                .where(itemEntity.id.in(idList),
+                        itemImageEntity.level.value.in(0, dto.getLevel())
+                )
                 .fetch();
 
         // 3. 결과를 Map<Long, GetWearingItemResponseDto> 형태로 변환
@@ -265,36 +274,41 @@ public class ItemRepositoryImpl implements ItemRepository {
                 itemDto.setSortSeq(tuple.get(itemEntity.sortSeq.value));
                 itemDto.setCategoryId(tuple.get(itemEntity.category.id));
                 itemDto.setItemGrade(tuple.get(itemEntity.itemGrade));
-                itemDto.setItemImages(new ArrayList<>()); // 이미지 리스트 초기화
+//                itemDto.setItemImage(new GetWearingItemResponseDto.ItemImage()); // 이미지 리스트 초기화
                 itemMap.put(itemId, itemDto);
             }
 
             // 4. 이미지 정보 추가
             if (tuple.get(itemImageEntity.id) != null) {
                 Long imageId = tuple.get(itemImageEntity.id);
-                GetWearingItemResponseDto.ItemImage image = itemDto.getItemImages().stream()
-                        .filter(img -> img.getId().equals(imageId))
-                        .findFirst()
-                        .orElse(null);
+//                GetWearingItemResponseDto.ItemImage image = null;
+                GetWearingItemResponseDto.ItemImage image = itemDto.getItemImage();
+
+//                GetWearingItemResponseDto.ItemImage image = itemDto.getItemImage().stream()
+//                        .filter(img -> img.getId().equals(imageId))
+//                        .findFirst()
+//                        .orElse(null);
 
                 if (image == null) {
                     image = new GetWearingItemResponseDto.ItemImage();
                     image.setId(imageId);
                     image.setFileUrl(tuple.get(itemImageEntity.fileUrl.value));
                     image.setIsRepresent(tuple.get(itemImageEntity.isRepresent.value));
-                    image.setItemImagePositions(new ArrayList<>()); // 위치 리스트 초기화
-                    itemDto.getItemImages().add(image);
+                    image.setLevel(tuple.get(itemImageEntity.level.value));
+//                    image.setItemImagePositions(new ArrayList<>()); // 위치 리스트 초기화
+                    itemDto.setItemImage(image);
+//                    itemDto.getItemImage().add(image);
                 }
 
                 // 5. 이미지 위치 정보 추가
-                if (tuple.get(itemImagePositionEntity.id) != null) {
+                if (tuple.get(itemImagePositionEntity.id) != null && Objects.equals(tuple.get(itemImagePositionEntity.level), dto.getLevel())) {
                     GetWearingItemResponseDto.ItemImage.ItemImagePosition position = new GetWearingItemResponseDto.ItemImage.ItemImagePosition();
                     position.setId(tuple.get(itemImagePositionEntity.id));
                     position.setPositionX(tuple.get(itemImagePositionEntity.position.positionX));
                     position.setPositionY(tuple.get(itemImagePositionEntity.position.positionY));
                     position.setPositionZ(tuple.get(itemImagePositionEntity.position.positionZ));
                     position.setLevel(tuple.get(itemImagePositionEntity.level));
-                    image.getItemImagePositions().add(position);
+                    image.setItemImagePosition(position);
                 }
             }
         }

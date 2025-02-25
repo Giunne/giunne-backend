@@ -34,6 +34,27 @@ public class AvatarWithWearingItemResponseDto {
     )
     String recreationName;
     @Schema(
+            description = "레크레이션 코드",
+            example = "123456789012345(15자리)"
+    )
+    String recreationCode;
+    @Schema(
+            description = "선생님 회원 번호",
+            example = "123"
+    )
+    Long teacherId;
+    @Schema(
+            description = "선생님 로그인ID",
+            example = "LoginID"
+    )
+    String teacherLoginId;
+    @Schema(
+            description = "선생님명",
+            example = "허태식"
+    )
+    String teacherName;
+
+    @Schema(
             description = "경험치",
             example = "1"
     )

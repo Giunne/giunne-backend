@@ -62,12 +62,17 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         avatarEntity.characterNo,
 
                         recreationEntity.recreationName.recreationName,
+                        recreationEntity.recreationCode.recreationCode,
+                        recreationEntity.teacher.id,
+                        memberEntity.nickname.nickname,
+                        memberEntity.loginId.loginId,
 
                         inventoryEntity.itemInfo.itemNo,
                         inventoryEntity.itemInfo.itemName,
                         inventoryEntity.itemInfo.categoryNo
                 )
                 .from(avatarEntity)
+                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
                 .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
                 .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
                 .where(
@@ -89,6 +94,10 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         .nickname(tuple.get(avatarEntity.nickname.nickname))
                         .recreationId(tuple.get(avatarEntity.recreation.id))
                         .recreationName(tuple.get(recreationEntity.recreationName.recreationName))
+                        .recreationCode(tuple.get(recreationEntity.recreationCode.recreationCode))
+                        .teacherId(tuple.get(recreationEntity.teacher.id))
+                        .teacherName(tuple.get(memberEntity.nickname.nickname))
+                        .teacherLoginId(tuple.get(memberEntity.loginId.loginId))
                         .exp(tuple.get(avatarEntity.exp.exp))
                         .level(tuple.get(avatarEntity.level.level))
                         .point(tuple.get(avatarEntity.point.point))

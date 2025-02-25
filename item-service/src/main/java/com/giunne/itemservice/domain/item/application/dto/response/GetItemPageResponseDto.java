@@ -41,6 +41,8 @@ public class GetItemPageResponseDto {
     @Schema(description = "아이템 등급" ,
             example = "B")
     private ItemGrade itemGrade;
+    @Schema(description = "썸네일 URL")
+    private String thumbnailUrl;
     @Schema(description = "아이템 이미지")
     private List<ItemImage> itemImages = new ArrayList<>();
 
@@ -60,6 +62,9 @@ public class GetItemPageResponseDto {
         @Schema(description = "대표 이미지 여부" ,
                 example = "true")
         private Boolean isRepresent;
+        @Schema(description = "레벨",
+                example = "1")
+        private Long level;
         @Schema(description = "이미지 위치")
         private List<ItemImagePosition> itemImagePositions = new ArrayList<>();
 

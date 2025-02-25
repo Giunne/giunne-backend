@@ -15,4 +15,5 @@ import java.util.List;
 @Schema(description = "장착중인 아이템 미리보기 검색 요청DTO")
 public class GetWearingItemsRequestDto {
     List<Long> itemIds;
+    Long level;
 }

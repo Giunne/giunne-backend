@@ -40,15 +40,19 @@ public class ItemImageEntity extends BaseEntity {
     private Active isActive = Active.from(true);
 
     @Embedded
+    private Level level = Level.from(0L);
+
+    @Embedded
     private IsRepresent isRepresent = IsRepresent.from(true);
 
     @Builder
-    public ItemImageEntity(FileName fileName, FileUrl fileUrl, FileSize fileSize, Active isActive, IsRepresent isRepresent) {
+    public ItemImageEntity(FileName fileName, FileUrl fileUrl, FileSize fileSize, Active isActive, IsRepresent isRepresent, Level level) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.fileSize = fileSize;
         this.isActive = isActive;
         this.isRepresent = isRepresent;
+        this.level = level;
     }
 
     public ItemImageEntity(ItemImage itemImage) {
@@ -56,6 +60,7 @@ public class ItemImageEntity extends BaseEntity {
         this.fileName = itemImage.getFileName();
         this.fileUrl = itemImage.getFileUrl();
         this.fileSize = itemImage.getFileSize();
+        this.level = itemImage.getLevel();
         this.item = new ItemEntity(itemImage.getItem());
     }
 
@@ -66,6 +71,7 @@ public class ItemImageEntity extends BaseEntity {
                 .fileName(fileName)
                 .fileSize(fileSize)
                 .fileUrl(fileUrl)
+                .level(level)
                 .item(item.toItem())
                 .build();
     }
