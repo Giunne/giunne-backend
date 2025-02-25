@@ -48,7 +48,9 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
     @Override
     @Transactional
     public MemberAuth loginMember(String loginId, String password) {
-        MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository.findByLoginId(loginId).orElseThrow();
+        MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository.findByLoginId(loginId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 아이디입니다.")
+        );
 
         MemberAuth memberAuth = memberAuthEntity.toMemberAuth();
 
