@@ -1,5 +1,6 @@
 package com.giunne.commonservice.error;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
@@ -11,8 +12,22 @@ import java.util.List;
 @Builder
 public class ErrorResponse {
 
+    @Schema(
+            description = "에러 코드",
+            example = "1"
+    )
     private String code;
+    @Schema(
+            description = "에러 메시지",
+            example = "1"
+    )
     private String message;
+    @Schema(
+            description = "값",
+            example = "1",
+            nullable = true
+    )
+    private String value;
 
     public static ErrorResponse of(String errorCode, String errorMessage) {
         return ErrorResponse.builder()
