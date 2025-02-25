@@ -4,10 +4,7 @@ import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.dto.JwtTokenDto;
 import com.giunne.commonservice.jwt.service.TokenManager;
-import com.giunne.memberservice.domain.auth.application.dto.request.AccessTokenRequestDto;
-import com.giunne.memberservice.domain.auth.application.dto.request.CreateStudentAuthRequestDto;
-import com.giunne.memberservice.domain.auth.application.dto.request.CreateTeacherAuthRequestDto;
-import com.giunne.memberservice.domain.auth.application.dto.request.LoginRequestDto;
+import com.giunne.memberservice.domain.auth.application.dto.request.*;
 import com.giunne.memberservice.domain.auth.application.dto.response.AccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.interfaces.MemberAuthRepository;
@@ -21,8 +18,8 @@ import com.giunne.memberservice.domain.school.application.SchoolService;
 import com.giunne.memberservice.domain.school.domain.School;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -34,7 +31,7 @@ public class AuthService {
     private final MemberAuthRepository memberAuthRepository;
     private final TokenManager tokenManager;
     private final RecreationService recreationService;
-
+    @Transactional
     public MemberAccessTokenResponseDto registerTeacher(CreateTeacherAuthRequestDto dto) {
         School school = schoolService.getSchool(dto.schoolId());
 
@@ -52,14 +49,14 @@ public class AuthService {
 
         return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
     }
-
+    @Transactional
     public MemberAccessTokenResponseDto registerStudent(CreateStudentAuthRequestDto dto) {
         School school = schoolService.getSchool(dto.schoolId());
 
         memberRepository.validateDuplicateMember(dto.loginId());
         MemberAuth memberAuth =  MemberAuth.builder()
                 .loginId(dto.loginId())
-                .password(dto.password())
+                .password(Password.createEncryptedPassword(dto.password()).getPassword())
                 .role(MemberRole.ROLE_STUDENT)
                 .build();
 
@@ -76,7 +73,7 @@ public class AuthService {
 
         return  MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
     }
-
+    @Transactional
     public MemberAccessTokenResponseDto loginMember(LoginRequestDto loginRequestDto) {
         MemberAuth memberAuth = memberAuthRepository.loginMember(loginRequestDto.loginId(), loginRequestDto.password());
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
@@ -85,12 +82,27 @@ public class AuthService {
         return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
     }
 
+    @Transactional
+    public MemberAccessTokenResponseDto passwordChange(PasswordChangeRequestDto dto) {
+
+        Member member = memberRepository.findByLoginId(dto.loginId());
+        member.changePassword(dto.password());
+        MemberAuth memberAuth = memberAuthRepository.findByLoginId(dto.loginId());
+        memberAuth.changePassword(dto.password());
+
+        memberRepository.passwordChange(member.getLoginId().getLoginId(), dto.password());
+        memberAuthRepository.passwordChange(member.getLoginId().getLoginId(), member.getPassword().getPassword());
+
+        JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
+        memberAuthRepository.updateRefreshToken(memberAuth.getLoginId(), jwtToken);
+        return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
+    }
 
     public void logout(String accessToken) {
         memberAuthRepository.logout(accessToken);
     }
 
-
+    @Transactional
     public AccessTokenResponseDto createAccessTokenByRefreshToken(String refreshToken, AccessTokenRequestDto accessTokenRequestDto) {
         MemberAuth memberAuth = memberAuthRepository.findByRefreshToken(refreshToken);
         Date accessTokenExpireTime = tokenManager.createAccessTokenExpireTime();

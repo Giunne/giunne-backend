@@ -14,6 +14,9 @@ public interface MemberAuthRepository {
     void updateRefreshToken(String loginId, JwtTokenDto jwtTokenDto);
 
     MemberAuth findByRefreshToken(String refreshToken);
+    MemberAuth findByLoginId(String loginId);
 
     void logout(String accessToken);
+
+    void passwordChange(String loginId, String password);
 }

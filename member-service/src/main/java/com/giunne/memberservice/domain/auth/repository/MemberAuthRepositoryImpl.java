@@ -6,6 +6,7 @@ import com.giunne.commonservice.jwt.constant.TokenType;
 import com.giunne.commonservice.jwt.dto.JwtTokenDto;
 import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.utils.RedisUtil;
+import com.giunne.memberservice.domain.auth.application.dto.request.PasswordChangeRequestDto;
 import com.giunne.memberservice.domain.auth.application.interfaces.MemberAuthRepository;
 import com.giunne.memberservice.domain.auth.domain.MemberAuth;
 import com.giunne.memberservice.domain.auth.repository.entity.MemberAuthEntity;
@@ -52,7 +53,7 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
         MemberAuth memberAuth = memberAuthEntity.toMemberAuth();
 
         if (!memberAuth.matchPassword(password)) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
         memberAuthEntity.updateLastLoginAt();
@@ -78,6 +79,16 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
     }
 
     @Override
+    public MemberAuth findByLoginId(String loginId) {
+        MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository
+                .findByLoginId(loginId)
+                .orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 아이디입니다.")
+                );
+        return memberAuthEntity.toMemberAuth();
+    }
+
+    @Override
     public void logout(String accessToken) {
         // 토큰 검증
         tokenManager.validateToken(accessToken);
@@ -98,6 +109,14 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
         // redis에 black-list 등록
         Long tokenExpiration = tokenManager.getTokenExpiration(accessToken);
         redisUtil.setBlackList(accessToken, "access-token", tokenExpiration);
+    }
+
+    @Override
+    public void passwordChange(String loginId, String password) {
+        MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository.findByLoginId(loginId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 아이디입니다.")
+        );
+        memberAuthEntity.changePassword(password);
     }
 
 }

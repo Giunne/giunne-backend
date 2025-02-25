@@ -33,7 +33,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
             String authorizationHeader = request.getHeader("Authorization");
             if (authorizationHeader == null || authorizationHeader.split(" ").length != 2) {
-                throw new IllegalArgumentException("Invalid token");
+                throw new IllegalArgumentException("잘못된 토큰입니다.");
             }
             String token = authorizationHeader.split(" ")[1];
 
@@ -51,7 +51,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                     .role(role)
                     .build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid token");
+            throw new IllegalArgumentException("잘못된 토큰입니다.");
         }
     }
 

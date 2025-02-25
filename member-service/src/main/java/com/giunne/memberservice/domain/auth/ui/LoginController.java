@@ -8,6 +8,7 @@ import com.giunne.commonservice.util.AuthorizationHeaderUtils;
 import com.giunne.memberservice.domain.auth.application.AuthService;
 import com.giunne.memberservice.domain.auth.application.dto.request.AccessTokenRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.request.LoginRequestDto;
+import com.giunne.memberservice.domain.auth.application.dto.request.PasswordChangeRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.AccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,6 +64,19 @@ public class LoginController {
         String refreshToken = authorizationHeader.split(" ")[1];
         AccessTokenResponseDto response = authService.createAccessTokenByRefreshToken(refreshToken, accessTokenRequestDto);
         return Response.ok(response);
+    }
+
+
+    @Operation(summary = "비밀번호 변경", description = """
+            ## 기능설명
+            * 비밀번호 변경
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/password-change")
+    public Response<MemberAccessTokenResponseDto> passwordChange(@RequestBody PasswordChangeRequestDto dto) {
+        return Response.ok(authService.passwordChange(dto));
     }
 
 }
