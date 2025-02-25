@@ -78,20 +78,28 @@ public class ItemImagePositionCsvService {
 
             imagePosition.changItemImage(imageList.get(0));
 
-            for (int i = 1; i < imageList.size(); i++) {
-                ItemImagePosition newImagePosition = ItemImagePosition.builder()
-                        .id(null)
-                        .position(imagePosition.getPosition())
-                        .itemImage(imageList.get(i))
-                        .level(imagePosition.getLevel())
-                        .item(imagePosition.getItem())
-                        .build();
-                newItemImagePositions.add(newImagePosition);
-            }
+            ItemImagePosition newImagePosition = ItemImagePosition.builder()
+                    .id(null)
+                    .position(imagePosition.getPosition())
+                    .itemImage(imageList.get(0))
+                    .level(imagePosition.getLevel())
+                    .item(imagePosition.getItem())
+                    .build();
+            newItemImagePositions.add(newImagePosition);
+//            for (int i = 0; i < imageList.size(); i++) {
+//                ItemImagePosition newImagePosition = ItemImagePosition.builder()
+//                        .id(null)
+//                        .position(imagePosition.getPosition())
+//                        .itemImage(imageList.get(i))
+//                        .level(imagePosition.getLevel())
+//                        .item(imagePosition.getItem())
+//                        .build();
+//                newItemImagePositions.add(newImagePosition);
+//            }
         });
 
         // 새롭게 생성된 객체를 기존 리스트에 추가
-        itemImagePositionList.addAll(newItemImagePositions);
-        itemImagePositionRepository.saveAll(itemImagePositionList);
+//        itemImagePositionList.addAll(newItemImagePositions);
+        itemImagePositionRepository.saveAll(newItemImagePositions);
     }
 }

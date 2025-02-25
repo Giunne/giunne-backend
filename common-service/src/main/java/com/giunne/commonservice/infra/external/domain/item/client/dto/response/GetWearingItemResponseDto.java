@@ -42,7 +42,7 @@ public class GetWearingItemResponseDto {
             example = "B")
     private ItemGrade itemGrade;
     @Schema(description = "아이템 이미지")
-    private List<ItemImage> itemImages = new ArrayList<>();
+    private ItemImage itemImage;
 
 
     @Getter
@@ -61,7 +61,11 @@ public class GetWearingItemResponseDto {
                 example = "true")
         private Boolean isRepresent;
         @Schema(description = "이미지 위치")
-        private List<ItemImagePosition> itemImagePositions = new ArrayList<>();
+        private ItemImagePosition itemImagePosition;
+        @Schema(description = "레벨",
+                example = "1")
+        private Long level;
+        
 
         @Getter
         @Setter
