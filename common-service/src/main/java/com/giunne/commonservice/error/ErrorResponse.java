@@ -12,47 +12,34 @@ import java.util.List;
 @Builder
 public class ErrorResponse {
 
-    @Schema(
-            description = "에러 코드",
-            example = "1"
-    )
-    private String code;
-    @Schema(
-            description = "에러 메시지",
-            example = "1"
-    )
+    private Integer code;
     private String message;
-    @Schema(
-            description = "값",
-            example = "1",
-            nullable = true
-    )
     private String value;
 
     public static ErrorResponse of(String errorCode, String errorMessage) {
         return ErrorResponse.builder()
-                .code(errorCode)
+                .code(Integer.parseInt(errorCode))
                 .message(errorMessage)
                 .build();
     }
 
     public static ErrorResponse of(int errorCode, String errorMessage) {
         return ErrorResponse.builder()
-                .code(Integer.toString(errorCode))
+                .code(errorCode)
                 .message(errorMessage)
                 .build();
     }
 
     public static ErrorResponse of(int errorCode, BindingResult bindingResult) {
         return ErrorResponse.builder()
-                .code(Integer.toString(errorCode))
+                .code(errorCode)
                 .message(createErrorMessage(bindingResult))
                 .build();
     }
 
     public static ErrorResponse of(String errorCode, BindingResult bindingResult) {
         return ErrorResponse.builder()
-                .code(errorCode)
+                .code(Integer.parseInt(errorCode))
                 .message(createErrorMessage(bindingResult))
                 .build();
     }
