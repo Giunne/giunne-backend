@@ -1,6 +1,8 @@
 package com.giunne.itemservice.domain.item.application;
 
+import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
+import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
@@ -27,6 +29,10 @@ public class ItemService {
 
     public List<GetWearingItemResponseDto> findWearingItems(GetWearingItemsRequestDto dto) {
         return itemRepository.findWearingItems(dto);
+    }
+
+    public PaginationModel<GetItemResponseDto> findByItems(GetItemsRequestDto dto) {
+        return itemRepository.findByItems(dto);
     }
 
     public ItemInfoResponseDto findById(Long itemId) {

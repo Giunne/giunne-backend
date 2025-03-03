@@ -1,5 +1,6 @@
 package com.giunne.memberservice.domain.inventory.repository;
 
+import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.inventory.application.interfaces.InventoryRepository;
 import com.giunne.memberservice.domain.inventory.domain.Inventory;
 import com.giunne.memberservice.domain.inventory.repository.entity.InventoryEntity;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -26,6 +29,11 @@ public class InventoryRepositoryImpl implements InventoryRepository {
         return saved.toInventory();
     }
 
+    @Override
+    public List<Inventory> findInventoryByAvatar(Avatar avatar) {
+        List<InventoryEntity> inventoryEntities = jpaInventoryRepository.findByAvatar_Id(avatar.getId());
+        return inventoryEntities.stream().map(InventoryEntity::toInventory).toList();
+    }
 
 
 }

@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "아바타 관리", description = "아바타 생성 및 조회")
 @RestController

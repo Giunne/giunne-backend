@@ -1,6 +1,8 @@
 package com.giunne.itemservice.domain.item.ui;
 
+import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
+import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
@@ -9,7 +11,6 @@ import com.giunne.itemservice.domain.item.application.ItemService;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
 import com.giunne.itemservice.domain.item.application.dto.response.GetItemPageResponseDto;
 import com.giunne.itemservice.domain.item.application.dto.response.ItemInfoResponseDto;
-import com.giunne.itemservice.domain.item.domain.Item;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,4 +84,22 @@ public class ItemController {
         List<GetWearingItemResponseDto> wearingItems = itemService.findWearingItems(dto);
         return Response.ok(wearingItems);
     }
+
+
+    @Operation(summary = "아이템 번호 리스트 검색", description = """
+            ## 기능설명
+            * 아이템정보를 검색합니다.
+            ---
+            ## 상세설명
+            * 아이템 ID 리스트(itemIds)를 이용하여 상품정보를 검색합니다.
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/itemList")
+    public Response<PaginationModel<GetItemResponseDto>> findByItems(@RequestBody GetItemsRequestDto dto) {
+        PaginationModel<GetItemResponseDto> itemList = itemService.findByItems(dto);
+        return Response.ok(itemList);
+    }
+
 }

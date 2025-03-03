@@ -112,9 +112,7 @@ public class RecreationRepositoryImpl implements RecreationRepository {
         JPAQuery<Long> count = queryFactory
                 .select(recreationEntity.id)
                 .from(recreationEntity)
-                .join(avatarEntity).on(avatarEntity.recreation.id.eq(recreationEntity.teacher.id))
-                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
-                .where(avatarEntity.member.id.eq(member.getId()))
+                .join(memberEntity).on(memberEntity.id.eq(recreationEntity.teacher.id))
         ;
 
         List<GetRecreationResponseDto> fetch = queryFactory
@@ -129,9 +127,7 @@ public class RecreationRepositoryImpl implements RecreationRepository {
                                 memberEntity.userName.userName.as("teacherName")
                         )
                 ).from(recreationEntity)
-                .join(avatarEntity).on(avatarEntity.recreation.id.eq(recreationEntity.teacher.id))
-                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
-                .where(avatarEntity.member.id.eq(member.getId()))
+                .join(memberEntity).on(memberEntity.id.eq(recreationEntity.teacher.id))
                 .orderBy(recreationEntity.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
