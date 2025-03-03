@@ -1,5 +1,6 @@
 package com.giunne.questservice.domain.course.application.dto.response;
 
+import com.giunne.questservice.domain.course.domain.Course;
 import com.giunne.questservice.domain.course.domain.type.Color;
 import com.giunne.questservice.domain.course.domain.type.CooperationType;
 import com.giunne.questservice.domain.course.domain.type.Position;
@@ -29,7 +30,7 @@ public record CourseResponseDto(
         String title,
 
         @Schema(
-                description = "설명",
+                description = "코스 설명",
                 example = "설명"
         )
         String description,
@@ -64,12 +65,12 @@ public record CourseResponseDto(
                 description = "순서번호(낮은 값이 우선순위 높음)",
                 example = "1"
         )
-        Long sortSeq ,
+        Long sortSeq,
         @Schema(
                 description = "로드맵 ID)",
                 example = "1"
         )
-        Long roadMapId ,
+        Long roadMapId,
         @Schema(
                 description = "위치 정보",
                 example = "1"
@@ -118,5 +119,33 @@ public record CourseResponseDto(
                 description = "부모 노드 리스트"
         )
         List<Long> parent
-        ) {
+) {
+        public static CourseResponseDto from(Course course) {
+                return CourseResponseDto.builder()
+                        .id(course.getId())
+                        .courseName(course.getCourseName().getCourseName())
+                        .title(course.getTitle().getValue())
+                        .description(course.getDescription().getValue())
+                        .color(course.getColor())
+                        .difficultyLevel(course.getDifficultyLevel().getValue())
+                        .isTeam(course.getIsTeam().isValue())
+                        .cooperationType(course.getCooperationType())
+                        .trainingType(course.getTrainingType())
+                        .deadline(course.getDeadline())
+                        .sortSeq(course.getSortSeq().getValue())
+                        .roadMapId(course.getRoadMap().getId())
+                        .position(course.getPosition())
+                        .isRoot(course.getIsRoot())
+                        .isLeaf(course.getIsLeaf())
+                        .thumbnailUrl(course.getThumbnailUrl() != null ? course.getThumbnailUrl().getThumbnailUrl() : null)
+                        .currentApproveCnt(course.getCurrentApproveCnt().getValue())
+                        .needApproveCnt(course.getNeedApproveCnt().getValue())
+                        .rewardPoint(course.getRewardPoint().getValue())
+                        .rewardExp(course.getRewardExp().getValue())
+                        .trainingDescription(course.getTrainingDescription().getValue())
+                        .guideUrl(course.getGuideUrl().getGuideUrl())
+                        .parent(course.getParent())
+                        .build();
+        }
+
 }

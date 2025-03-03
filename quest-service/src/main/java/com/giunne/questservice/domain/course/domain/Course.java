@@ -1,5 +1,6 @@
 package com.giunne.questservice.domain.course.domain;
 
+import com.giunne.questservice.domain.course.application.dto.request.UpdateCourseInfoRequestDto;
 import com.giunne.questservice.domain.course.domain.type.*;
 import com.giunne.questservice.domain.courseState.domain.CourseState;
 import com.giunne.questservice.domain.roadMap.domain.RoadMap;
@@ -53,5 +54,14 @@ public class Course {
     public void changeIsRoot(boolean isRoot) {
         this.isRoot = isRoot;
     }
+
+    public void changeCourseInfo(UpdateCourseInfoRequestDto dto){
+        this.description =  Description.from(dto.description());
+        this.trainingDescription = TrainingDescription.from(dto.trainingDescription());
+        this.rewardExp = RewardExp.from(dto.rewardExp());
+        this.rewardPoint = RewardPoint.from(dto.rewardPoint());
+        this.guideUrl = GuideUrl.from(dto.guideUrl());
+    }
+
 
 }

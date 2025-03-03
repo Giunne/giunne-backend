@@ -1,6 +1,7 @@
 package com.giunne.questservice.domain.course.application.interfaces;
 
 import com.giunne.questservice.domain.course.application.dto.request.GetICourseByRoadmapRequestDto;
+import com.giunne.questservice.domain.course.application.dto.request.UpdateCourseInfoRequestDto;
 import com.giunne.questservice.domain.course.domain.Course;
 import com.giunne.questservice.domain.course.domain.CoursePath;
 
@@ -18,4 +19,5 @@ public interface CourseRepository {
     void deleteCourse(Course target);
     Map<Long, List<Course>> getCourses();
     Map<Long, List<Course>> getCoursesByRoadMapId(Long roadMapId);
+    Course updateCourseInfo(UpdateCourseInfoRequestDto dto);
 }

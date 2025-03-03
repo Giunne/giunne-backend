@@ -22,7 +22,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final RoadMapRepository roadMapRepository;
 
-    public void insertRootCourse(CreateRootCourseRequestDto dto){
+    public void insertRootCourse(CreateRootCourseRequestDto dto) {
 
         RoadMap roadMap = roadMapRepository.findById(dto.roadMapId());
 
@@ -34,14 +34,14 @@ public class CourseService {
         courseRepository.insertRootCourse(course);
     }
 
-    public void insertCourse(CreateCourseRequestDto dto){
+    public void insertCourse(CreateCourseRequestDto dto) {
         RoadMap roadMap = roadMapRepository.findById(dto.roadMapId());
         Course parents = courseRepository.findById(dto.parentsId());
         Course course = Course.builder().courseName(CourseName.from(dto.courseName())).build();
         courseRepository.insertCourse(parents, course);
     }
 
-    public void insertBetween(UpdateCourseRequestDto dto){
+    public void insertBetween(UpdateCourseRequestDto dto) {
         Course course = Course.builder()
                 .courseName(
                         CourseName.from(dto.courseName())
@@ -51,7 +51,7 @@ public class CourseService {
     }
 
 
-    public void moveWithSubTree(MoveWithSubCourseRequestDto dto){
+    public void moveWithSubTree(MoveWithSubCourseRequestDto dto) {
         Course current = courseRepository.findById(dto.currentId());
         Course move = courseRepository.findById(dto.moveId());
         courseRepository.moveWithSubTree(current, move);
@@ -65,33 +65,8 @@ public class CourseService {
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> entry.getValue().stream()
-                                .map(course ->
-                                        CourseResponseDto.builder()
-                                                .id(course.getId())
-                                                .courseName(course.getCourseName().getCourseName())
-                                                .title(course.getTitle().getValue())
-                                                .description(course.getDescription().getValue())
-                                                .color(course.getColor())
-                                                .difficultyLevel(course.getDifficultyLevel().getValue())
-                                                .isTeam(course.getIsTeam().isValue())
-                                                .cooperationType(course.getCooperationType())
-                                                .trainingType(course.getTrainingType())
-                                                .deadline(course.getDeadline())
-                                                .sortSeq(course.getSortSeq().getValue())
-                                                .roadMapId(course.getRoadMap().getId())
-                                                .position(course.getPosition())
-                                                .isRoot(course.getIsRoot())
-                                                .isLeaf(course.getIsLeaf())
-                                                .thumbnailUrl(course.getThumbnailUrl() != null ? course.getThumbnailUrl().getThumbnailUrl() : null)
-                                                .currentApproveCnt(course.getCurrentApproveCnt().getValue())
-                                                .needApproveCnt(course.getNeedApproveCnt().getValue())
-                                                .rewardPoint(course.getRewardPoint().getValue())
-                                                .rewardExp(course.getRewardExp().getValue())
-                                                .trainingDescription(course.getTrainingDescription().getValue())
-                                                .guideUrl(course.getGuideUrl().getGuideUrl())
-                                                .parent(course.getParent())
-                                                .build()
-                                        )
+                                .map(CourseResponseDto::from
+                                )
                                 .collect(Collectors.toList())
                 ));
 
@@ -108,33 +83,7 @@ public class CourseService {
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> entry.getValue().stream()
-                                .map(course ->
-                                        CourseResponseDto.builder()
-                                                .id(course.getId())
-                                                .courseName(course.getCourseName().getCourseName())
-                                                .title(course.getTitle().getValue())
-                                                .description(course.getDescription().getValue())
-                                                .color(course.getColor())
-                                                .difficultyLevel(course.getDifficultyLevel().getValue())
-                                                .isTeam(course.getIsTeam().isValue())
-                                                .cooperationType(course.getCooperationType())
-                                                .trainingType(course.getTrainingType())
-                                                .deadline(course.getDeadline())
-                                                .sortSeq(course.getSortSeq().getValue())
-                                                .roadMapId(course.getRoadMap().getId())
-                                                .position(course.getPosition())
-                                                .isRoot(course.getIsRoot())
-                                                .isLeaf(course.getIsLeaf())
-                                                .thumbnailUrl(course.getThumbnailUrl() != null ? course.getThumbnailUrl().getThumbnailUrl() : null)
-                                                .currentApproveCnt(course.getCurrentApproveCnt().getValue())
-                                                .needApproveCnt(course.getNeedApproveCnt().getValue())
-                                                .rewardPoint(course.getRewardPoint().getValue())
-                                                .rewardExp(course.getRewardExp().getValue())
-                                                .trainingDescription(course.getTrainingDescription().getValue())
-                                                .guideUrl(course.getGuideUrl().getGuideUrl())
-                                                .parent(course.getParent())
-                                                .build()
-                                )
+                                .map(CourseResponseDto::from)
                                 .collect(Collectors.toList())
                 ));
 
@@ -143,4 +92,8 @@ public class CourseService {
                 .build();
     }
 
+    public CourseResponseDto updateCourseInfo(UpdateCourseInfoRequestDto dto) {
+        Course course = courseRepository.updateCourseInfo(dto);
+        return CourseResponseDto.from(course);
+    }
 }

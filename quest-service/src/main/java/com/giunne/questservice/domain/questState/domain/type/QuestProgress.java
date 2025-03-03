@@ -8,9 +8,9 @@ import java.util.List;
 public enum QuestProgress implements EnumMapperType {
     LOCK("잠금"),
     LOCK_OPEN("잠금풀림"),
-    TEACHER_CHECK("선생님체크"),
-    AUTHENTICATING ("인증중"),
-    PASSED ("통과"),
+    CHECK("선생님체크"),
+    UPLOAD ("인증중"),
+    CONFIRM ("통과"),
     ;
 
     private final String progress;
