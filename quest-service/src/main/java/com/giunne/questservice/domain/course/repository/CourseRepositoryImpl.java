@@ -2,6 +2,7 @@ package com.giunne.questservice.domain.course.repository;
 
 
 import com.giunne.commonservice.domain.common.Active;
+import com.giunne.questservice.domain.course.application.dto.request.UpdateCourseInfoRequestDto;
 import com.giunne.questservice.domain.course.application.interfaces.CourseRepository;
 import com.giunne.questservice.domain.course.domain.Course;
 import com.giunne.questservice.domain.course.domain.CoursePath;
@@ -28,6 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.querydsl.jpa.JPAExpressions.select;
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.c;
 import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 
@@ -270,6 +272,19 @@ public class CourseRepositoryImpl implements CourseRepository {
         courses.put(0L, roots);
 
         return courses;
+    }
+
+    @Override
+    @Transactional
+    public Course updateCourseInfo(UpdateCourseInfoRequestDto dto) {
+        CourseEntity courseEntity = courseRepository.findById(dto.id()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 ID입니다.")
+        );
+        Course course = courseEntity.toCourse();
+        course.changeCourseInfo(dto);
+        CourseEntity updateCourse = new CourseEntity(course);
+        CourseEntity saved = courseRepository.save(updateCourse);
+        return saved.toCourse();
     }
 
     private void saveCoursePath(Course node) {

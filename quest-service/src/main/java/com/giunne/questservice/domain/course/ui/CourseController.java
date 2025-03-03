@@ -4,11 +4,14 @@ import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.course.application.CourseService;
 import com.giunne.questservice.domain.course.application.dto.request.*;
 import com.giunne.questservice.domain.course.application.dto.response.CourseInfoResponseDto;
+import com.giunne.questservice.domain.course.application.dto.response.CourseResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "코스 관리", description = "코스 조회 및 저장")
@@ -101,6 +104,21 @@ public class CourseController {
     public Response<CourseInfoResponseDto> getByRoadMapCategories(@ParameterObject GetICourseByRoadmapRequestDto dto) {
         CourseInfoResponseDto courses = courseService.getCoursesByRoadMapId(dto);
         return Response.ok(courses);
+    }
+
+
+    @Operation(summary = "코스정보 수정", description = """
+            ## 기능설명
+            * 코스정보 수정
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+
+    @PutMapping
+    public Response<CourseResponseDto> updateCourseInfo(@Valid @RequestBody UpdateCourseInfoRequestDto dto) {
+        CourseResponseDto courseResponseDto = courseService.updateCourseInfo(dto);
+        return Response.ok(courseResponseDto);
     }
 
 }
