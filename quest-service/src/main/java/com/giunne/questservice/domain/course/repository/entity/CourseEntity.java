@@ -64,12 +64,29 @@ public class CourseEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-
     @ElementCollection(fetch = FetchType.LAZY)
     private List<Long> parent = new ArrayList<>();
 
     @Embedded
     private ThumbnailUrl thumbnailUrl;
+
+    @Embedded
+    private CurrentApproveCnt currentApproveCnt ;
+
+    @Embedded
+    private NeedApproveCnt needApproveCnt;
+
+    @Embedded
+    private RewardPoint rewardPoint;
+
+    @Embedded
+    private RewardExp rewardExp;
+
+    @Embedded
+    private TrainingDescription trainingDescription;
+
+    @Embedded
+    private GuideUrl guideUrl;
 
     /**
      * 부모 ID 목록을 변경합니다.
@@ -112,6 +129,12 @@ public class CourseEntity extends BaseEntity {
                 .thumbnailUrl(thumbnailUrl)
                 .isLeaf(false)
                 .isRoot(false)
+                .currentApproveCnt(currentApproveCnt)
+                .needApproveCnt(needApproveCnt)
+                .rewardPoint(rewardPoint)
+                .rewardExp(rewardExp)
+                .trainingDescription(trainingDescription)
+                .guideUrl(guideUrl)
                 .build();
     }
 
@@ -136,6 +159,12 @@ public class CourseEntity extends BaseEntity {
                 .deadline(deadline)
                 .parent(parent)
                 .thumbnailUrl(thumbnailUrl)
+                .currentApproveCnt(currentApproveCnt)
+                .needApproveCnt(needApproveCnt)
+                .rewardPoint(rewardPoint)
+                .rewardExp(rewardExp)
+                .trainingDescription(trainingDescription)
+                .guideUrl(guideUrl)
                 .build();
     }
 
@@ -155,6 +184,12 @@ public class CourseEntity extends BaseEntity {
         this.deadline = course.getDeadline();
         this.thumbnailUrl = course.getThumbnailUrl();
         this.parent = course.getParent();
+        this.currentApproveCnt = course.getCurrentApproveCnt();
+        this.needApproveCnt = course.getNeedApproveCnt();
+        this.rewardPoint = course.getRewardPoint();
+        this.rewardExp = course.getRewardExp();
+        this.trainingDescription = course.getTrainingDescription();
+        this.guideUrl = course.getGuideUrl();
     }
 
 }

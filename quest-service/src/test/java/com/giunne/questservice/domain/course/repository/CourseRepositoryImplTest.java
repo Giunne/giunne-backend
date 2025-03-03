@@ -38,16 +38,16 @@ class CourseRepositoryImplTest {
     private RoadMapRepository roadMapRepository;
 
 
-//    @Test
-//    @Rollback(false)
+    @Test
+    @Rollback(false)
     @DisplayName("코스(코어) 초기화 ")
     void initCoreCourse() {
         RoadMap roadMap = roadMapRepository.findById(1L);
 
         CourseEntity 코어 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("코어"))
-                        .title(Title.from("코어"))
+                        .courseName(CourseName.from("0."+TrainingType.CORE))
+                        .title(Title.from("0.코어"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
                         .position(Position.of(0.0, 0.0))
@@ -63,7 +63,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 버드독 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1.버드독"))
+                        .courseName(CourseName.from("1."+TrainingType.CORE))
                         .title(Title.from("1.버드독"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -82,7 +82,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 데드버그 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2.데드버그"))
+                        .courseName(CourseName.from("2."+TrainingType.CORE))
                         .title(Title.from("2.데드버그"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -100,7 +100,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.비스트"))
+                        .courseName(CourseName.from("3."+TrainingType.CORE))
                         .title(Title.from("3.비스트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -118,7 +118,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 플랭크 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4-a.플랭크"))
+                        .courseName(CourseName.from("4-a."+TrainingType.CORE))
                         .title(Title.from("4-a.플랭크"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -136,7 +136,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 하이플랭크 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4-b.하이플랭크"))
+                        .courseName(CourseName.from("4-b."+TrainingType.CORE))
                         .title(Title.from("4-b.하이플랭크"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -154,7 +154,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 플랭크_앤_플랭크 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4-c.플랭크 앤 플랭크"))
+                        .courseName(CourseName.from("4-c."+TrainingType.CORE))
                         .title(Title.from("4-c.플랭크 앤 플랭크"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -172,8 +172,8 @@ class CourseRepositoryImplTest {
 
         CourseEntity 플랭크_한발들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("5-a.플랭크 한발들기"))
-                        .title(Title.from("플랭크 한발들기"))
+                        .courseName(CourseName.from("5-a." + TrainingType.CORE))
+                        .title(Title.from("5-a.플랭크 한발들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
                         .isTeam(IsTeam.from(true))
@@ -190,8 +190,8 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트_한발들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("5-b.비스트 한발들기"))
-                        .title(Title.from("비스트 한발들기"))
+                        .courseName(CourseName.from("5-b."+TrainingType.CORE))
+                        .title(Title.from("5-b.비스트 한발들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
                         .isTeam(IsTeam.from(true))
@@ -208,8 +208,8 @@ class CourseRepositoryImplTest {
 
         CourseEntity 하이플랭크_한발들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("5-c.하이플랭크 한발들기"))
-                        .title(Title.from("하이플랭크 한발들기"))
+                        .courseName(CourseName.from("5-c."+TrainingType.CORE))
+                        .title(Title.from("5-c.하이플랭크 한발들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
                         .isTeam(IsTeam.from(true))
@@ -226,7 +226,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 플랭크_한손들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("6-a.플랭크 한손들기"))
+                        .courseName(CourseName.from("6-a."+TrainingType.CORE))
                         .title(Title.from("6-a.플랭크 한손들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -245,7 +245,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트_한손들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("6-b.비스트 한손들기"))
+                        .courseName(CourseName.from("6-b."+TrainingType.CORE))
                         .title(Title.from("6-b.비스트 한손들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -263,7 +263,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 하이플랭크_한손들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("6-c.하이플랭크 한손들기"))
+                        .courseName(CourseName.from("6-c."+TrainingType.CORE))
                         .title(Title.from("6-c.하이플랭크 한손들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -281,7 +281,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 플랭크_한손_한발_들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("7-a.플랭크 한손 한발 들기"))
+                        .courseName(CourseName.from("7-a."+TrainingType.CORE))
                         .title(Title.from("7-a.플랭크 한손 한발 들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -299,7 +299,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트_한손_한발_들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("7-b.비스트 한손 한발 들기"))
+                        .courseName(CourseName.from("7-b."+TrainingType.CORE))
                         .title(Title.from("7-b.비스트 한손 한발 들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -318,7 +318,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 하이플랭크_한손_한발_들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("7-c.하이플랭크 한손 한발 들기"))
+                        .courseName(CourseName.from("7-c."+TrainingType.CORE))
                         .title(Title.from("7-c.하이플랭크 한손 한발 들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -337,7 +337,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트_걷기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("8.비스트 걷기"))
+                        .courseName(CourseName.from("8."+TrainingType.CORE))
                         .title(Title.from("8.비스트 걷기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -362,7 +362,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 비스트_블럭_걷기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("9.비스트 블럭 걷기"))
+                        .courseName(CourseName.from("9."+TrainingType.CORE))
                         .title(Title.from("9.비스트 블럭 걷기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -383,7 +383,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 언더스위치 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("10.언더스위치"))
+                        .courseName(CourseName.from("10."+TrainingType.CORE))
                         .title(Title.from("10.언더스위치"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -403,7 +403,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 사이드킥_스루 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("11.사이드킥 스루"))
+                        .courseName(CourseName.from("11."+TrainingType.CORE))
                         .title(Title.from("11.사이드킥 스루"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -423,7 +423,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 사이트플랭크 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("12.사이트플랭크"))
+                        .courseName(CourseName.from("12."+TrainingType.CORE))
                         .title(Title.from("12.사이트플랭크"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -444,7 +444,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 사이드_플랭크_굴곡 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("13-a.사이드 플랭크 굴곡"))
+                        .courseName(CourseName.from("13-a."+TrainingType.CORE))
                         .title(Title.from("13-a.사이드 플랭크 굴곡"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -464,7 +464,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 사이드_플랭크_발_들기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("13-b.사이드 플랭크 발 들기"))
+                        .courseName(CourseName.from("13-b."+TrainingType.CORE))
                         .title(Title.from("13-b.사이드 플랭크 발 들기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -484,7 +484,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 사이드_플랭크_회전 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("14.사이드 플랭크 회전"))
+                        .courseName(CourseName.from("14."+TrainingType.CORE))
                         .title(Title.from("14.사이드 플랭크 회전"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -509,15 +509,15 @@ class CourseRepositoryImplTest {
 
     }
 
-//    @Test
-//    @Rollback(false)
+    @Test
+    @Rollback(false)
     @DisplayName("코스(하체) 초기화 ")
     void initLowerBodyCourse() {
         RoadMap roadMap = roadMapRepository.findById(1L);
 
         CourseEntity 하체0 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("0.하체"))
+                        .courseName(CourseName.from("0."+TrainingType.LOWER_BODY))
                         .title(Title.from("0.하체"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -534,7 +534,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 누워서_고관절_굴곡 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1-a.누워서 고관절 굴곡"))
+                        .courseName(CourseName.from("1-a."+TrainingType.LOWER_BODY))
                         .title(Title.from("1-a.누워서 고관절 굴곡"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -552,7 +552,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 서서_고관절_굴곡 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1-b.서서 고관절 굴곡"))
+                        .courseName(CourseName.from("1-b."+TrainingType.LOWER_BODY))
                         .title(Title.from("1-b.서서 고관절 굴곡"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -570,7 +570,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 엎드려_힙힌지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2-a.엎드려 힙힌지"))
+                        .courseName(CourseName.from("2-a."+TrainingType.LOWER_BODY))
                         .title(Title.from("2-a.엎드려 힙힌지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -588,7 +588,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 무릎_꿇고_힙힌지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2-b.무릎 꿇고 힙힌지"))
+                        .courseName(CourseName.from("2-b."+TrainingType.LOWER_BODY))
                         .title(Title.from("2-b.무릎 꿇고 힙힌지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -606,7 +606,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 한발서기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.한발서기"))
+                        .courseName(CourseName.from("3."+TrainingType.LOWER_BODY))
                         .title(Title.from("3.한발서기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -630,7 +630,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 스쿼트0 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("0.스쿼트"))
+                        .courseName(CourseName.from("0."+TrainingType.SQUATS))
                         .title(Title.from("0.스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -647,7 +647,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 스쿼트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1.스쿼트"))
+                        .courseName(CourseName.from("1."+TrainingType.SQUATS))
                         .title(Title.from("1.스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -665,7 +665,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 까치발_스쿼트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2.까치발 스쿼트"))
+                        .courseName(CourseName.from("2."+TrainingType.SQUATS))
                         .title(Title.from("2.까치발 스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -683,7 +683,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 만세_스쿼트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.만세 스쿼트"))
+                        .courseName(CourseName.from("3."+TrainingType.SQUATS))
                         .title(Title.from("3.만세 스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -702,7 +702,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 점프_스쿼트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4-a.점프 스쿼트"))
+                        .courseName(CourseName.from("4-a."+TrainingType.SQUATS))
                         .title(Title.from("4-a.점프 스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -720,7 +720,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 변형_스쿼트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4-b.변형 스쿼트"))
+                        .courseName(CourseName.from("4-b."+TrainingType.SQUATS))
                         .title(Title.from("4-b.변형 스쿼트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -739,7 +739,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 런지0 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("0.런지"))
+                        .courseName(CourseName.from("0."+TrainingType.LUNGES))
                         .title(Title.from("0.런지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -757,7 +757,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 런지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1.런지"))
+                        .courseName(CourseName.from("1."+TrainingType.LUNGES))
                         .title(Title.from("1.런지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -776,7 +776,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 워킹_런지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2.워킹 런지"))
+                        .courseName(CourseName.from("2."+TrainingType.LUNGES))
                         .title(Title.from("2.워킹 런지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -795,7 +795,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 점프런지_모으기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.점프런지 모으기"))
+                        .courseName(CourseName.from("3."+TrainingType.LUNGES))
                         .title(Title.from("3.점프런지 모으기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -813,7 +813,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 점프런지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.점프런지"))
+                        .courseName(CourseName.from("3."+TrainingType.LUNGES))
                         .title(Title.from("3.점프런지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -831,7 +831,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 데드리프트0 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("0.데드리프트"))
+                        .courseName(CourseName.from("0."+TrainingType.DEADLIFT))
                         .title(Title.from("0.데드리프트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -848,7 +848,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 힙힌지_움직임 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1-a.힙힌지 움직임"))
+                        .courseName(CourseName.from("1-a."+TrainingType.DEADLIFT))
                         .title(Title.from("1-b.힙힌지 움직임"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -866,7 +866,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 우산_힙힌지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1-a.우산 힙힌지"))
+                        .courseName(CourseName.from("1-a."+TrainingType.DEADLIFT))
                         .title(Title.from("1-b.우산 힙힌지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -885,7 +885,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 데드리프트 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("2.데드리프트"))
+                        .courseName(CourseName.from("2."+TrainingType.DEADLIFT))
                         .title(Title.from("2.데드리프트"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -906,7 +906,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 케틀벨뽑기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("3.케틀벨뽑기"))
+                        .courseName(CourseName.from("3."+TrainingType.DEADLIFT))
                         .title(Title.from("3.케틀벨뽑기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -925,7 +925,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 케틀벨_스윙 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("4.케틀벨 스윙"))
+                        .courseName(CourseName.from("4."+TrainingType.DEADLIFT))
                         .title(Title.from("4.케틀벨 스윙"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -943,7 +943,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 한다리_데드_찍기 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("5.한다리 데드 찍기"))
+                        .courseName(CourseName.from("5."+TrainingType.DEADLIFT))
                         .title(Title.from("5.한다리 데드 찍기"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -961,7 +961,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 한다리_데드 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("6.한다리 데드"))
+                        .courseName(CourseName.from("6."+TrainingType.DEADLIFT))
                         .title(Title.from("6.한다리 데드"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -979,7 +979,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 한다리_데드_만세 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("7.한다리 데드 만세"))
+                        .courseName(CourseName.from("7."+TrainingType.DEADLIFT))
                         .title(Title.from("7.한다리 데드 만세"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
@@ -998,8 +998,8 @@ class CourseRepositoryImplTest {
 
     }
 
-//    @Test
-//    @Rollback(false)
+    @Test
+    @Rollback(false)
     @DisplayName("코스(조깅) 초기화 ")
     void initRunningCourse() {
         RoadMap roadMap = roadMapRepository.findById(2L);

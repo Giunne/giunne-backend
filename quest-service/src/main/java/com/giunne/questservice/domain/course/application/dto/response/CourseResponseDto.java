@@ -91,6 +91,30 @@ public record CourseResponseDto(
         )
         String thumbnailUrl,
         @Schema(
+                description = "현재 인증 횟수"
+        )
+        Integer currentApproveCnt,
+        @Schema(
+                description = "필요 인증 횟수"
+        )
+        Integer needApproveCnt,
+        @Schema(
+                description = "보상 포인트"
+        )
+        Long rewardPoint,
+        @Schema(
+                description = "보상 경험치"
+        )
+        Long rewardExp,
+        @Schema(
+                description = "운동 설명"
+        )
+        String trainingDescription,
+        @Schema(
+                description = "가이드 URL"
+        )
+        String guideUrl,
+        @Schema(
                 description = "부모 노드 리스트"
         )
         List<Long> parent

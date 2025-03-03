@@ -46,7 +46,7 @@ public class CourseRepositoryImpl implements CourseRepository {
     public Course insertRootCourse(Course node) {
         // 자기자신 추가
         CourseEntity savedCourse = courseRepository.save(new CourseEntity(node));
-        savedCourse.changeParent(List.of(savedCourse.toCourse().getId()));
+//        savedCourse.changeParent(List.of(savedCourse.toCourse().getId()));
         saveCoursePath(savedCourse.toCourse());
 
         return savedCourse.toCourse();

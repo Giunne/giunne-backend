@@ -33,6 +33,18 @@ public class Course {
     private LocalDateTime deadline;
     private List<Long> parent;
     private ThumbnailUrl thumbnailUrl;
+    @Builder.Default
+    private CurrentApproveCnt currentApproveCnt = CurrentApproveCnt.from(0);
+    @Builder.Default
+    private NeedApproveCnt needApproveCnt= NeedApproveCnt.from(1);
+    @Builder.Default
+    private RewardPoint rewardPoint = RewardPoint.from(0L);
+    @Builder.Default
+    private RewardExp rewardExp = RewardExp.from(0L);
+    @Builder.Default
+    private TrainingDescription trainingDescription = TrainingDescription.from("");
+    @Builder.Default
+    private GuideUrl guideUrl = GuideUrl.from("");
 
     public void changeIsLeaf(boolean isLeaf) {
         this.isLeaf = isLeaf;
