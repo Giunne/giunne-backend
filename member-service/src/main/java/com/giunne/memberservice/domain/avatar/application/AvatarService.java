@@ -1,5 +1,6 @@
 package com.giunne.memberservice.domain.avatar.application;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.infra.external.domain.item.client.ItemInfoClient;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
@@ -7,6 +8,7 @@ import com.giunne.commonservice.infra.external.domain.item.client.dto.response.I
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.dto.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
@@ -17,6 +19,8 @@ import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepos
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.avatar.domain.type.*;
 import com.giunne.memberservice.domain.inventory.application.InventoryService;
+import com.giunne.memberservice.domain.levelUpPolicy.application.interfaces.LevelUpPolicyRepository;
+import com.giunne.memberservice.domain.levelUpPolicy.domain.LevelUpPolicy;
 import com.giunne.memberservice.domain.member.application.MemberService;
 import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.recreation.application.RecreationService;
@@ -37,6 +41,7 @@ public class AvatarService {
     private final TokenManager tokenManager;
     private final ItemInfoClient itemInfoClient;
     private final InventoryService inventoryService;
+    private final LevelUpPolicyRepository levelUpPolicyRepository;
 
 
     @Transactional
@@ -88,6 +93,8 @@ public class AvatarService {
         String accessToken = tokenManager.createAccessToken(memberPrincipal.getMemberId(), dto.playerId(), memberPrincipal.getRole(), accessTokenExpireTime);
         Avatar avatar = avatarRepository.findById(dto.playerId());
 
+        LevelUpPolicy level = levelUpPolicyRepository.findByCurrentLevel(avatar.getLevel().getLevel());
+
         return LoginPlayerResponseDto.builder()
                 .id(avatar.getId())
                 .nickname(avatar.getNickname().getNickname())
@@ -99,22 +106,23 @@ public class AvatarService {
                 .grantType(GrantType.BEARER.getType())
                 .accessToken(accessToken)
                 .accessTokenExpireTime(accessTokenExpireTime)
+                .needExp(level != null ? level.getNeedExp().getValue() : 0)
                 .build();
     }
 
 
-    public List<AvatarWithWearingItemResponseDto> getMyAvatarList(MemberPrincipal memberPrincipal) {
+    public PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(MemberPrincipal memberPrincipal, Pageable dto) {
         Member member = memberService.getMember(memberPrincipal.getMemberId());
 
-        List<AvatarWithWearingItemResponseDto> myAvatarList = avatarRepository.getMyAvatarList(member);
-
+        PaginationModel<AvatarWithWearingItemResponseDto> paginationModel = avatarRepository.getMyAvatarList(member, dto);
+        List<AvatarWithWearingItemResponseDto> myAvatarList = paginationModel.getData();
         for (int i = 0; i < myAvatarList.size(); i++) {
             GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds(), myAvatarList.get(i).getLevel());
             Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
             myAvatarList.get(i).setWearingItems(listResponse.value());
         }
 
-        return myAvatarList;
+        return paginationModel;
     }
 
 }

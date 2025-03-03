@@ -65,6 +65,9 @@ public class AvatarWithWearingItemResponseDto {
     )
     Long level;
     @Schema(
+            description = "필요 경험치")
+    Long needExp;
+    @Schema(
             description = "포인트",
             example = "0"
     )

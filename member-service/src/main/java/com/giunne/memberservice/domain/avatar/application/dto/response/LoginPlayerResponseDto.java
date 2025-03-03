@@ -51,6 +51,9 @@ public record LoginPlayerResponseDto(
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd HH:mm:ss",
                 timezone = "Asia/Seoul")
-        Date accessTokenExpireTime
-        ) {
+        Date accessTokenExpireTime,
+        @Schema(
+                description = "필요 경험치")
+        Long needExp
+) {
 }
