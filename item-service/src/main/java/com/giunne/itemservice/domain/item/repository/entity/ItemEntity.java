@@ -4,7 +4,7 @@ import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.itemservice.domain.category.repository.entity.CategoryEntity;
-import com.giunne.itemservice.domain.item.application.ThumbnailUrl;
+import com.giunne.itemservice.domain.item.domain.type.ThumbnailUrl;
 import com.giunne.itemservice.domain.item.domain.Item;
 import com.giunne.itemservice.domain.item.domain.type.*;
 import com.giunne.itemservice.domain.store.repository.entity.StoreEntity;

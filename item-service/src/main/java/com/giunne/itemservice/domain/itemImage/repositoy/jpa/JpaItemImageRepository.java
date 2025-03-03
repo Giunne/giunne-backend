@@ -23,4 +23,7 @@ public interface JpaItemImageRepository extends JpaRepository<ItemImageEntity,Lo
 
     @Query("SELECT i FROM ItemImageEntity i WHERE i.item.id = (:itemId)")
     List<ItemImageEntity> findByItem_Id(@Param("itemId") Long itemId);
+
+    @Query("SELECT i FROM ItemImageEntity i WHERE i.item.id = (:itemId) AND i.level = (:level) ")
+    List<ItemImageEntity> findByItem_IdAndLevel(@Param("itemId") Long itemId, @Param("level") Long level);
 }

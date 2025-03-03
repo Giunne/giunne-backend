@@ -33,7 +33,7 @@ public class CategoryPathEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-    public CategoryPathEntity(CategoryPath categoryPath){
+    public CategoryPathEntity(CategoryPath categoryPath) {
         this.id = categoryPath.getId();
         this.parents = new CategoryEntity(categoryPath.getParents());
         this.child = new CategoryEntity(categoryPath.getChild());

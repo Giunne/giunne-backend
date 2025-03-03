@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -28,6 +30,8 @@ public class GachaTypeResponseDto {
     private Long price;
     @Schema(description = "등급정보 및 확률")
     private Map<ItemGrade, Integer> itemGradeMap;
+    @Schema(description = "이미지 리스트")
+    private List<String> imageList = new ArrayList<>();
 
     public GachaTypeResponseDto(GachaType gachaType) {
         this.code = gachaType.name();

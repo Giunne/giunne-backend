@@ -69,33 +69,50 @@ public class ItemImagePositionCsvService {
 
         itemImagePositionList.forEach(imagePosition -> {
             List<ItemImage> imageList = itemImageRepository.findByItemId(
-                    imagePosition.getItem().getId()
+                    imagePosition.getItem().getId(), imagePosition.getLevel()
             );
 
             if (imageList.isEmpty()) {
                 return;
             }
 
-            imagePosition.changItemImage(imageList.get(0));
 
-            ItemImagePosition newImagePosition = ItemImagePosition.builder()
-                    .id(null)
-                    .position(imagePosition.getPosition())
-                    .itemImage(imageList.get(0))
-                    .level(imagePosition.getLevel())
-                    .item(imagePosition.getItem())
-                    .build();
-            newItemImagePositions.add(newImagePosition);
-//            for (int i = 0; i < imageList.size(); i++) {
-//                ItemImagePosition newImagePosition = ItemImagePosition.builder()
-//                        .id(null)
-//                        .position(imagePosition.getPosition())
-//                        .itemImage(imageList.get(i))
-//                        .level(imagePosition.getLevel())
-//                        .item(imagePosition.getItem())
-//                        .build();
-//                newItemImagePositions.add(newImagePosition);
-//            }
+
+//            imagePosition.changItemImage(imageList.get(0));
+//
+//            ItemImagePosition newImagePosition = ItemImagePosition.builder()
+//                    .id(null)
+//                    .position(imagePosition.getPosition())
+//                    .itemImage(imageList.get(0))
+//                    .level(imagePosition.getLevel())
+//                    .item(imagePosition.getItem())
+//                    .build();
+//            newItemImagePositions.add(newImagePosition);
+
+
+
+            for (int i = 0; i < imageList.size(); i++) {
+                Long imageLevel = imageList.get(i).getLevel().getValue();
+                if (imageLevel == 0) {
+                    ItemImagePosition newImagePosition = ItemImagePosition.builder()
+                            .id(null)
+                            .position(imagePosition.getPosition())
+                            .itemImage(imageList.get(i))
+                            .level(imagePosition.getLevel())
+                            .item(imagePosition.getItem())
+                            .build();
+                    newItemImagePositions.add(newImagePosition);
+                }else if(imageLevel.equals(imagePosition.getLevel())){
+                    ItemImagePosition newImagePosition = ItemImagePosition.builder()
+                            .id(null)
+                            .position(imagePosition.getPosition())
+                            .itemImage(imageList.get(i))
+                            .level(imagePosition.getLevel())
+                            .item(imagePosition.getItem())
+                            .build();
+                    newItemImagePositions.add(newImagePosition);
+                }
+            }
         });
 
         // 새롭게 생성된 객체를 기존 리스트에 추가

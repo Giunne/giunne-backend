@@ -1,8 +1,15 @@
+plugins {
+    id("com.palantir.docker") version "0.36.0"
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
+
+group = 'com.giunne.quest-service'
+version = '0.0.1-SNAPSHOT'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -43,4 +50,11 @@ clean {
 }
 tasks.withType(JavaCompile) {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}
+
+docker {
+    name "${rootProject.name}-${project.name}:${version}"
+    dockerfile file('../Dockerfile')
+    files(tasks.bootJar.outputs.files)
+    buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
 }
