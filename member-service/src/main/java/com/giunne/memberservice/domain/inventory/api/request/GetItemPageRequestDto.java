@@ -1,4 +1,4 @@
-package com.giunne.itemservice.domain.item.application.dto.request;
+package com.giunne.memberservice.domain.inventory.api.request;
 
 import com.giunne.commonservice.domain.common.Pageable;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "카테고리별 인벤토리 조회DTO")
+@Schema(description = "아이템 검색 요청DTO")
 public class GetItemPageRequestDto extends Pageable {
     @Parameter(
             description = "카테고리 ID",

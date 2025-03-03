@@ -1,6 +1,8 @@
 package com.giunne.itemservice.domain.item.application.interfaces;
 
+import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
+import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
@@ -14,8 +16,7 @@ public interface ItemRepository {
     void updateItem(List<Item> itemList);
     List<Item> findByItemIdList(List<Long> itemIdList);
     Item findById(Long id);
-
     PaginationModel<GetItemPageResponseDto> findByCategory(GetItemPageRequestDto dto);
-
     List<GetWearingItemResponseDto> findWearingItems(GetWearingItemsRequestDto dto);
+    PaginationModel<GetItemResponseDto> findByItems(GetItemsRequestDto dto);
 }

@@ -1,8 +1,11 @@
 package com.giunne.commonservice.infra.external.domain.item.client;
 
+import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
+import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.ItemInfoResponseDto;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,4 +24,7 @@ public interface ItemInfoClient {
 
     @PostMapping(value = "/wearing")
     Response<List<GetWearingItemResponseDto>> requestFindWearingItems(@RequestBody GetWearingItemsRequestDto dto);
+
+    @PostMapping(value = "/itemList")
+    Response<PaginationModel<GetItemResponseDto>> findByItems(@RequestBody GetItemsRequestDto dto);
 }
