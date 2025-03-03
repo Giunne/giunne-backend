@@ -38,8 +38,8 @@ class CourseRepositoryImplTest {
     private RoadMapRepository roadMapRepository;
 
 
-    @Test
-    @Rollback(false)
+//    @Test
+//    @Rollback(false)
     @DisplayName("코스(코어) 초기화 ")
     void initCoreCourse() {
         RoadMap roadMap = roadMapRepository.findById(1L);
@@ -509,8 +509,8 @@ class CourseRepositoryImplTest {
 
     }
 
-    @Test
-    @Rollback(false)
+//    @Test
+//    @Rollback(false)
     @DisplayName("코스(하체) 초기화 ")
     void initLowerBodyCourse() {
         RoadMap roadMap = roadMapRepository.findById(1L);
@@ -998,8 +998,8 @@ class CourseRepositoryImplTest {
 
     }
 
-    @Test
-    @Rollback(false)
+//    @Test
+//    @Rollback(false)
     @DisplayName("코스(조깅) 초기화 ")
     void initRunningCourse() {
         RoadMap roadMap = roadMapRepository.findById(2L);
