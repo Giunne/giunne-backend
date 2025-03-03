@@ -9,6 +9,5 @@ public interface ItemImageRepository {
     List<ItemImage> saveAll(List<ItemImage> itemImageList);
     void updateItemImage(List<ItemImage> itemImageList);
     List<ItemImage> findByItemImageIdList(List<Long> itemImageList);
-    List<ItemImage> findByItemId(Long itemId);
-
+    List<ItemImage> findByItemId(Long itemId, Long level);
 }

@@ -2,7 +2,7 @@ package com.giunne.itemservice.domain.item.domain;
 
 import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.itemservice.domain.category.domain.Category;
-import com.giunne.itemservice.domain.item.application.ThumbnailUrl;
+import com.giunne.itemservice.domain.item.domain.type.ThumbnailUrl;
 import com.giunne.itemservice.domain.item.domain.type.*;
 import com.giunne.itemservice.domain.store.domain.Store;
 import lombok.AllArgsConstructor;

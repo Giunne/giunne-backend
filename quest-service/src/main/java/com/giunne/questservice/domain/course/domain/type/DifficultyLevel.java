@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DifficultyLevel {
 
-    @Column(name = "difficulty_level", nullable = false)
+    @Column(name = "difficulty_level")
     private Long value;
 
     private DifficultyLevel(final Long value) {

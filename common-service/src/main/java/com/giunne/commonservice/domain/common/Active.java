@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Embeddable
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Active {
 
     @Column(name = "is_active", nullable = false)
+    @ColumnDefault("true")
     private boolean value = true;
 
     private Active(final boolean value) {
