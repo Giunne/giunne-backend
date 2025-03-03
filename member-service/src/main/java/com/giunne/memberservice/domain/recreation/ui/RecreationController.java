@@ -60,14 +60,14 @@ public class RecreationController {
         return Response.ok(recreations);
     }
 
-    @Operation(summary = "회원이 가입한 레크레이션 조회", description = """
+    @Operation(summary = "선생님이 생성한 레크레이션 조회", description = """
             ## 기능설명
-            * 현재 회원이 가입한 레크레이션 조회합니다.
+            * 선생님이 생성한 레크레이션 조회합니다.
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    @GetMapping("/join")
+    @GetMapping("/my-recreation")
     public Response<PaginationModel<GetRecreationResponseDto>> findMyRecreation(@AuthPrincipal @Parameter(hidden=true)MemberPrincipal memberPrincipal,
                                                                                 @ParameterObject Pageable dto
                                                                                 ) {

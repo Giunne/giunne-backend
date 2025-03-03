@@ -10,6 +10,7 @@ import com.giunne.memberservice.domain.avatar.repository.entity.AvatarEntity;
 import com.giunne.memberservice.domain.avatar.repository.entity.QAvatarEntity;
 import com.giunne.memberservice.domain.avatar.repository.jpa.JpaAvatarRepository;
 import com.giunne.memberservice.domain.inventory.repository.entity.QInventoryEntity;
+import com.giunne.memberservice.domain.levelUpPolicy.repository.entity.QLevelUpPolicyEntity;
 import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.member.repository.entity.QMemberEntity;
 import com.giunne.memberservice.domain.recreation.repository.entity.QRecreationEntity;
@@ -18,10 +19,16 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
+import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
 
 @Repository
 @AllArgsConstructor
@@ -33,6 +40,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     private static final QAvatarEntity avatarEntity = QAvatarEntity.avatarEntity;
     private static final QInventoryEntity inventoryEntity = QInventoryEntity.inventoryEntity;
     private static final QRecreationEntity recreationEntity = QRecreationEntity.recreationEntity;
+    private static final QLevelUpPolicyEntity levelUpPolicyEntity = QLevelUpPolicyEntity.levelUpPolicyEntity;
 
     @Override
     @Transactional
@@ -49,7 +57,27 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     }
 
     @Override
-    public  List<AvatarWithWearingItemResponseDto>  getMyAvatarList(Member member) {
+    public  PaginationModel<AvatarWithWearingItemResponseDto>  getMyAvatarList(Member member, Pageable dto) {
+
+        org.springframework.data.domain.Pageable pageable = getPageRequest(
+                dto.getPageIndex()
+                , dto.getPageSize()
+                , Sort.by(Sort.Direction.valueOf(dto.getDirection()), dto.getSortProperty())
+        );
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(
+                        avatarEntity.count()
+                )
+                .from(avatarEntity)
+                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
+                .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
+                .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
+                .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
+                .where(
+                        avatarEntity.member.id.eq(member.getId()),
+                        inventoryEntity.isWear.isWear.eq(true)
+                );
 
         List<Tuple> joinResults = queryFactory
                 .select(
@@ -67,18 +95,24 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         memberEntity.nickname.nickname,
                         memberEntity.loginId.loginId,
 
+
                         inventoryEntity.itemInfo.itemNo,
                         inventoryEntity.itemInfo.itemName,
-                        inventoryEntity.itemInfo.categoryNo
+                        inventoryEntity.itemInfo.categoryNo,
+
+                        levelUpPolicyEntity.needExp.value
                 )
                 .from(avatarEntity)
                 .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
                 .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
                 .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
+                .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
                 .where(
                         avatarEntity.member.id.eq(member.getId()),
                         inventoryEntity.isWear.isWear.eq(true)
                 )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         // 결과를 Map<Long, AvatarWithWearingItemResponseDto> 형태로 변환
@@ -102,6 +136,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         .level(tuple.get(avatarEntity.level.level))
                         .point(tuple.get(avatarEntity.point.point))
                         .characterNo(tuple.get(avatarEntity.characterNo))
+                        .needExp(tuple.get(levelUpPolicyEntity.needExp.value))
                         .wearingItemIds(new ArrayList<>())
                         .build();
                 ;
@@ -115,7 +150,10 @@ public class AvatarRepositoryImpl implements AvatarRepository {
             }
         }
 
-        return new ArrayList<>(avatarMap.values());
+        List<AvatarWithWearingItemResponseDto> avatarList = new ArrayList<>(avatarMap.values());
+        Page<AvatarWithWearingItemResponseDto> pageResult = PageableExecutionUtils.getPage(avatarList, pageable, countQuery::fetchCount);
+
+        return toPaginationModel(pageResult);
     }
 
 }

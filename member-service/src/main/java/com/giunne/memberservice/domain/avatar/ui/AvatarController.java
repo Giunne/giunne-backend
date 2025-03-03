@@ -1,7 +1,9 @@
 package com.giunne.memberservice.domain.avatar.ui;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.application.dto.AvatarWithWearingItemResponseDto;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +37,7 @@ public class AvatarController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @PostMapping("/create")
-    public Response<CreateAvatarResponseDto> creatPlayer(@AuthPrincipal @Parameter(hidden=true) MemberPrincipal memberPrincipal
+    public Response<CreateAvatarResponseDto> creatPlayer(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
             , @RequestBody CreateAvatarRequestDto dto) {
         CreateAvatarResponseDto createAvatarResponseDto = avatarService.creatPlayer(memberPrincipal, dto);
         return Response.ok(createAvatarResponseDto);
@@ -48,7 +51,7 @@ public class AvatarController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @PostMapping("/login")
-    public Response<LoginPlayerResponseDto> loginPlayer(@AuthPrincipal @Parameter(hidden=true) MemberPrincipal memberPrincipal
+    public Response<LoginPlayerResponseDto> loginPlayer(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
             , @RequestBody LoginPlayerRequestDto dto) {
         LoginPlayerResponseDto loginPlayerResponseDto = avatarService.loginPlayer(memberPrincipal, dto);
         return Response.ok(loginPlayerResponseDto);
@@ -62,8 +65,9 @@ public class AvatarController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping
-    public Response<List<AvatarWithWearingItemResponseDto>> getMyAvatarList(@AuthPrincipal @Parameter(hidden=true) MemberPrincipal memberPrincipal) {
-        List<AvatarWithWearingItemResponseDto> myAvatarList = avatarService.getMyAvatarList(memberPrincipal);
+    public Response<PaginationModel<AvatarWithWearingItemResponseDto>> getMyAvatarList(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
+            , @ParameterObject Pageable dto) {
+        PaginationModel<AvatarWithWearingItemResponseDto> myAvatarList = avatarService.getMyAvatarList(memberPrincipal, dto);
         return Response.ok(myAvatarList);
     }
 
