@@ -8,4 +8,6 @@ import java.util.List;
 public interface InventoryRepository {
     Inventory insertInventory(Inventory inventory);
     List<Inventory> findInventoryByAvatar(Avatar avatar);
+    void wearingItems(Avatar avatar, List<Long> itemidList);
+    void takeOffItems(Avatar avatar);
 }
