@@ -33,11 +33,12 @@ public class GachaTypeResponseDto {
     @Schema(description = "이미지 리스트")
     private List<String> imageList = new ArrayList<>();
 
-    public GachaTypeResponseDto(GachaType gachaType) {
+    public GachaTypeResponseDto(GachaType gachaType,List<String>  imageList) {
         this.code = gachaType.name();
         this.codeName = gachaType.getType();
         this.price = gachaType.getPrice();
         this.itemGradeMap = gachaType.getItemGradeMap();
+        this.imageList = imageList;
     }
 
 }

@@ -35,5 +35,4 @@ public class InventoryRepositoryImpl implements InventoryRepository {
         return inventoryEntities.stream().map(InventoryEntity::toInventory).toList();
     }
 
-
 }
