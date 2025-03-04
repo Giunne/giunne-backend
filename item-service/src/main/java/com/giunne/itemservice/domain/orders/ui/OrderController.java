@@ -24,6 +24,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @Operation(summary = "뽑기 타입 조회", description = """
+            ## 기능설명
+            * 뽑기 타입 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
     @GetMapping("/gacha-type")
     public Response<List<GachaTypeResponseDto>> getGachaTypes() {
         List<GachaTypeResponseDto> gachaTypes = orderService.getGachaTypes();

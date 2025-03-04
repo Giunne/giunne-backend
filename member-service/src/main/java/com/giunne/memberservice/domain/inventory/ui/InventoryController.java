@@ -47,7 +47,7 @@ public class InventoryController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    })
+    }, hidden = true)
     @GetMapping("/my-inventory/{playerId}")
     public Response<List<Long>> findMyInventory(@PathVariable("playerId") Long playerId) {
         List<Long> myInventoryItems = inventoryService.findMyInventoryItems(playerId);
@@ -60,7 +60,7 @@ public class InventoryController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    })
+    }, hidden = true)
     @PostMapping
     public Response<String> insertInventory(@RequestBody InsertInventoryItemRequestDto dto ) {
         inventoryService.insertInventory(dto);
