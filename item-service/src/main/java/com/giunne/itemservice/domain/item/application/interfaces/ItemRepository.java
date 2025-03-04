@@ -8,6 +8,8 @@ import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
 import com.giunne.itemservice.domain.item.application.dto.response.GetItemPageResponseDto;
 import com.giunne.itemservice.domain.item.domain.Item;
+import com.giunne.itemservice.domain.item.domain.type.GachaType;
+import com.giunne.itemservice.domain.orders.api.response.GetItemOrderGachaResponseDto;
 
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface ItemRepository {
     PaginationModel<GetItemPageResponseDto> findByCategory(GetItemPageRequestDto dto);
     List<GetWearingItemResponseDto> findWearingItems(GetWearingItemsRequestDto dto);
     PaginationModel<GetItemResponseDto> findByItems(GetItemsRequestDto dto);
+    List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory);
+    List<String> findByGachaTypeIamgeList(GachaType gachaType);
 }

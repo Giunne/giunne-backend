@@ -1,5 +1,6 @@
 package com.giunne.itemservice.domain.item.repository;
 
+import com.giunne.commonservice.domain.item.ItemGrade;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
@@ -10,12 +11,16 @@ import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageReq
 import com.giunne.itemservice.domain.item.application.dto.response.GetItemPageResponseDto;
 import com.giunne.itemservice.domain.item.application.interfaces.ItemRepository;
 import com.giunne.itemservice.domain.item.domain.Item;
+import com.giunne.itemservice.domain.item.domain.type.GachaType;
 import com.giunne.itemservice.domain.item.repository.entity.ItemEntity;
 import com.giunne.itemservice.domain.item.repository.entity.QItemEntity;
 import com.giunne.itemservice.domain.item.repository.jpa.JpaItemRepository;
 import com.giunne.itemservice.domain.itemImage.repositoy.entity.QItemImageEntity;
 import com.giunne.itemservice.domain.itemImagePosition.repository.entity.QItemImagePositionEntity;
+import com.giunne.itemservice.domain.orders.api.response.GetItemOrderGachaResponseDto;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
@@ -28,11 +33,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
 import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
-import static java.util.Collections.list;
 
 @Repository
 @AllArgsConstructor
@@ -451,6 +454,129 @@ public class ItemRepositoryImpl implements ItemRepository {
         Page<GetItemResponseDto> pageResult = PageableExecutionUtils.getPage(itemList, pageable, countQuery::fetchCount);
 
         return toPaginationModel(pageResult);
+    }
+
+    @Override
+    public  List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory) {
+        Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
+
+        List<Tuple> results = queryFactory
+                .select(
+                        itemEntity.id,
+                        itemEntity.itemName.itemName,
+                        itemEntity.itemDescription.description,
+                        itemEntity.price.value,
+                        itemEntity.needLevel.value,
+                        itemEntity.sortSeq.value,
+                        itemEntity.category.id,
+                        itemEntity.category.categoryName.categoryName,
+                        itemEntity.itemGrade,
+                        itemEntity.thumbnailUrl.value
+                )
+                .from(itemEntity)
+                .where(itemEntity.itemGrade.in(itemGrades)
+                        .and(itemEntity.id.notIn(myInventory))
+                )
+                .fetch();
+
+        List<Long> idList = results.stream().map(i -> i.get(itemEntity.id)).toList();
+
+        List<Tuple> joinResults = queryFactory
+                .select(
+                        itemEntity.id,
+                        itemEntity.itemName.itemName,
+                        itemEntity.itemDescription.description,
+                        itemEntity.price.value,
+                        itemEntity.needLevel.value,
+                        itemEntity.sortSeq.value,
+                        itemEntity.category.id,
+                        itemEntity.category.categoryName.categoryName,
+                        itemEntity.itemGrade,
+                        itemEntity.thumbnailUrl.value,
+
+                        itemImageEntity.id,
+                        itemImageEntity.fileUrl.value,
+                        itemImageEntity.isRepresent.value,
+                        itemImageEntity.level.value
+                )
+                .from(itemEntity)
+                .leftJoin(itemImageEntity).on(itemEntity.id.eq(itemImageEntity.item.id))
+                .where(itemEntity.id.in(idList))
+                .fetch();
+
+        // 3. 결과를 Map<Long, GetItemPageResponseDto> 형태로 변환
+        Map<Long, GetItemOrderGachaResponseDto> itemMap = new LinkedHashMap<>();
+
+
+        for (Tuple tuple : joinResults) {
+            Long itemId = tuple.get(itemEntity.id);
+            GetItemOrderGachaResponseDto itemDto = itemMap.get(itemId);
+
+            // 아이템이 처음 추가될 때만 생성
+            if (itemDto == null) {
+                itemDto = new GetItemOrderGachaResponseDto();
+                itemDto.setId(itemId);
+                itemDto.setItemName(tuple.get(itemEntity.itemName.itemName));
+                itemDto.setItemDescription(tuple.get(itemEntity.itemDescription.description));
+                itemDto.setPrice(tuple.get(itemEntity.price.value));
+                itemDto.setNeedLevel(tuple.get(itemEntity.needLevel.value));
+                itemDto.setSortSeq(tuple.get(itemEntity.sortSeq.value));
+                itemDto.setCategoryId(tuple.get(itemEntity.category.id));
+                itemDto.setItemGrade(tuple.get(itemEntity.itemGrade));
+                itemDto.setThumbnailUrl(tuple.get(itemEntity.thumbnailUrl.value));
+                itemDto.setItemImages(new ArrayList<>()); // 이미지 리스트 초기화
+                itemMap.put(itemId, itemDto);
+            }
+
+            // 4. 이미지 정보 추가
+            if (tuple.get(itemImageEntity.id) != null) {
+                Long imageId = tuple.get(itemImageEntity.id);
+                GetItemOrderGachaResponseDto.ItemImage image = itemDto.getItemImages().stream()
+                        .filter(img -> img.getId().equals(imageId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (image == null) {
+                    image = new GetItemOrderGachaResponseDto.ItemImage();
+                    image.setId(imageId);
+                    image.setFileUrl(tuple.get(itemImageEntity.fileUrl.value));
+                    image.setIsRepresent(tuple.get(itemImageEntity.isRepresent.value));
+                    image.setLevel(tuple.get(itemImageEntity.level.value));
+                    itemDto.getItemImages().add(image);
+                }
+            }
+        }
+
+        // 6. 리스트 변환 후 페이징 적용
+        List<GetItemOrderGachaResponseDto> itemList = new ArrayList<>(itemMap.values());
+
+        return itemList;
+    }
+
+    @Override
+    public List<String> findByGachaTypeIamgeList(GachaType gachaType) {
+
+        Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
+        List<String> imageList = new ArrayList<>();
+
+        for (ItemGrade itemGrade : itemGrades) {
+            List<String> results = queryFactory
+                    .select(
+                            itemImageEntity.fileUrl.value
+                    )
+                    .from(itemEntity)
+                    .leftJoin(itemImageEntity).on(itemEntity.id.eq(itemImageEntity.item.id))
+                    .where(itemEntity.itemGrade.eq(itemGrade)
+                            .and(itemEntity.category.id.ne(1L))
+                    )
+                    .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
+                    .limit(3)
+                    .fetch();
+
+            imageList.addAll(results);
+
+        }
+        return imageList;
     }
 
 }

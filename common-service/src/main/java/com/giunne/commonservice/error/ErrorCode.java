@@ -45,6 +45,9 @@ public enum ErrorCode implements EnumMapperType {
 
     INVALID_GACHA_TYPE(HttpStatus.BAD_REQUEST, "뽑기 타입이 잘못됐습니다."),
 
+
+    // 뽑기
+    MAX_INVENTORY(HttpStatus.BAD_REQUEST, "뽑기가능한 상품이 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
