@@ -11,6 +11,7 @@ import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.inventory.api.request.GetItemPageRequestDto;
+import com.giunne.memberservice.domain.inventory.api.request.WearingItemsRequestDto;
 import com.giunne.memberservice.domain.inventory.application.interfaces.InventoryRepository;
 import com.giunne.memberservice.domain.inventory.domain.Inventory;
 import com.giunne.memberservice.domain.inventory.domain.type.*;
@@ -25,9 +26,6 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final AvatarRepository avatarRepository;
     private final ItemInfoClient itemInfoClient;
-
-
-
 
     public void insertInventory(InsertInventoryItemRequestDto dto){
         Avatar avatar = avatarRepository.findById(dto.getPlayerId());
@@ -95,6 +93,17 @@ public class InventoryService {
         List<Inventory> inventoryByAvatar = inventoryRepository.findInventoryByAvatar(avatar);
         List<Long> itemList = inventoryByAvatar.stream().map(i -> i.getItemInfo().getItemNo()).toList();
         return itemList;
+    }
+
+    public void wearingItems(MemberPrincipal memberPrincipal, WearingItemsRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+
+        Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
+        inventoryRepository.takeOffItems(avatar);
+        inventoryRepository.wearingItems(avatar, dto.getItemidList());
+
     }
 
 }

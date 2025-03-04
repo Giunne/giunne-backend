@@ -8,6 +8,7 @@ import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.inventory.api.request.GetItemPageRequestDto;
+import com.giunne.memberservice.domain.inventory.api.request.WearingItemsRequestDto;
 import com.giunne.memberservice.domain.inventory.application.InventoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,6 +64,21 @@ public class InventoryController {
     @PostMapping
     public Response<String> insertInventory(@RequestBody InsertInventoryItemRequestDto dto ) {
         inventoryService.insertInventory(dto);
+        return Response.ok("성공");
+    }
+
+
+    @Operation(summary = "아이템 장착", description = """
+            ## 기능설명
+            * 아이템 장착
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping
+    public Response<String> insertInventory(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                            @RequestBody WearingItemsRequestDto dto ) {
+        inventoryService.wearingItems(memberPrincipal, dto);
         return Response.ok("성공");
     }
 }
