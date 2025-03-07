@@ -5,6 +5,8 @@ import com.giunne.commonservice.infra.external.domain.item.client.ItemInfoClient
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.ItemInfoResponseDto;
+import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
+import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
@@ -42,7 +44,7 @@ public class AvatarService {
     private final ItemInfoClient itemInfoClient;
     private final InventoryService inventoryService;
     private final LevelUpPolicyRepository levelUpPolicyRepository;
-
+    private final QuestInfoClient questInfoClient;
 
     @Transactional
     public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto){
@@ -73,6 +75,22 @@ public class AvatarService {
         inventoryService.insertInventory(createdAvatar, itemInfoResponseDto);
         Date accessTokenExpireTime = tokenManager.createAccessTokenExpireTime();
         String accessToken = tokenManager.createAccessToken(memberPrincipal.getMemberId(), createdAvatar.getId(), memberPrincipal.getRole(), accessTokenExpireTime);
+
+
+        // TODO: 로드맵 번호 하드코딩 수정예정
+        questInfoClient.savePlayerQuestStates(
+                CreateQuestStateRequestDto.builder()
+                        .roadMapId(1L)
+                        .avatarId(createdAvatar.getId())
+                        .build()
+        );
+        // TODO: 로드맵 번호 하드코딩 수정예정
+        questInfoClient.savePlayerQuestStates(
+                CreateQuestStateRequestDto.builder()
+                        .roadMapId(2L)
+                        .avatarId(createdAvatar.getId())
+                        .build()
+        );
 
         return CreateAvatarResponseDto.builder()
                 .id(createdAvatar.getId())

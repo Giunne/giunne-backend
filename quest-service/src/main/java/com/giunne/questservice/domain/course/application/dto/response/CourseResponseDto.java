@@ -144,7 +144,7 @@ public record CourseResponseDto(
                         .rewardExp(course.getRewardExp().getValue())
                         .trainingDescription(course.getTrainingDescription().getValue())
                         .guideUrl(course.getGuideUrl().getGuideUrl())
-                        .parent(course.getParent())
+//                        .parent(course.getParent())
                         .build();
         }
 

@@ -41,7 +41,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     @Transactional(readOnly = false)
     public void takeOffItems(Avatar avatar) {
         int takeOffItemsCnt= jpaInventoryRepository.takeOffItems(avatar.getId());
-        System.out.println(takeOffItemsCnt);
 
     }
 
@@ -52,7 +51,6 @@ public class InventoryRepositoryImpl implements InventoryRepository {
             return;
 
         int wearItemsCnt = jpaInventoryRepository.wearItems(avatar.getId(), itemidList);
-        System.out.println(wearItemsCnt);
 
     }
 

@@ -19,9 +19,13 @@ public class QuestState {
     private Long id;
     private Player player;
     private Quest quest;
-    private QuestProgress questProgress;
+    @Builder.Default
+    private QuestProgress questProgress = QuestProgress.LOCK;
     private Team team;
-    private RewardExp rewardExp; // 대표유무
-    private RewardPoint rewardPoint; // 대표유무
-    private StarPoint starPoint;
+    @Builder.Default
+    private RewardExp rewardExp = RewardExp.from(0L);
+    @Builder.Default
+    private RewardPoint rewardPoint = RewardPoint.from(0L); // 대표유무
+    @Builder.Default
+    private StarPoint starPoint = StarPoint.from(0L);
 }

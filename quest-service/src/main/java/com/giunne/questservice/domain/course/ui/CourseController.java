@@ -1,17 +1,21 @@
 package com.giunne.questservice.domain.course.ui;
 
+import com.giunne.commonservice.principal.AuthPrincipal;
+import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.course.application.CourseService;
 import com.giunne.questservice.domain.course.application.dto.request.*;
 import com.giunne.questservice.domain.course.application.dto.response.CourseInfoResponseDto;
+import com.giunne.questservice.domain.course.application.dto.response.CourseQuestInfoResponseDto;
+import com.giunne.questservice.domain.course.application.dto.response.CourseQuestInfoForTeacherResponseDto;
 import com.giunne.questservice.domain.course.application.dto.response.CourseResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "코스 관리", description = "코스 조회 및 저장")
@@ -85,24 +89,37 @@ public class CourseController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    })
+    }, hidden = true)
     @GetMapping("/root")
     public Response<CourseInfoResponseDto> getCategories() {
         CourseInfoResponseDto courses = courseService.getCourses();
         return Response.ok(courses);
     }
 
-    @Operation(summary = "로드맵별 코스 조회", description = """
+    @Operation(summary = "로드맵별 코스 조회(학생용)", description = """
             ## 기능설명
-            * 로드맵별 코스 조회
+            * 학생용 로드맵별 코스 조회
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    
     @GetMapping("/road-map")
-    public Response<CourseInfoResponseDto> getByRoadMapCategories(@ParameterObject GetICourseByRoadmapRequestDto dto) {
-        CourseInfoResponseDto courses = courseService.getCoursesByRoadMapId(dto);
+    public Response<CourseQuestInfoResponseDto> getByRoadMapCategories(@AuthPrincipal @Parameter(hidden=true) MemberPrincipal memberPrincipal,
+                                                                       @ParameterObject GetICourseByRoadmapRequestDto dto) {
+        CourseQuestInfoResponseDto courses = courseService.getCoursesByRoadMapId(memberPrincipal, dto);
+        return Response.ok(courses);
+    }
+
+    @Operation(summary = "로드맵별 코스 조회(선생님용)", description = """
+            ## 기능설명
+            * 선생님용 로드맵별 코스 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/teacher/road-map")
+    public Response<CourseQuestInfoForTeacherResponseDto> getByRoadMapCategories2(@ParameterObject GetICourseByRoadmapRequestDto dto) {
+        CourseQuestInfoForTeacherResponseDto courses = courseService.getCoursesByRoadMapId2(dto);
         return Response.ok(courses);
     }
 
@@ -113,8 +130,7 @@ public class CourseController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    })
-
+    }, hidden = true)
     @PutMapping
     public Response<CourseResponseDto> updateCourseInfo(@Valid @RequestBody UpdateCourseInfoRequestDto dto) {
         CourseResponseDto courseResponseDto = courseService.updateCourseInfo(dto);

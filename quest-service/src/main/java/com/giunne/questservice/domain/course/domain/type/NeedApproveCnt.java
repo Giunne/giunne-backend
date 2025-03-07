@@ -7,9 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 보상 경험치
- */
 
 @Getter
 @Embeddable

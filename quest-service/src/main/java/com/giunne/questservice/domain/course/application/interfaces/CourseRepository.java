@@ -1,8 +1,10 @@
 package com.giunne.questservice.domain.course.application.interfaces;
 
-import com.giunne.questservice.domain.course.application.dto.request.GetICourseByRoadmapRequestDto;
 import com.giunne.questservice.domain.course.application.dto.request.UpdateCourseInfoRequestDto;
+import com.giunne.questservice.domain.course.application.dto.response.CourseQuestResponseDto;
+import com.giunne.questservice.domain.course.application.dto.response.CourseQuestForTeacherResponseDto;
 import com.giunne.questservice.domain.course.domain.Course;
+import com.giunne.questservice.domain.course.domain.CourseParent;
 import com.giunne.questservice.domain.course.domain.CoursePath;
 
 import java.util.List;
@@ -18,6 +20,9 @@ public interface CourseRepository {
     Course findById(Long id);
     void deleteCourse(Course target);
     Map<Long, List<Course>> getCourses();
-    Map<Long, List<Course>> getCoursesByRoadMapId(Long roadMapId);
+    Map<Long, List<CourseQuestResponseDto>> getCoursesByRoadMapId(Long playerId, Long roadMapId);
+    Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapId2(Long roadMapId);
     Course updateCourseInfo(UpdateCourseInfoRequestDto dto);
+    CourseParent insertCourseParent(CourseParent parent);
+    List<CourseParent> insertCourseParent(List<CourseParent> parents);
 }
