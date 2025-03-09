@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Tag(name = "아바타 관리", description = "아바타 생성 및 조회")
 @RestController
@@ -80,8 +82,8 @@ public class AvatarController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/recreation-students")
-    public Response<PaginationModel<GetMyRecreationAvatarResponseDto>> getMyRecreationStudentList(@ParameterObject GetMyRecreationAvatarRequestDto dto) {
-        PaginationModel<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(dto);
+    public Response<List<GetMyRecreationAvatarResponseDto>> getMyRecreationStudentList(@ParameterObject GetMyRecreationAvatarRequestDto dto) {
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(dto);
         return Response.ok(myAvatarList);
     }
 

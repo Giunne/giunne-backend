@@ -44,20 +44,20 @@ public class AvatarRepositoryImpl implements AvatarRepository {
 
     @Override
     @Transactional
-    public Avatar createAvatar(Avatar avatar){
+    public Avatar createAvatar(Avatar avatar) {
         AvatarEntity avatarEntity = new AvatarEntity(avatar);
         AvatarEntity entity = jpaAvatarRepository.save(avatarEntity);
         return entity.toAvatar();
     }
 
-    public Avatar findById(Long avatarId){
+    public Avatar findById(Long avatarId) {
         AvatarEntity entity = jpaAvatarRepository.findById(avatarId)
                 .orElseThrow(IllegalArgumentException::new);
         return entity.toAvatar();
     }
 
     @Override
-    public  PaginationModel<AvatarWithWearingItemResponseDto>  getMyAvatarList(Member member, Pageable dto) {
+    public PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(Member member, Pageable dto) {
 
         org.springframework.data.domain.Pageable pageable = getPageRequest(
                 dto.getPageIndex()
@@ -123,7 +123,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
 
             // 아이템이 처음 추가될 때만 생성
             if (avatarDto == null) {
-                avatarDto =  AvatarWithWearingItemResponseDto.builder()
+                avatarDto = AvatarWithWearingItemResponseDto.builder()
                         .id(avatarId)
                         .nickname(tuple.get(avatarEntity.nickname.nickname))
                         .recreationId(tuple.get(avatarEntity.recreation.id))
@@ -144,7 +144,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
             }
 
             // 아이템 id 추가
-            if(tuple.get(inventoryEntity.itemInfo.itemNo) != null){
+            if (tuple.get(inventoryEntity.itemInfo.itemNo) != null) {
                 Long itemId = tuple.get(inventoryEntity.itemInfo.itemNo);
                 avatarDto.getWearingItemIds().add(itemId);
             }
@@ -157,26 +157,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     }
 
     @Override
-    public PaginationModel<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
-        org.springframework.data.domain.Pageable pageable = getPageRequest(
-                dto.getPageIndex()
-                , dto.getPageSize()
-                , Sort.by(Sort.Direction.valueOf(dto.getDirection()), dto.getSortProperty())
-        );
-
-        JPAQuery<Long> countQuery = queryFactory
-                .select(
-                        avatarEntity.count()
-                )
-                .from(avatarEntity)
-                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
-                .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
-                .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
-                .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
-                .where(
-                        avatarEntity.recreation.id.eq(dto.getRecreationId()),
-                        inventoryEntity.isWear.isWear.eq(true)
-                );
+    public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
 
         List<Tuple> joinResults = queryFactory
                 .select(
@@ -210,8 +191,6 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         avatarEntity.recreation.id.eq(dto.getRecreationId()),
                         inventoryEntity.isWear.isWear.eq(true)
                 )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
         // 결과를 Map<Long, AvatarWithWearingItemResponseDto> 형태로 변환
@@ -222,7 +201,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
 
             // 아이템이 처음 추가될 때만 생성
             if (avatarDto == null) {
-                avatarDto =  GetMyRecreationAvatarResponseDto.builder()
+                avatarDto = GetMyRecreationAvatarResponseDto.builder()
                         .id(avatarId)
                         .nickname(tuple.get(avatarEntity.nickname.nickname))
                         .recreationId(tuple.get(avatarEntity.recreation.id))
@@ -243,16 +222,13 @@ public class AvatarRepositoryImpl implements AvatarRepository {
             }
 
             // 아이템 id 추가
-            if(tuple.get(inventoryEntity.itemInfo.itemNo) != null){
+            if (tuple.get(inventoryEntity.itemInfo.itemNo) != null) {
                 Long itemId = tuple.get(inventoryEntity.itemInfo.itemNo);
                 avatarDto.getWearingItemIds().add(itemId);
             }
         }
 
-        List<GetMyRecreationAvatarResponseDto> avatarList = new ArrayList<>(avatarMap.values());
-        Page<GetMyRecreationAvatarResponseDto> pageResult = PageableExecutionUtils.getPage(avatarList, pageable, countQuery::fetchCount);
-
-        return toPaginationModel(pageResult);
+        return new ArrayList<>(avatarMap.values());
     }
 
 }

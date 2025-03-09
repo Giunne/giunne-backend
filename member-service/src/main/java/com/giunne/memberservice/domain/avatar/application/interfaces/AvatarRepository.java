@@ -8,9 +8,11 @@ import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecr
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.member.domain.Member;
 
+import java.util.List;
+
 public interface AvatarRepository {
     Avatar createAvatar(Avatar avatar);
     Avatar findById(Long avatarId);
     PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(Member member, Pageable dto);
-    PaginationModel<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto);
+    List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto);
 }

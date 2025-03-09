@@ -146,17 +146,16 @@ public class AvatarService {
     }
 
 
-    public PaginationModel<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
+    public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
 
-        PaginationModel<GetMyRecreationAvatarResponseDto> paginationModel = avatarRepository.getMyRecreationStudentList(dto);
-        List<GetMyRecreationAvatarResponseDto> myAvatarList = paginationModel.getData();
-        for (int i = 0; i < myAvatarList.size(); i++) {
-            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds(), myAvatarList.get(i).getLevel());
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getMyRecreationStudentList(dto);
+        for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
+            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
             Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
-            myAvatarList.get(i).setWearingItems(listResponse.value());
+            getMyRecreationAvatarResponseDto.setWearingItems(listResponse.value());
         }
 
-        return paginationModel;
+        return myAvatarList;
     }
 
 }
