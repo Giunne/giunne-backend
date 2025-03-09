@@ -86,9 +86,9 @@ public class CourseService {
                 .build();
     }
 
-    public CourseQuestInfoForTeacherResponseDto getCoursesByRoadMapId2(GetICourseByRoadmapRequestDto dto) {
+    public CourseQuestInfoForTeacherResponseDto getCoursesByRoadMapIdForTeacher(GetICourseByRoadmapRequestDto dto) {
 
-        Map<Long, List<CourseQuestForTeacherResponseDto>> courses = courseRepository.getCoursesByRoadMapId2(dto.getRoadmapId());
+        Map<Long, List<CourseQuestForTeacherResponseDto>> courses = courseRepository.getCoursesByRoadMapIdForTeacher(dto.getRoadmapId());
 
         return CourseQuestInfoForTeacherResponseDto.builder()
                 .courseInfo(courses)

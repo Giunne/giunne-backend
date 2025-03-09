@@ -44,6 +44,11 @@ public class QuestStateInfoResponseDto {
             example = "3"
     )
     Long starPoint;
+    @Schema(
+            description = "추가 동작 여부",
+            example = "false"
+    )
+    Boolean hasExtraPoints;
 
     public QuestStateInfoResponseDto(QuestState questState) {
         this.id = questState.getId();

@@ -22,7 +22,6 @@ public class QuestStateInfoForTeacherResponseDto {
             example = "1"
     )
     Long id;
-
     @Schema(
             description = "플레이어 번호",
             example = "1"
@@ -47,6 +46,11 @@ public class QuestStateInfoForTeacherResponseDto {
             example = "3"
     )
     Long starPoint;
+    @Schema(
+            description = "추가 동작 여부",
+            example = "false"
+    )
+    Boolean hasExtraPoints;
 
     public QuestStateInfoForTeacherResponseDto(QuestState questState) {
         this.id = questState.getId();

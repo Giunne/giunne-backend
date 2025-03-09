@@ -61,7 +61,7 @@ class CourseRepositoryImplTest {
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))
                         .position(Position.of(0.0, 0.0))
-                        .isTeam(IsTeam.from(true))
+                        .isTeam(IsTeam.from(false))
                         .sortSeq(SortSeq.from(1L))
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
@@ -69,6 +69,17 @@ class CourseRepositoryImplTest {
                         .build()
         );
         Course 저장_코어 = courseRepository.insertRootCourse(코어.toCourse());
+
+        questRepository.saveQuest(
+                Quest.builder()
+                        .questName(QuestName.from("0.코어"))
+                        .course(저장_코어)
+                        .deadline(LocalDateTime.now())
+                        .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
+                        .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
+                        .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .build()
+        );
 
         CourseEntity 버드독 = new CourseEntity(
                 Course.builder()
@@ -89,11 +100,6 @@ class CourseRepositoryImplTest {
 
 
         Course 저장_버드독 = courseRepository.insertCourse(버드독.toCourse(), 저장_코어);
-
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_코어)
-//                .child(저장_버드독)
-//                .build());
 
         questRepository.saveQuest(
                 Quest.builder()
@@ -1089,6 +1095,17 @@ class CourseRepositoryImplTest {
         );
         Course 저장_스쿼트0 = courseRepository.insertCourse(스쿼트0.toCourse(), 저장_한발서기);
 
+        questRepository.saveQuest(
+                Quest.builder()
+                        .questName(QuestName.from("0.스쿼트"))
+                        .course(저장_스쿼트0)
+                        .deadline(LocalDateTime.now())
+                        .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
+                        .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
+                        .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
+                        .build()
+        );
+
         CourseEntity 스쿼트 = new CourseEntity(
                 Course.builder()
                         .courseName(CourseName.from("1." + TrainingType.SQUATS))
@@ -1245,6 +1262,16 @@ class CourseRepositoryImplTest {
         );
         Course 저장_런지0 = courseRepository.insertCourse(런지0.toCourse(), 저장_스쿼트0);
 
+        questRepository.saveQuest(
+                Quest.builder()
+                        .questName(QuestName.from("0.런지"))
+                        .course(저장_런지0)
+                        .deadline(LocalDateTime.now())
+                        .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
+                        .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
+                        .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
+                        .build()
+        );
 
         CourseEntity 런지 = new CourseEntity(
                 Course.builder()
@@ -1373,6 +1400,17 @@ class CourseRepositoryImplTest {
                         .build()
         );
         Course 저장_데드리프트0 = courseRepository.insertCourse(데드리프트0.toCourse(), 저장_한발서기);
+
+        questRepository.saveQuest(
+                Quest.builder()
+                        .questName(QuestName.from("0.데드리프트"))
+                        .course(저장_데드리프트0)
+                        .deadline(LocalDateTime.now())
+                        .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
+                        .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
+                        .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
+                        .build()
+        );
 
         CourseEntity 힙힌지_움직임 = new CourseEntity(
                 Course.builder()
@@ -1610,23 +1648,6 @@ class CourseRepositoryImplTest {
     @DisplayName("코스(조깅) 초기화 ")
     void initRunningCourse() {
         RoadMap roadMap = roadMapRepository.findById(2L);
-
-//        CourseEntity 조깅0 = new CourseEntity(
-//                Course.builder()
-//                        .courseName(CourseName.from("0.조깅"))
-//                        .title(Title.from("0.조깅"))
-//                        .deadline(LocalDateTime.now())
-//                        .difficultyLevel(DifficultyLevel.from(3L))
-//                        .position(Position.of(0.0, 0.0))
-//                        .isTeam(IsTeam.from(false))
-//                        .sortSeq(SortSeq.from(1L))
-//                        .cooperationType(CooperationType.SOLO)
-//                        .trainingType(TrainingType.RUNNING)
-//                        .roadMap(roadMap)
-//                        .build()
-//        );
-//        Course 저장_조깅0 = courseRepository.insertRootCourse(조깅0.toCourse());
-
 
         CourseEntity 주차1 = new CourseEntity(
                 Course.builder()

@@ -118,8 +118,8 @@ public class CourseController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/teacher/road-map")
-    public Response<CourseQuestInfoForTeacherResponseDto> getByRoadMapCategories2(@ParameterObject GetICourseByRoadmapRequestDto dto) {
-        CourseQuestInfoForTeacherResponseDto courses = courseService.getCoursesByRoadMapId2(dto);
+    public Response<CourseQuestInfoForTeacherResponseDto> getCoursesByRoadMapIdForTeacher(@ParameterObject GetICourseByRoadmapRequestDto dto) {
+        CourseQuestInfoForTeacherResponseDto courses = courseService.getCoursesByRoadMapIdForTeacher(dto);
         return Response.ok(courses);
     }
 

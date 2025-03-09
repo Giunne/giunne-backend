@@ -50,7 +50,6 @@ public class CourseRepositoryImpl implements CourseRepository {
     public Course insertRootCourse(Course node) {
         // 자기자신 추가
         CourseEntity savedCourse = courseRepository.save(new CourseEntity(node));
-//        savedCourse.changeParent(List.of(savedCourse.toCourse().getId()));
         saveCoursePath(savedCourse.toCourse());
 
         return savedCourse.toCourse();
@@ -239,11 +238,7 @@ public class CourseRepositoryImpl implements CourseRepository {
                         courseEntity.position,
                         courseEntity.thumbnailUrl.thumbnailUrl,
                         courseEntity.sortSeq.value,
-
-                        qCourseParentEntity.id,
-                        qCourseParentEntity.node.id,
                         qCourseParentEntity.parents.id,
-
                         qQuestEntity.id,
                         qQuestEntity.questName.value,
                         qQuestEntity.deadline,
@@ -263,14 +258,13 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestEntity.trainingDescription.value,
                         qQuestEntity.guideUrl.guideUrl,
                         qQuestEntity.questDescription.value,
-
                         qQuestStateEntity.id,
                         qQuestStateEntity.player.avatarId,
                         qQuestStateEntity.questProgress,
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
-                        qQuestStateEntity.starPoint.value
-
+                        qQuestStateEntity.starPoint.value,
+                        qQuestStateEntity.hasExtraPoints.value
                 )
                 .from(courseEntity)
                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
@@ -281,16 +275,21 @@ public class CourseRepositoryImpl implements CourseRepository {
                 )
                 .fetch();
 
-
         Map<Long, CourseQuestResponseDto> courseMap = new LinkedHashMap<>();
+        Map<Long, List<Long>> parentChildMap = new HashMap<>(); // 부모-자식 관계 저장
+        Set<Long> allCourseIds = new HashSet<>(); // 모든 코스 ID 저장
+        Set<Long> childCourseIds = new HashSet<>(); // 자식으로 등장한 노드 ID 저장
 
         for (Tuple tuple : joinResults) {
             Long courseId = tuple.get(courseEntity.id);
-            CourseQuestResponseDto courseDto = courseMap.get(courseId);
+            Long parentId = tuple.get(qCourseParentEntity.parents.id);
 
-            if (courseDto == null) {
-                courseDto = new CourseQuestResponseDto();
-                courseDto.setId(courseId);
+            allCourseIds.add(courseId);
+
+            // courseMap에 데이터 저장
+            courseMap.computeIfAbsent(courseId, id -> {
+                CourseQuestResponseDto courseDto = new CourseQuestResponseDto();
+                courseDto.setId(id);
                 courseDto.setCourseName(tuple.get(courseEntity.courseName.courseName));
                 courseDto.setTitle(tuple.get(courseEntity.title.value));
                 courseDto.setDescription(tuple.get(courseEntity.description.value));
@@ -298,27 +297,23 @@ public class CourseRepositoryImpl implements CourseRepository {
                 courseDto.setPosition(tuple.get(courseEntity.position));
                 courseDto.setColor(tuple.get(courseEntity.color));
                 courseDto.setThumbnailUrl(tuple.get(courseEntity.thumbnailUrl.thumbnailUrl));
-                courseDto.setParent(new ArrayList<>());
                 courseDto.setSortSeq(tuple.get(courseEntity.sortSeq.value));
-                courseDto.setIsLeaf(false);
-                courseDto.setIsRoot(false);
-                courseMap.put(courseId, courseDto);
+                courseDto.setParent(new ArrayList<>());  // 부모 리스트 초기화
+                return courseDto;
+            });
 
+            // 부모 - 자식 관계 저장
+            if (parentId != null && !parentId.equals(courseId)) {
+                parentChildMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(courseId);
+                courseMap.get(courseId).getParent().add(parentId); // 부모 정보 추가
+                childCourseIds.add(courseId);
             }
 
-
-            if (tuple.get(qCourseParentEntity.node.id) != null) {
-                Long parentId = tuple.get(qCourseParentEntity.parents.id);
-                courseDto.getParent().add(parentId);
-            }
-
-
+            // 퀘스트 정보 추가
             if (tuple.get(qQuestEntity.id) != null) {
                 Long questId = tuple.get(qQuestEntity.id);
+                QuestInfoResponseDto questInfo = courseMap.get(courseId).getQuestInfo();
 
-                QuestInfoResponseDto questInfo = courseDto.getQuestInfo();
-
-                // 퀘스트 정보 추가
                 if (questInfo == null) {
                     questInfo = new QuestInfoResponseDto();
                     questInfo.setId(questId);
@@ -340,109 +335,70 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questInfo.setTrainingDescription(tuple.get(qQuestEntity.trainingDescription.value));
                     questInfo.setGuideUrl(tuple.get(qQuestEntity.guideUrl.guideUrl));
                     questInfo.setQuestDescription(tuple.get(qQuestEntity.questDescription.value));
-//                    questInfo.setQuestStateInfo(new ArrayList<>());
-                    courseDto.setQuestInfo(questInfo);
-
+                    courseMap.get(courseId).setQuestInfo(questInfo);
                 }
 
-
-                // 퀘스트 상태 정보 추가
-                if(tuple.get(qQuestStateEntity.id) != null) {
-                    Long questStateId = tuple.get(qQuestStateEntity.id);
-
-                    QuestStateInfoResponseDto questState = courseDto.getQuestInfo().getQuestStateInfo();
-                    if (questState == null) {
-                        questState = new QuestStateInfoResponseDto();
-                        questState.setId(questStateId);
-                        questState.setPlayerId(tuple.get( qQuestStateEntity.player.avatarId));
-                        questState.setQuestProgress(tuple.get(qQuestStateEntity.questProgress));
-                        questState.setRewardExp(tuple.get(qQuestStateEntity.rewardExp.value));
-                        questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
-                        questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
-                        questInfo.setQuestStateInfo(questState);
-                    }
+                // 퀘스트 상태 추가
+                if (tuple.get(qQuestStateEntity.id) != null) {
+                    QuestStateInfoResponseDto questState = new QuestStateInfoResponseDto();
+                    questState.setId(tuple.get(qQuestStateEntity.id));
+                    questState.setPlayerId(tuple.get(qQuestStateEntity.player.avatarId));
+                    questState.setQuestProgress(tuple.get(qQuestStateEntity.questProgress));
+                    questState.setRewardExp(tuple.get(qQuestStateEntity.rewardExp.value));
+                    questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
+                    questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
+                    questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                    questInfo.setQuestStateInfo(questState);
                 }
-
             }
         }
 
-        ArrayList<CourseQuestResponseDto> courseQuestResponseDtos = new ArrayList<>(courseMap.values());
+        // Root & Leaf 판별
+        List<Long> rootIds = allCourseIds.stream()
+                .filter(id -> !childCourseIds.contains(id)) // 자식으로 등장하지 않은 노드 == 루트
+                .toList();
 
+        List<Long> leafIds = allCourseIds.stream()
+                .filter(id -> !parentChildMap.containsKey(id)) // 부모로 등록되지 않은 노드 == 리프
+                .toList();
 
-        Map<Long, List<CourseQuestResponseDto>> collect = courseQuestResponseDtos.stream()
-                .collect(Collectors.toMap(
-                        CourseQuestResponseDto::getId,
-                        course ->
-                                findDirectChildren(course.getId())
-                                        .stream()
-                                        .filter(child -> child != null && courseMap.containsKey(child.getId()))
-                                        .map(child -> courseMap.get(child.getId()))
-                                        .filter(Objects::nonNull)
-                                        .toList()
-//                                findDirectChildren(course.getId())
-//                                .stream().map(i -> courseMap.get(i.getId())).toList()
-
-                ));
-
-        List<Long> leafIds = findLeaf(
-                Course.builder()
-                        .roadMap(
-                                RoadMap.builder()
-                                        .id(roadMapId)
-                                        .build()
-                        )
-                        .build()).stream().map(CourseEntity::getId).toList();
-
-        List<Long> rootIds = findRoot(
-                Course.builder()
-                        .roadMap(
-                                RoadMap.builder()
-                                        .id(roadMapId)
-                                        .build()
-                        )
-                        .build()).stream().map(CourseEntity::getId).toList();
-
-        List<CourseQuestResponseDto> roots =
-                courseQuestResponseDtos.stream()
-                        .filter(i -> rootIds.contains(i.getId())) // rootIds 목록에 있는 ID만 필터링
-                        .toList();
+        List<CourseQuestResponseDto> roots = rootIds.stream()
+                .map(courseMap::get)
+                .filter(Objects::nonNull)
+                .toList();
 
         roots.forEach(i -> {
-                    i.setIsRoot(true);
-                    if (leafIds.contains(i.getId())) {
-                        i.setIsLeaf(true);
-                    }
-                }
-        );
+            i.setIsRoot(true);
+            if (leafIds.contains(i.getId())) {
+                i.setIsLeaf(true);
+            }
+        });
 
-        Map<Long, List<CourseQuestResponseDto>> course = collect.entrySet().stream()
+        // 부모-자식 관계를 메모리에서 처리
+        Map<Long, List<CourseQuestResponseDto>> course = parentChildMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> entry.getValue().stream()
-                                .map(item ->
-                                        {
-                                            if (leafIds.contains(item.getId())) {
-                                                item.changeIsLeaf(true);
-                                            }
-                                            if (rootIds.contains(item.getId())) {
-                                                item.changeIsRoot(true);
-                                            }
-                                            return item;
-                                        }
-                                )
+                                .map(courseMap::get)
+                                .filter(Objects::nonNull)
+                                .peek(child -> {
+                                    if (leafIds.contains(child.getId())) {
+                                        child.changeIsLeaf(true);
+                                    }
+                                    if (rootIds.contains(child.getId())) {
+                                        child.changeIsRoot(true);
+                                    }
+                                })
                                 .collect(Collectors.toList())
                 ));
 
         course.put(0L, roots);
-
         return course;
     }
 
+
     @Override
-    public Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapId2(Long roadMapId) {
-//        Map<Long, QuestStateInfoResponseDto2> questStateMap = new HashMap<>();
-
-
+    public Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapIdForTeacher(Long roadMapId) {
         List<Tuple> joinResults = queryFactory
                 .select(
                         courseEntity.id,
@@ -454,11 +410,7 @@ public class CourseRepositoryImpl implements CourseRepository {
                         courseEntity.position,
                         courseEntity.thumbnailUrl.thumbnailUrl,
                         courseEntity.sortSeq.value,
-
-                        qCourseParentEntity.id,
-                        qCourseParentEntity.node.id,
                         qCourseParentEntity.parents.id,
-
                         qQuestEntity.id,
                         qQuestEntity.questName.value,
                         qQuestEntity.deadline,
@@ -478,14 +430,13 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestEntity.trainingDescription.value,
                         qQuestEntity.guideUrl.guideUrl,
                         qQuestEntity.questDescription.value,
-
                         qQuestStateEntity.id,
                         qQuestStateEntity.player.avatarId,
                         qQuestStateEntity.questProgress,
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
-                        qQuestStateEntity.starPoint.value
-
+                        qQuestStateEntity.starPoint.value,
+                        qQuestStateEntity.hasExtraPoints.value
                 )
                 .from(courseEntity)
                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
@@ -494,16 +445,21 @@ public class CourseRepositoryImpl implements CourseRepository {
                 .where(courseEntity.roadMap.id.eq(roadMapId))
                 .fetch();
 
-
         Map<Long, CourseQuestForTeacherResponseDto> courseMap = new LinkedHashMap<>();
+        Map<Long, List<Long>> parentChildMap = new HashMap<>(); // 부모 - 자식 관계 저장
+        Set<Long> allCourseIds = new HashSet<>(); // 모든 코스 ID 저장
+        Set<Long> childCourseIds = new HashSet<>(); // 자식 노드에 포함된 ID 저장
 
         for (Tuple tuple : joinResults) {
             Long courseId = tuple.get(courseEntity.id);
-            CourseQuestForTeacherResponseDto courseDto = courseMap.get(courseId);
+            Long parentId = tuple.get(qCourseParentEntity.parents.id);
 
-            if (courseDto == null) {
-                courseDto = new CourseQuestForTeacherResponseDto();
-                courseDto.setId(courseId);
+            allCourseIds.add(courseId); // 모든 코스 ID 추가
+
+            // courseMap에 데이터 저장
+            courseMap.computeIfAbsent(courseId, id -> {
+                CourseQuestForTeacherResponseDto courseDto = new CourseQuestForTeacherResponseDto();
+                courseDto.setId(id);
                 courseDto.setCourseName(tuple.get(courseEntity.courseName.courseName));
                 courseDto.setTitle(tuple.get(courseEntity.title.value));
                 courseDto.setDescription(tuple.get(courseEntity.description.value));
@@ -511,27 +467,23 @@ public class CourseRepositoryImpl implements CourseRepository {
                 courseDto.setPosition(tuple.get(courseEntity.position));
                 courseDto.setColor(tuple.get(courseEntity.color));
                 courseDto.setThumbnailUrl(tuple.get(courseEntity.thumbnailUrl.thumbnailUrl));
-                courseDto.setParent(new HashSet<>());
                 courseDto.setSortSeq(tuple.get(courseEntity.sortSeq.value));
-                courseDto.setIsLeaf(false);
-                courseDto.setIsRoot(false);
-                courseMap.put(courseId, courseDto);
+                courseDto.setParent(new HashSet<>());  // 부모 리스트 초기화
+                return courseDto;
+            });
 
+            // **부모의 바로 하위 자식만 저장**
+            if (parentId != null && !parentId.equals(courseId)) {
+                parentChildMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(courseId);
+                courseMap.get(courseId).getParent().add(parentId); // 부모 정보 추가
+                childCourseIds.add(courseId); // 자식으로 등장한 노드 추가
             }
 
-
-            if (tuple.get(qCourseParentEntity.node.id) != null) {
-                Long parentId = tuple.get(qCourseParentEntity.parents.id);
-                courseDto.getParent().add(parentId);
-            }
-
-
+            // 퀘스트 정보 추가
             if (tuple.get(qQuestEntity.id) != null) {
                 Long questId = tuple.get(qQuestEntity.id);
+                QuestInfoForTeacherResponseDto questInfo = courseMap.get(courseId).getQuestInfo();
 
-                QuestInfoForTeacherResponseDto questInfo = courseDto.getQuestInfo();
-
-                // 퀘스트 정보 추가
                 if (questInfo == null) {
                     questInfo = new QuestInfoForTeacherResponseDto();
                     questInfo.setId(questId);
@@ -554,102 +506,70 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questInfo.setGuideUrl(tuple.get(qQuestEntity.guideUrl.guideUrl));
                     questInfo.setQuestDescription(tuple.get(qQuestEntity.questDescription.value));
                     questInfo.setQuestStateInfos(new HashSet<>());
-                    courseDto.setQuestInfo(questInfo);
-
+                    courseMap.get(courseId).setQuestInfo(questInfo);
                 }
 
-
-                // 퀘스트 상태 정보 추가
-                if(tuple.get(qQuestStateEntity.id) != null
-//                        && !questStateMap.containsKey(tuple.get(qQuestStateEntity.id))
-                ) {
-                    Long stateId = tuple.get(qQuestStateEntity.id);
+                // 퀘스트 상태 추가
+                if (tuple.get(qQuestStateEntity.id) != null) {
                     QuestStateInfoForTeacherResponseDto questState = new QuestStateInfoForTeacherResponseDto();
-                    questState.setId(stateId);
-                    questState.setPlayerId(tuple.get( qQuestStateEntity.player.avatarId));
+                    questState.setId(tuple.get(qQuestStateEntity.id));
+                    questState.setPlayerId(tuple.get(qQuestStateEntity.player.avatarId));
                     questState.setQuestProgress(tuple.get(qQuestStateEntity.questProgress));
                     questState.setRewardExp(tuple.get(qQuestStateEntity.rewardExp.value));
                     questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                     questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
+                    questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
                     questInfo.getQuestStateInfos().add(questState);
-//                    questStateMap.put(stateId, questState);
-
                 }
-
             }
         }
 
-        ArrayList<CourseQuestForTeacherResponseDto> courseQuesResponseDtos = new ArrayList<>(courseMap.values());
+        // Root와 Leaf 판별
+        List<Long> rootIds = allCourseIds.stream()
+                .filter(id -> !childCourseIds.contains(id)) // 자식으로 등장하지 않은 노드 == 루트
+                .toList();
 
+        List<Long> leafIds = allCourseIds.stream()
+                .filter(id -> !parentChildMap.containsKey(id)) // 부모로 등록되지 않은 노드 == 리프
+                .toList();
 
-        Map<Long, List<CourseQuestForTeacherResponseDto>> collect = courseQuesResponseDtos.stream()
-                .collect(Collectors.toMap(
-                        CourseQuestForTeacherResponseDto::getId,
-                        course ->
-                                findDirectChildren(course.getId())
-                                        .stream()
-                                        .filter(child -> child != null && courseMap.containsKey(child.getId()))
-                                        .map(child -> courseMap.get(child.getId()))
-                                        .filter(Objects::nonNull)
-                                        .toList()
-//                                findDirectChildren(course.getId())
-//                                .stream().map(i -> courseMap.get(i.getId())).toList()
-
-                ));
-
-        List<Long> leafIds = findLeaf(
-                Course.builder()
-                        .roadMap(
-                                RoadMap.builder()
-                                        .id(roadMapId)
-                                        .build()
-                        )
-                        .build()).stream().map(CourseEntity::getId).toList();
-
-        List<Long> rootIds = findRoot(
-                Course.builder()
-                        .roadMap(
-                                RoadMap.builder()
-                                        .id(roadMapId)
-                                        .build()
-                        )
-                        .build()).stream().map(CourseEntity::getId).toList();
-
-        List<CourseQuestForTeacherResponseDto> roots =
-                courseQuesResponseDtos.stream()
-                        .filter(i -> rootIds.contains(i.getId())) // rootIds 목록에 있는 ID만 필터링
-                        .toList();
+        // 루트 정보 추가
+        List<CourseQuestForTeacherResponseDto> roots = rootIds.stream()
+                .map(courseMap::get)
+                .filter(Objects::nonNull)
+                .toList();
 
         roots.forEach(i -> {
-                    i.setIsRoot(true);
-                    if (leafIds.contains(i.getId())) {
-                        i.setIsLeaf(true);
-                    }
-                }
-        );
+            i.setIsRoot(true);
+            if (leafIds.contains(i.getId())) {
+                i.setIsLeaf(true);
+            }
+        });
 
-        Map<Long, List<CourseQuestForTeacherResponseDto>> course = collect.entrySet().stream()
+        // 부모-자식 관계를 메모리에서 처리 (바로 하위 자식만 포함)
+        Map<Long, List<CourseQuestForTeacherResponseDto>> course = parentChildMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> entry.getValue().stream()
-                                .map(item ->
-                                        {
-                                            if (leafIds.contains(item.getId())) {
-                                                item.changeIsLeaf(true);
-                                            }
-                                            if (rootIds.contains(item.getId())) {
-                                                item.changeIsRoot(true);
-                                            }
-                                            return item;
-                                        }
-                                )
+                                .map(courseMap::get)
+                                .filter(Objects::nonNull)
+                                .peek(child -> {
+                                    if (leafIds.contains(child.getId())) {
+                                        child.changeIsLeaf(true);
+                                    }
+                                    if (rootIds.contains(child.getId())) {
+                                        child.changeIsRoot(true);
+                                    }
+                                })
                                 .collect(Collectors.toList())
                 ));
 
         course.put(0L, roots);
-
         return course;
     }
+
+
+
 
     @Override
     @Transactional

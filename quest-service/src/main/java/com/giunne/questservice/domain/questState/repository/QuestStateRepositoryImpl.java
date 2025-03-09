@@ -45,4 +45,6 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
         return  stateEntities.stream().map(QuestStateEntity::toQuestState).toList();
     }
 
+
+
 }

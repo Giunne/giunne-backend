@@ -5,10 +5,7 @@ import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
 import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
 import com.giunne.questservice.domain.questState.domain.QuestState;
-import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
-import com.giunne.questservice.domain.questState.domain.type.RewardExp;
-import com.giunne.questservice.domain.questState.domain.type.RewardPoint;
-import com.giunne.questservice.domain.questState.domain.type.StarPoint;
+import com.giunne.questservice.domain.questState.domain.type.*;
 import com.giunne.questservice.domain.team.repository.entity.TeamEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "quest_state",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = { "quest_no","player_no"})
+                @UniqueConstraint(columnNames = {"quest_no", "player_no"})
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -59,7 +56,10 @@ public class QuestStateEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-    public QuestStateEntity(QuestState state ) {
+    @Embedded
+    private HasExtraPoints hasExtraPoints = HasExtraPoints.from(false);
+
+    public QuestStateEntity(QuestState state) {
         this.id = state.getId();
         this.quest = new QuestEntity(state.getQuest());
         this.player = new PlayerEntity(state.getPlayer());
@@ -68,6 +68,7 @@ public class QuestStateEntity extends BaseEntity {
         this.rewardExp = state.getRewardExp();
         this.rewardPoint = state.getRewardPoint();
         this.starPoint = state.getStarPoint();
+        this.hasExtraPoints = state.getHasExtraPoints();
     }
 
     public QuestState toQuestState() {
@@ -80,6 +81,7 @@ public class QuestStateEntity extends BaseEntity {
                 .rewardExp(rewardExp)
                 .rewardPoint(rewardPoint)
                 .starPoint(starPoint)
+                .hasExtraPoints(hasExtraPoints)
                 .build();
     }
 

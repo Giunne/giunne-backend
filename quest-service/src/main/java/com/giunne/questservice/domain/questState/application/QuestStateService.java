@@ -1,6 +1,7 @@
 package com.giunne.questservice.domain.questState.application;
 
 
+import com.giunne.questservice.domain.questState.application.dto.request.UpdateQuestStateRequestDto;
 import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
 import com.giunne.questservice.domain.player.domain.Player;
 import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
@@ -9,8 +10,10 @@ import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.questservice.domain.questState.application.interfaces.QuestStateRepository;
 import com.giunne.questservice.domain.questState.domain.QuestState;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +36,7 @@ public class QuestStateService {
                             .avatarId(dto.avatarId())
                             .build()
             ));
-        }else {
+        } else {
             playerEntity = optionalPlayerEntity.get().toPlayer();
         }
 
@@ -43,6 +46,16 @@ public class QuestStateService {
                         .build())
                 .toList();
         questStateRepository.saveAll(questStates);
+    }
+
+
+    @Transactional
+    public void updateQuestProgress(UpdateQuestStateRequestDto dto) {
+        QuestState questState = questStateRepository.findById(dto.questStateId());
+
+        QuestProgress questProgress = QuestProgress.from(dto.questProgress());
+        questState.updateQuestProgress(questProgress);
+        questStateRepository.save(questState);
     }
 
 }

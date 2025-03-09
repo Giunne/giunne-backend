@@ -21,7 +21,7 @@ public interface CourseRepository {
     void deleteCourse(Course target);
     Map<Long, List<Course>> getCourses();
     Map<Long, List<CourseQuestResponseDto>> getCoursesByRoadMapId(Long playerId, Long roadMapId);
-    Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapId2(Long roadMapId);
+    Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapIdForTeacher(Long roadMapId);
     Course updateCourseInfo(UpdateCourseInfoRequestDto dto);
     CourseParent insertCourseParent(CourseParent parent);
     List<CourseParent> insertCourseParent(List<CourseParent> parents);
