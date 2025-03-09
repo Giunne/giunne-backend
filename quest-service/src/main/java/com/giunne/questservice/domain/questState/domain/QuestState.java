@@ -2,10 +2,7 @@ package com.giunne.questservice.domain.questState.domain;
 
 import com.giunne.questservice.domain.player.domain.Player;
 import com.giunne.questservice.domain.quest.domain.Quest;
-import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
-import com.giunne.questservice.domain.questState.domain.type.RewardExp;
-import com.giunne.questservice.domain.questState.domain.type.RewardPoint;
-import com.giunne.questservice.domain.questState.domain.type.StarPoint;
+import com.giunne.questservice.domain.questState.domain.type.*;
 import com.giunne.questservice.domain.team.domain.Team;
 import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
@@ -19,9 +16,20 @@ public class QuestState {
     private Long id;
     private Player player;
     private Quest quest;
-    private QuestProgress questProgress;
+    @Builder.Default
+    private QuestProgress questProgress = QuestProgress.LOCK;
     private Team team;
-    private RewardExp rewardExp; // 대표유무
-    private RewardPoint rewardPoint; // 대표유무
-    private StarPoint starPoint;
+    @Builder.Default
+    private RewardExp rewardExp = RewardExp.from(0L);
+    @Builder.Default
+    private RewardPoint rewardPoint = RewardPoint.from(0L); // 대표유무
+    @Builder.Default
+    private StarPoint starPoint = StarPoint.from(0L);
+    @Builder.Default
+    private HasExtraPoints hasExtraPoints = HasExtraPoints.from(false);
+
+    public void updateQuestProgress(QuestProgress questProgress) {
+        this.questProgress = questProgress;
+    }
+
 }

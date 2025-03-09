@@ -1,29 +1,27 @@
-package com.giunne.questservice.domain.quest.domain.type;
+package com.giunne.questservice.domain.questState.domain.type;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-/**
- * 팀전 여부
- */
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class isTeam {
+public class HasExtraPoints {
 
-    @Column(name = "is_team", nullable = false)
+    @Column(name = "has_extra_points", nullable = false)
+    @ColumnDefault("false")
     private boolean value = false;
 
-    private isTeam(final boolean value) {
+    private HasExtraPoints(final boolean value) {
         this.value = value;
     }
 
-    public static isTeam from(final boolean value) {
-        return new isTeam(value);
+    public static HasExtraPoints from(final boolean value) {
+        return new HasExtraPoints(value);
     }
 
     public boolean changeValue() {

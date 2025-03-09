@@ -85,7 +85,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         );
 
         // 1. 아이템 개수 조회 (총 개수)
-        JPAQuery<Long> countQuery =  queryFactory
+        JPAQuery<Long> countQuery = queryFactory
                 .select(itemEntity.count())
                 .from(itemEntity)
                 .where(
@@ -333,7 +333,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         );
 
         // 1. 아이템 개수 조회 (총 개수)
-        JPAQuery<Long> countQuery =  queryFactory
+        JPAQuery<Long> countQuery = queryFactory
                 .select(itemEntity.count())
                 .from(itemEntity)
                 .where(
@@ -457,7 +457,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public  List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory) {
+    public List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory) {
         Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
 
         List<Tuple> results = queryFactory

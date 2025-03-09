@@ -9,4 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Player {
     private Long id;
+    private Long avatarId;
 }

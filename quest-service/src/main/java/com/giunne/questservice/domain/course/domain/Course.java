@@ -32,7 +32,7 @@ public class Course {
     private CooperationType cooperationType;
     private TrainingType trainingType;
     private LocalDateTime deadline;
-    private List<Long> parent;
+//    private List<Long> parent;
     private ThumbnailUrl thumbnailUrl;
     @Builder.Default
     private CurrentApproveCnt currentApproveCnt = CurrentApproveCnt.from(0);

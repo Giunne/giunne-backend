@@ -1,8 +1,8 @@
 package com.giunne.questservice.domain.course.application;
 
+import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.questservice.domain.course.application.dto.request.*;
-import com.giunne.questservice.domain.course.application.dto.response.CourseInfoResponseDto;
-import com.giunne.questservice.domain.course.application.dto.response.CourseResponseDto;
+import com.giunne.questservice.domain.course.application.dto.response.*;
 import com.giunne.questservice.domain.course.application.interfaces.CourseRepository;
 import com.giunne.questservice.domain.course.domain.Course;
 import com.giunne.questservice.domain.course.domain.type.CourseName;
@@ -75,20 +75,23 @@ public class CourseService {
                 .build();
     }
 
-    public CourseInfoResponseDto getCoursesByRoadMapId(GetICourseByRoadmapRequestDto dto) {
+    public CourseQuestInfoResponseDto getCoursesByRoadMapId(MemberPrincipal memberPrincipal,GetICourseByRoadmapRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Map<Long, List<CourseQuestResponseDto>> courses = courseRepository.getCoursesByRoadMapId(memberPrincipal.getPlayerId(), dto.getRoadmapId());
 
-        Map<Long, List<Course>> categories = courseRepository.getCoursesByRoadMapId(dto.getRoadmapId());
+        return CourseQuestInfoResponseDto.builder()
+                .courseInfo(courses)
+                .build();
+    }
 
-        Map<Long, List<CourseResponseDto>> courseResponseMap = categories.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().stream()
-                                .map(CourseResponseDto::from)
-                                .collect(Collectors.toList())
-                ));
+    public CourseQuestInfoForTeacherResponseDto getCoursesByRoadMapIdForTeacher(GetICourseByRoadmapRequestDto dto) {
 
-        return CourseInfoResponseDto.builder()
-                .courseInfo(courseResponseMap)
+        Map<Long, List<CourseQuestForTeacherResponseDto>> courses = courseRepository.getCoursesByRoadMapIdForTeacher(dto.getRoadmapId());
+
+        return CourseQuestInfoForTeacherResponseDto.builder()
+                .courseInfo(courses)
                 .build();
     }
 
@@ -96,4 +99,5 @@ public class CourseService {
         Course course = courseRepository.updateCourseInfo(dto);
         return CourseResponseDto.from(course);
     }
+
 }

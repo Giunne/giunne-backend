@@ -42,13 +42,25 @@ public class QuestEntity extends BaseEntity {
     private NeedLevel needLevel; // 가능 레벨
 
     @Embedded
+    private QuestDescription questDescription; // 설명
+
+    @Embedded
+    private TrainingDescription trainingDescription; // 설명
+    
+    @Embedded
+    private NeedApproveCount needApproveCount; // 필요 승인 카운트
+
+    @Embedded
+    private CurrentApproveCount currentApproveCount; // 승인 카운트
+
+    @Embedded
     private DifficultyLevel difficultyLevel; // 난이도
 
     @Embedded
     private SortSeq sortSeq; //순서번호
 
     @Embedded
-    private isTeam isTeam; // 팀전 여부
+    private IsTeam isTeam = IsTeam.from(false); // 팀전 여부
 
     @Embedded
     private MaxPlayer maxPlayer = MaxPlayer.from(1); // 최대 인원수
@@ -59,7 +71,7 @@ public class QuestEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_no", nullable = true)
     private CourseEntity course; // 카테고리
 
@@ -73,10 +85,13 @@ public class QuestEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "training_type", nullable = false)
-    TrainingType trainingType = TrainingType.NONE;
+    private TrainingType trainingType = TrainingType.NONE;
 
     @Column(name = "deadline")
     private LocalDateTime deadline;
+
+    @Embedded
+    private GuideUrl guideUrl;  // 가이드 URL
 
     public QuestEntity(Quest quest) {
         this.id = quest.getId();
@@ -96,6 +111,11 @@ public class QuestEntity extends BaseEntity {
         this.cooperationType = quest.getCooperationType();
         this.trainingType = quest.getTrainingType();
         this.deadline = quest.getDeadline();
+        this.questDescription = quest.getQuestDescription();
+        this.guideUrl = quest.getGuideUrl();
+        this.needApproveCount = quest.getNeedApproveCount();
+        this.currentApproveCount = quest.getCurrentApproveCount();
+        this.trainingDescription = quest.getTrainingDescription();
     }
 
     public Quest toQuest() {
@@ -116,6 +136,11 @@ public class QuestEntity extends BaseEntity {
                 .cooperationType(cooperationType)
                 .trainingType(trainingType)
                 .deadline(deadline)
+                .guideUrl(guideUrl)
+                .needApproveCount(needApproveCount)
+                .currentApproveCount(currentApproveCount)
+                .questDescription(questDescription)
+                .trainingDescription(trainingDescription)
                 .build();
     }
 

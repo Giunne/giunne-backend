@@ -16,11 +16,7 @@ public class GetIRoadmapResponseDto {
             example = "1"
     )
     private Long id; // 로드맵
-//    @Schema(
-//            description = "레크레이션 ID",
-//            example = "1"
-//    )
-//    private Long recreationNo; // 레크레이션
+
     @Schema(
             description = "제목",
             example = "로드맵"

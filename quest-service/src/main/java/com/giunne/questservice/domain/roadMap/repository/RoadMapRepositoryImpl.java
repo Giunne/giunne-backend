@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class RoadMapRepositoryImpl implements RoadMapRepository {
         return roadMapEntityList.stream().map(RoadMapEntity::toRoadMap).toList();
     }
 
+    @Transactional
     public RoadMap save(RoadMap roadMap) {
         RoadMapEntity roadMapEntity = roadmapRepository.save(new RoadMapEntity(roadMap));
         return roadMapEntity.toRoadMap();
