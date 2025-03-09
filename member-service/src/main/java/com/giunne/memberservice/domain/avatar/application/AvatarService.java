@@ -12,10 +12,12 @@ import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
-import com.giunne.memberservice.domain.avatar.application.dto.AvatarWithWearingItemResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.LoginPlayerRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
@@ -134,6 +136,20 @@ public class AvatarService {
 
         PaginationModel<AvatarWithWearingItemResponseDto> paginationModel = avatarRepository.getMyAvatarList(member, dto);
         List<AvatarWithWearingItemResponseDto> myAvatarList = paginationModel.getData();
+        for (int i = 0; i < myAvatarList.size(); i++) {
+            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds(), myAvatarList.get(i).getLevel());
+            Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
+            myAvatarList.get(i).setWearingItems(listResponse.value());
+        }
+
+        return paginationModel;
+    }
+
+
+    public PaginationModel<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
+
+        PaginationModel<GetMyRecreationAvatarResponseDto> paginationModel = avatarRepository.getMyRecreationStudentList(dto);
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = paginationModel.getData();
         for (int i = 0; i < myAvatarList.size(); i++) {
             GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(myAvatarList.get(i).getWearingItemIds(), myAvatarList.get(i).getLevel());
             Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);

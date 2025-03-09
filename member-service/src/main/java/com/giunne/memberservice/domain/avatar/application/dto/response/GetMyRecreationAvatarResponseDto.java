@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.avatar.application.dto;
+package com.giunne.memberservice.domain.avatar.application.dto.response;
 
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "아바타 정보 응답DTO")
-public class AvatarWithWearingItemResponseDto {
+@Schema(description = "레크레이션내 학생정보 응답DTO")
+public class GetMyRecreationAvatarResponseDto {
     @Schema(
             description = "플레이어 ID",
             example = "1"
