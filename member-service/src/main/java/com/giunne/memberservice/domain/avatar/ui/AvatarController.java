@@ -6,10 +6,12 @@ import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
-import com.giunne.memberservice.domain.avatar.application.dto.AvatarWithWearingItemResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.LoginPlayerRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +20,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "아바타 관리", description = "아바타 생성 및 조회")
@@ -67,6 +71,19 @@ public class AvatarController {
     public Response<PaginationModel<AvatarWithWearingItemResponseDto>> getMyAvatarList(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
             , @ParameterObject Pageable dto) {
         PaginationModel<AvatarWithWearingItemResponseDto> myAvatarList = avatarService.getMyAvatarList(memberPrincipal, dto);
+        return Response.ok(myAvatarList);
+    }
+
+    @Operation(summary = "레크레이션의 아바타 조회", description = """
+            ## 기능설명
+            * 레크레이션의 아바타 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/recreation-students")
+    public Response<List<GetMyRecreationAvatarResponseDto>> getMyRecreationStudentList(@ParameterObject GetMyRecreationAvatarRequestDto dto) {
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(dto);
         return Response.ok(myAvatarList);
     }
 

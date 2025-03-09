@@ -1,6 +1,8 @@
 package com.giunne.commonservice.principal;
 
 
+import com.giunne.commonservice.error.ErrorCode;
+import com.giunne.commonservice.error.exception.AuthenticationException;
 import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.domain.auth.MemberRole;
 import io.jsonwebtoken.Claims;
@@ -33,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
             String authorizationHeader = request.getHeader("Authorization");
             if (authorizationHeader == null || authorizationHeader.split(" ").length != 2) {
-                throw new IllegalArgumentException("잘못된 토큰입니다.");
+                throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
             }
             String token = authorizationHeader.split(" ")[1];
 
@@ -51,7 +53,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                     .role(role)
                     .build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("잘못된 토큰입니다.");
+            throw new AuthenticationException(ErrorCode.NOT_VALID_TOKEN);
         }
     }
 

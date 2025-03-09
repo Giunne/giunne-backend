@@ -12,10 +12,12 @@ import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
-import com.giunne.memberservice.domain.avatar.application.dto.AvatarWithWearingItemResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.LoginPlayerRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
+import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
@@ -141,6 +143,19 @@ public class AvatarService {
         }
 
         return paginationModel;
+    }
+
+
+    public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
+
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getMyRecreationStudentList(dto);
+        for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
+            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
+            Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
+            getMyRecreationAvatarResponseDto.setWearingItems(listResponse.value());
+        }
+
+        return myAvatarList;
     }
 
 }
