@@ -14,5 +14,5 @@ public interface AvatarRepository {
     Avatar createAvatar(Avatar avatar);
     Avatar findById(Long avatarId);
     PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(Member member, Pageable dto);
-    List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto);
+    List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(Long playerId, GetMyRecreationAvatarRequestDto dto);
 }

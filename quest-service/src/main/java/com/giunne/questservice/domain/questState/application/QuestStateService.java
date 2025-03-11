@@ -43,6 +43,7 @@ public class QuestStateService {
         List<QuestState> questStates = quests.stream().map(i -> QuestState.builder()
                         .quest(i)
                         .player(playerEntity)
+                        .questProgress(i.getQuestName().getValue().startsWith("0.")? QuestProgress.CONFIRM: QuestProgress.LOCK)
                         .build())
                 .toList();
         questStateRepository.saveAll(questStates);
@@ -55,7 +56,10 @@ public class QuestStateService {
 
         QuestProgress questProgress = QuestProgress.from(dto.questProgress());
         questState.updateQuestProgress(questProgress);
-        questStateRepository.save(questState);
+        QuestState save = questStateRepository.save(questState);
+
+        questStateRepository.updateChildQuestOpen(save);
+
     }
 
 }

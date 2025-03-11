@@ -400,7 +400,7 @@ public class CourseRepositoryImpl implements CourseRepository {
     @Override
     public Map<Long, List<CourseQuestForTeacherResponseDto>> getCoursesByRoadMapIdForTeacher(Long roadMapId) {
         List<Tuple> joinResults = queryFactory
-                .select(
+                .selectDistinct(
                         courseEntity.id,
                         courseEntity.courseName.courseName,
                         courseEntity.title.value,
@@ -553,6 +553,8 @@ public class CourseRepositoryImpl implements CourseRepository {
                         entry -> entry.getValue().stream()
                                 .map(courseMap::get)
                                 .filter(Objects::nonNull)
+                                .collect(Collectors.toCollection(LinkedHashSet::new))
+                                .stream()
                                 .peek(child -> {
                                     if (leafIds.contains(child.getId())) {
                                         child.changeIsLeaf(true);
@@ -667,6 +669,17 @@ public class CourseRepositoryImpl implements CourseRepository {
 
 
     public List<CourseEntity> findDirectParent(CourseEntity course) {
+        return queryFactory
+                .selectFrom(courseEntity)
+                .join(coursePathEntity).on(courseEntity.id.eq(coursePathEntity.child.id))
+                .where(
+                        coursePathEntity.child.id.eq(course.getId())
+                                .and(courseEntity.id.ne(coursePathEntity.child.id))
+                )
+                .fetch();
+    }
+
+    public List<CourseEntity> findParents(CourseEntity course) {
         return queryFactory
                 .selectFrom(courseEntity)
                 .join(coursePathEntity).on(courseEntity.id.eq(coursePathEntity.child.id))

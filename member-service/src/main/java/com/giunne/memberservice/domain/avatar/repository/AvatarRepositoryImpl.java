@@ -157,7 +157,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     }
 
     @Override
-    public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(GetMyRecreationAvatarRequestDto dto) {
+    public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(Long playerId, GetMyRecreationAvatarRequestDto dto) {
 
         List<Tuple> joinResults = queryFactory
                 .select(
@@ -189,7 +189,8 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                 .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
                 .where(
                         avatarEntity.recreation.id.eq(dto.getRecreationId()),
-                        inventoryEntity.isWear.isWear.eq(true)
+                        inventoryEntity.isWear.isWear.eq(true),
+                        avatarEntity.id.ne(playerId)
                 )
                 .fetch();
 
