@@ -63,8 +63,8 @@ public class CourseEntity extends BaseEntity {
     @Embedded
     private Active isActive = Active.from(true);
 
-//    @ElementCollection(fetch = FetchType.LAZY)
-//    private List<Long> parent = new ArrayList<>();
+    @Embedded
+    private IsRootCourse isRootCourse = IsRootCourse.from(false);
 
     @Embedded
     private ThumbnailUrl thumbnailUrl;
@@ -134,6 +134,7 @@ public class CourseEntity extends BaseEntity {
                 .rewardExp(rewardExp)
                 .trainingDescription(trainingDescription)
                 .guideUrl(guideUrl)
+                .isRootCourse(isRootCourse)
                 .build();
     }
 
@@ -164,6 +165,7 @@ public class CourseEntity extends BaseEntity {
                 .rewardExp(rewardExp)
                 .trainingDescription(trainingDescription)
                 .guideUrl(guideUrl)
+                .isRootCourse(isRootCourse)
                 .build();
     }
 
@@ -189,6 +191,7 @@ public class CourseEntity extends BaseEntity {
         this.rewardExp = course.getRewardExp();
         this.trainingDescription = course.getTrainingDescription();
         this.guideUrl = course.getGuideUrl();
+        this.isRootCourse = course.getIsRootCourse();
     }
 
 }
