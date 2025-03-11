@@ -15,6 +15,7 @@ import com.giunne.memberservice.domain.levelUpPolicy.repository.entity.QLevelUpP
 import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.member.repository.entity.QMemberEntity;
 import com.giunne.memberservice.domain.recreation.repository.entity.QRecreationEntity;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -159,6 +160,17 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     @Override
     public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(Long playerId, GetMyRecreationAvatarRequestDto dto) {
 
+
+        BooleanBuilder whereClause = new BooleanBuilder();
+        whereClause.and(avatarEntity.recreation.id.eq(dto.getRecreationId()));
+        whereClause.and(inventoryEntity.isWear.isWear.eq(true));
+
+        // playerId가 null이 아닐 때만 avatarEntity.id.ne(playerId) 조건 추가
+        if (playerId != null) {
+            whereClause.and(avatarEntity.id.ne(playerId));
+        }
+
+
         List<Tuple> joinResults = queryFactory
                 .select(
                         avatarEntity.id,
@@ -187,11 +199,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                 .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
                 .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
                 .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
-                .where(
-                        avatarEntity.recreation.id.eq(dto.getRecreationId()),
-                        inventoryEntity.isWear.isWear.eq(true),
-                        avatarEntity.id.ne(playerId)
-                )
+                .where(whereClause)
                 .fetch();
 
         // 결과를 Map<Long, AvatarWithWearingItemResponseDto> 형태로 변환
