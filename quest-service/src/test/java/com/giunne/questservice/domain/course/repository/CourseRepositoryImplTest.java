@@ -932,6 +932,18 @@ class CourseRepositoryImplTest {
         Course 저장_하체0 = courseRepository.insertRootCourse(하체0.toCourse());
 
 
+        questRepository.saveQuest(
+                Quest.builder()
+                        .questName(QuestName.from("0.하체"))
+                        .course(저장_하체0)
+                        .deadline(LocalDateTime.now())
+                        .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
+                        .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
+                        .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
+                        .build()
+        );
+
+
         CourseEntity 누워서_고관절_굴곡 = new CourseEntity(
                 Course.builder()
                         .courseName(CourseName.from("1-a." + TrainingType.LOWER_BODY))
@@ -1316,7 +1328,7 @@ class CourseRepositoryImplTest {
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[런지][2]워킹 런지.png"))
                         .build()
         );
-        Course 워킹_워킹_런지 = courseRepository.insertCourse(런지.toCourse(), 저장_런지);
+        Course 워킹_워킹_런지 = courseRepository.insertCourse(워킹_런지.toCourse(), 저장_런지);
 
         questRepository.saveQuest(
                 Quest.builder()
@@ -1442,7 +1454,7 @@ class CourseRepositoryImplTest {
 
         CourseEntity 우산_힙힌지 = new CourseEntity(
                 Course.builder()
-                        .courseName(CourseName.from("1-a." + TrainingType.DEADLIFT))
+                        .courseName(CourseName.from("1-b." + TrainingType.DEADLIFT))
                         .title(Title.from("1-b.우산 힙힌지"))
                         .deadline(LocalDateTime.now())
                         .difficultyLevel(DifficultyLevel.from(3L))

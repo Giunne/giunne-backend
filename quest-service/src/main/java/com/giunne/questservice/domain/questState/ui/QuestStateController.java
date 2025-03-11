@@ -45,7 +45,7 @@ public class QuestStateController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    })
+    }, hidden = true)
     @PostMapping
     Response<String> savePlayerQuestStates(@RequestBody CreateQuestStateRequestDto dto) {
         questStateService.savePlayerQuestStates(dto);

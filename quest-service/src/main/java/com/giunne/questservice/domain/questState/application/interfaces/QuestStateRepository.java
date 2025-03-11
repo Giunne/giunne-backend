@@ -9,4 +9,5 @@ public interface QuestStateRepository {
     List<QuestState> findByPlayer(Long playerId);
     QuestState save(QuestState questState);
     List<QuestState> saveAll(List<QuestState> questStates);
+    void updateChildQuestOpen(QuestState questState);
 }

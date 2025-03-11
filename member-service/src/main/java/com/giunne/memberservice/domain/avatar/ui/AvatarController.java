@@ -74,16 +74,17 @@ public class AvatarController {
         return Response.ok(myAvatarList);
     }
 
-    @Operation(summary = "레크레이션의 아바타 조회", description = """
+    @Operation(summary = "레크레이션의 학생 아바타 조회", description = """
             ## 기능설명
-            * 레크레이션의 아바타 조회
+            * 레크레이션의 학생 아바타 조회
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/recreation-students")
-    public Response<List<GetMyRecreationAvatarResponseDto>> getMyRecreationStudentList(@ParameterObject GetMyRecreationAvatarRequestDto dto) {
-        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(dto);
+    public Response<List<GetMyRecreationAvatarResponseDto>> getMyRecreationStudentList(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
+            , @ParameterObject GetMyRecreationAvatarRequestDto dto) {
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(memberPrincipal, dto);
         return Response.ok(myAvatarList);
     }
 
