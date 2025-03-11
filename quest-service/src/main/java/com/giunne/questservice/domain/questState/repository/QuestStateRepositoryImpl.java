@@ -77,7 +77,7 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
             return;
         }
 
-        List<QuestStateEntity> fetchQuestStates = queryFactory
+        List<QuestStateEntity> fetchChildQuestStates = queryFactory
                 .select(qQuestStateEntity)
                 .from(courseEntity)
                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
@@ -91,20 +91,62 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                                                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
                                                 .leftJoin(qQuestEntity).on(courseEntity.id.eq(qQuestEntity.course.id))
                                                 .leftJoin(qQuestStateEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
-                                                .where(qQuestStateEntity.id.eq(questState.getId()))
+                                                .where(
+                                                        qQuestStateEntity.id.eq(questState.getId())
+                                                                .or(
+                                                                        (qQuestStateEntity.questProgress.eq(QuestProgress.CONFIRM))
+                                                                                .and(qQuestStateEntity.player.avatarId.eq(questState.getPlayer().getAvatarId()))
+                                                                )
+                                                )
                                 )
                                 .and(qQuestStateEntity.player.avatarId.eq(questState.getPlayer().getAvatarId()))
                 )
                 .fetch();
 
 
-        for (QuestStateEntity questStateEntity : fetchQuestStates) {
+        List<Long> childIds = fetchChildQuestStates.stream().map(QuestStateEntity::getId).toList();
+
+        List<QuestStateEntity> fetchParentQuestStates = queryFactory
+                .select(qQuestStateEntity)
+                .from(courseEntity)
+                .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
+                .leftJoin(qQuestEntity).on(courseEntity.id.eq(qQuestEntity.course.id))
+                .leftJoin(qQuestStateEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
+                .where(
+                        qCourseParentEntity.node.id.in(
+                                        JPAExpressions
+                                                .select(qCourseParentEntity.parents.id)
+                                                .from(courseEntity)
+                                                .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
+                                                .leftJoin(qQuestEntity).on(courseEntity.id.eq(qQuestEntity.course.id))
+                                                .leftJoin(qQuestStateEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
+                                                .where(qQuestStateEntity.id.in(childIds))
+                                )
+                                .and(qQuestStateEntity.player.avatarId.eq(questState.getPlayer().getAvatarId()))
+                )
+                .fetch();
+
+        boolean isALlConfirm = true;
+
+        for (QuestStateEntity fetchParentQuestState : fetchParentQuestStates) {
+            if (!QuestProgress.CONFIRM.equals(fetchParentQuestState.getQuestProgress())) {
+                isALlConfirm = false;
+                break;
+            }
+        }
+
+        if (!isALlConfirm) {
+            return;
+        }
+
+        for (QuestStateEntity questStateEntity : fetchChildQuestStates) {
             if (QuestProgress.LOCK.equals(questStateEntity.getQuestProgress())) {
                 QuestState childQuestState = questStateEntity.toQuestState();
                 childQuestState.updateQuestProgress(QuestProgress.LOCK_OPEN);
                 save(childQuestState);
             }
         }
+
     }
 
 }

@@ -2,15 +2,12 @@ package com.giunne.questservice.domain.course.domain;
 
 import com.giunne.questservice.domain.course.application.dto.request.UpdateCourseInfoRequestDto;
 import com.giunne.questservice.domain.course.domain.type.*;
-import com.giunne.questservice.domain.courseState.domain.CourseState;
 import com.giunne.questservice.domain.roadMap.domain.RoadMap;
-import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
@@ -32,6 +29,8 @@ public class Course {
     private CooperationType cooperationType;
     private TrainingType trainingType;
     private LocalDateTime deadline;
+    @Builder.Default
+    private IsRootCourse isRootCourse = IsRootCourse.from(false);
 //    private List<Long> parent;
     private ThumbnailUrl thumbnailUrl;
     @Builder.Default
