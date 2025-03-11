@@ -148,9 +148,7 @@ public class AvatarService {
 
     public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(MemberPrincipal memberPrincipal, GetMyRecreationAvatarRequestDto dto) {
 
-        if (memberPrincipal.getPlayerId() == null) {
-            throw new IllegalArgumentException("아바타 정보가 없습니다.");
-        }
+
 
         List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getMyRecreationStudentList(memberPrincipal.getPlayerId(), dto);
         for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
