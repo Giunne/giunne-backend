@@ -112,13 +112,13 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
             return;
         }
 
-//        for (QuestStateEntity questStateEntity : fetchChildQuestStates) {
-//            if (QuestProgress.LOCK.equals(questStateEntity.getQuestProgress())) {
-//                QuestState childQuestState = questStateEntity.toQuestState();
-//                childQuestState.updateQuestProgress(QuestProgress.LOCK_OPEN);
-//                save(childQuestState);
-//            }
-//        }
+        for (QuestStateEntity questStateEntity : fetchChildQuestStates) {
+            if (QuestProgress.LOCK.equals(questStateEntity.getQuestProgress())) {
+                QuestState childQuestState = questStateEntity.toQuestState();
+                childQuestState.updateQuestProgress(QuestProgress.LOCK_OPEN);
+                save(childQuestState);
+            }
+        }
 
     }
 
