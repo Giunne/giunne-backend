@@ -2,6 +2,7 @@ package com.giunne.memberservice.domain.avatar.repository;
 
 import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.ui.PaginationModel;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetAvatarProfileListRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
@@ -170,6 +171,155 @@ public class AvatarRepositoryImpl implements AvatarRepository {
             whereClause.and(avatarEntity.id.ne(playerId));
         }
 
+
+        List<Tuple> joinResults = queryFactory
+                .select(
+                        avatarEntity.id,
+                        avatarEntity.nickname.nickname,
+                        avatarEntity.recreation.id,
+                        avatarEntity.exp.exp,
+                        avatarEntity.level.level,
+                        avatarEntity.point.point,
+                        avatarEntity.characterNo,
+
+                        recreationEntity.recreationName.recreationName,
+                        recreationEntity.recreationCode.recreationCode,
+                        recreationEntity.teacher.id,
+                        memberEntity.nickname.nickname,
+                        memberEntity.loginId.loginId,
+
+
+                        inventoryEntity.itemInfo.itemNo,
+                        inventoryEntity.itemInfo.itemName,
+                        inventoryEntity.itemInfo.categoryNo,
+
+                        levelUpPolicyEntity.needExp.value
+                )
+                .from(avatarEntity)
+                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
+                .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
+                .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
+                .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
+                .where(whereClause)
+                .fetch();
+
+        // 결과를 Map<Long, AvatarWithWearingItemResponseDto> 형태로 변환
+        Map<Long, GetMyRecreationAvatarResponseDto> avatarMap = new LinkedHashMap<>();
+        for (Tuple tuple : joinResults) {
+            Long avatarId = tuple.get(avatarEntity.id);
+            GetMyRecreationAvatarResponseDto avatarDto = avatarMap.get(avatarId);
+
+            // 아이템이 처음 추가될 때만 생성
+            if (avatarDto == null) {
+                avatarDto = GetMyRecreationAvatarResponseDto.builder()
+                        .id(avatarId)
+                        .nickname(tuple.get(avatarEntity.nickname.nickname))
+                        .recreationId(tuple.get(avatarEntity.recreation.id))
+                        .recreationName(tuple.get(recreationEntity.recreationName.recreationName))
+                        .recreationCode(tuple.get(recreationEntity.recreationCode.recreationCode))
+                        .teacherId(tuple.get(recreationEntity.teacher.id))
+                        .teacherName(tuple.get(memberEntity.nickname.nickname))
+                        .teacherLoginId(tuple.get(memberEntity.loginId.loginId))
+                        .exp(tuple.get(avatarEntity.exp.exp))
+                        .level(tuple.get(avatarEntity.level.level))
+                        .point(tuple.get(avatarEntity.point.point))
+                        .characterNo(tuple.get(avatarEntity.characterNo))
+                        .needExp(tuple.get(levelUpPolicyEntity.needExp.value))
+                        .wearingItemIds(new ArrayList<>())
+                        .build();
+                ;
+                avatarMap.put(avatarId, avatarDto);
+            }
+
+            // 아이템 id 추가
+            if (tuple.get(inventoryEntity.itemInfo.itemNo) != null) {
+                Long itemId = tuple.get(inventoryEntity.itemInfo.itemNo);
+                avatarDto.getWearingItemIds().add(itemId);
+            }
+        }
+
+        return new ArrayList<>(avatarMap.values());
+    }
+
+    @Override
+    public GetMyRecreationAvatarResponseDto getAvatarProfileInfo(Long playerId) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+        whereClause.and(avatarEntity.id.eq(playerId));
+        whereClause.and(inventoryEntity.isWear.isWear.eq(true));
+
+
+        List<Tuple> joinResults = queryFactory
+                .select(
+                        avatarEntity.id,
+                        avatarEntity.nickname.nickname,
+                        avatarEntity.recreation.id,
+                        avatarEntity.exp.exp,
+                        avatarEntity.level.level,
+                        avatarEntity.point.point,
+                        avatarEntity.characterNo,
+
+                        recreationEntity.recreationName.recreationName,
+                        recreationEntity.recreationCode.recreationCode,
+                        recreationEntity.teacher.id,
+                        memberEntity.nickname.nickname,
+                        memberEntity.loginId.loginId,
+
+
+                        inventoryEntity.itemInfo.itemNo,
+                        inventoryEntity.itemInfo.itemName,
+                        inventoryEntity.itemInfo.categoryNo,
+
+                        levelUpPolicyEntity.needExp.value
+                )
+                .from(avatarEntity)
+                .join(memberEntity).on(memberEntity.id.eq(avatarEntity.member.id))
+                .join(inventoryEntity).on(inventoryEntity.avatar.id.eq(avatarEntity.id))
+                .join(recreationEntity).on(recreationEntity.id.eq(avatarEntity.recreation.id))
+                .join(levelUpPolicyEntity).on(levelUpPolicyEntity.currentLevel.value.eq(avatarEntity.level.level))
+                .where(whereClause)
+                .fetch();
+
+        Map<Long, GetMyRecreationAvatarResponseDto> avatarMap = new LinkedHashMap<>();
+        for (Tuple tuple : joinResults) {
+            Long avatarId = tuple.get(avatarEntity.id);
+            GetMyRecreationAvatarResponseDto avatarDto = avatarMap.get(avatarId);
+
+            // 아이템이 처음 추가될 때만 생성
+            if (avatarDto == null) {
+                avatarDto = GetMyRecreationAvatarResponseDto.builder()
+                        .id(avatarId)
+                        .nickname(tuple.get(avatarEntity.nickname.nickname))
+                        .recreationId(tuple.get(avatarEntity.recreation.id))
+                        .recreationName(tuple.get(recreationEntity.recreationName.recreationName))
+                        .recreationCode(tuple.get(recreationEntity.recreationCode.recreationCode))
+                        .teacherId(tuple.get(recreationEntity.teacher.id))
+                        .teacherName(tuple.get(memberEntity.nickname.nickname))
+                        .teacherLoginId(tuple.get(memberEntity.loginId.loginId))
+                        .exp(tuple.get(avatarEntity.exp.exp))
+                        .level(tuple.get(avatarEntity.level.level))
+                        .point(tuple.get(avatarEntity.point.point))
+                        .characterNo(tuple.get(avatarEntity.characterNo))
+                        .needExp(tuple.get(levelUpPolicyEntity.needExp.value))
+                        .wearingItemIds(new ArrayList<>())
+                        .build();
+                ;
+                avatarMap.put(avatarId, avatarDto);
+            }
+
+            // 아이템 id 추가
+            if (tuple.get(inventoryEntity.itemInfo.itemNo) != null) {
+                Long itemId = tuple.get(inventoryEntity.itemInfo.itemNo);
+                avatarDto.getWearingItemIds().add(itemId);
+            }
+        }
+
+        return avatarMap.get(playerId);
+    }
+
+    public List<GetMyRecreationAvatarResponseDto> getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+        whereClause.and(avatarEntity.id.in(dto.getPlayerId()));
+        whereClause.and(inventoryEntity.isWear.isWear.eq(true));
 
         List<Tuple> joinResults = queryFactory
                 .select(

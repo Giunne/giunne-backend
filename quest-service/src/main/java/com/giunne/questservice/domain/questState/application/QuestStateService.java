@@ -1,6 +1,10 @@
 package com.giunne.questservice.domain.questState.application;
 
 
+import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
+import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.questservice.domain.questState.application.dto.request.GetConfirmQuestRequestDto;
+import com.giunne.questservice.domain.questState.application.dto.request.GetProgressQuestRequestDto;
 import com.giunne.questservice.domain.questState.application.dto.request.UpdateQuestStateRequestDto;
 import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
 import com.giunne.questservice.domain.player.domain.Player;
@@ -8,6 +12,7 @@ import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
 import com.giunne.questservice.domain.quest.application.interfaces.QuestRepository;
 import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
+import com.giunne.questservice.domain.questState.application.dto.response.QuestInfoResponseDto;
 import com.giunne.questservice.domain.questState.application.interfaces.QuestStateRepository;
 import com.giunne.questservice.domain.questState.domain.QuestState;
 import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
@@ -60,6 +65,20 @@ public class QuestStateService {
 
         questStateRepository.updateChildQuestOpen(save);
 
+    }
+
+    public List<QuestInfoResponseDto> findInProgressQuestByRoadMap(MemberPrincipal memberPrincipal, GetProgressQuestRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        return questStateRepository.findInProgressQuestByRoadMap(dto.getRoadmapId(), memberPrincipal.getPlayerId());
+    }
+
+    public List<QuestInfoResponseDto> findConfirmQuestByRoadMap(MemberPrincipal memberPrincipal, GetConfirmQuestRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        return questStateRepository.findConfirmQuestByRoadMap(dto.getRoadmapId(), memberPrincipal.getPlayerId());
     }
 
 }
