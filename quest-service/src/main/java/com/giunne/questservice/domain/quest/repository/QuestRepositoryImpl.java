@@ -11,6 +11,9 @@ import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestEntity;
 import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
 import com.giunne.questservice.domain.quest.repository.jpa.JpaQuestRepository;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
+import com.giunne.questservice.domain.questState.repository.entity.QQuestStateEntity;
+import com.giunne.questservice.domain.questState.repository.jpa.JpaQuestStateRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,10 @@ public class QuestRepositoryImpl implements QuestRepository {
     private final JpaQuestRepository jpaQuestRepository;
     private final QQuestEntity qQuestEntity = QQuestEntity.questEntity;
     private final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
+    private final QQuestStateEntity qQuestStateEntity = QQuestStateEntity.questStateEntity;
     private final JpaQuestOpenConditionRepository jpaQuestOpenConditionRepository;
+    private final JpaQuestStateRepository jpaQuestStateRepository;
+
 
     public List<Quest> findByRoadMap(Long roadMapId) {
         List<QuestEntity> fetch = queryFactory.selectFrom(qQuestEntity)

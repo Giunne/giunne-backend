@@ -6,10 +6,8 @@ import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.LoginPlayerRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
@@ -86,6 +84,32 @@ public class AvatarController {
             , @ParameterObject GetMyRecreationAvatarRequestDto dto) {
         List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarService.getMyRecreationStudentList(memberPrincipal, dto);
         return Response.ok(myAvatarList);
+    }
+
+    @Operation(summary = "특정 아바타 프로필 정보 조회", description = """
+            ## 기능설명
+            * 특정 아바타 정보 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/avatar-profile")
+    public Response<GetMyRecreationAvatarResponseDto> getAvatarProfileInfo(@ParameterObject GetAvatarProfileRequestDto dto) {
+        GetMyRecreationAvatarResponseDto avatarProfileInfo = avatarService.getAvatarProfileInfo(dto);
+        return Response.ok(avatarProfileInfo);
+    }
+
+    @Operation(summary = "아바타 프로필 정보 조회", description = """
+            ## 기능설명
+            * 아바타 정보 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/avatar-profiles")
+    public Response<List<GetMyRecreationAvatarResponseDto> > getAvatarProfileListInfo(@ParameterObject GetAvatarProfileListRequestDto dto) {
+        List<GetMyRecreationAvatarResponseDto> avatarProfileInfos = avatarService.getAvatarProfileListInfo(dto);
+        return Response.ok(avatarProfileInfos);
     }
 
 }

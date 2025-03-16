@@ -12,10 +12,8 @@ import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
+import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.CreateAvatarRequestDto;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.LoginPlayerRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
@@ -148,8 +146,6 @@ public class AvatarService {
 
     public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(MemberPrincipal memberPrincipal, GetMyRecreationAvatarRequestDto dto) {
 
-
-
         List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getMyRecreationStudentList(memberPrincipal.getPlayerId(), dto);
         for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
             GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
@@ -159,5 +155,25 @@ public class AvatarService {
 
         return myAvatarList;
     }
+
+
+    public GetMyRecreationAvatarResponseDto getAvatarProfileInfo(GetAvatarProfileRequestDto dto) {
+        GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto = avatarRepository.getAvatarProfileInfo(dto.getPlayerId());
+        GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
+        Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
+        getMyRecreationAvatarResponseDto.setWearingItems(listResponse.value());
+        return getMyRecreationAvatarResponseDto;
+    }
+
+    public List<GetMyRecreationAvatarResponseDto>  getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto) {
+        List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getAvatarProfileListInfo(dto);
+        for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
+            GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
+            Response<List<GetWearingItemResponseDto>> listResponse = itemInfoClient.requestFindWearingItems(getWearingItemsRequestDto);
+            getMyRecreationAvatarResponseDto.setWearingItems(listResponse.value());
+        }
+        return myAvatarList;
+    }
+
 
 }
