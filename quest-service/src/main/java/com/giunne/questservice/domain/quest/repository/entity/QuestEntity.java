@@ -5,6 +5,7 @@ import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.questservice.domain.course.repository.entity.CourseEntity;
 import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.questservice.domain.quest.domain.type.*;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -93,6 +94,9 @@ public class QuestEntity extends BaseEntity {
     @Embedded
     private GuideUrl guideUrl;  // 가이드 URL
 
+    @Enumerated(EnumType.STRING)
+    private QuestProgress startQuestProgress; // 퀘스트 시작 진행상황
+
     public QuestEntity(Quest quest) {
         this.id = quest.getId();
         this.recreationNo = quest.getRecreationNo();
@@ -116,6 +120,7 @@ public class QuestEntity extends BaseEntity {
         this.needApproveCount = quest.getNeedApproveCount();
         this.currentApproveCount = quest.getCurrentApproveCount();
         this.trainingDescription = quest.getTrainingDescription();
+        this.startQuestProgress = quest.getStartQuestProgress();
     }
 
     public Quest toQuest() {
@@ -141,6 +146,7 @@ public class QuestEntity extends BaseEntity {
                 .currentApproveCount(currentApproveCount)
                 .questDescription(questDescription)
                 .trainingDescription(trainingDescription)
+                .startQuestProgress(startQuestProgress)
                 .build();
     }
 

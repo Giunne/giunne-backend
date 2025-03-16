@@ -1,6 +1,10 @@
 package com.giunne.questservice.domain.quest.repository;
 
+import com.giunne.questservice.domain.course.domain.Course;
+import com.giunne.questservice.domain.quest.domain.QuestOpenCondition;
+import com.giunne.questservice.domain.quest.repository.entity.QuestOpenConditionEntity;
 import com.giunne.questservice.domain.course.repository.entity.QCourseEntity;
+import com.giunne.questservice.domain.quest.repository.jpa.JpaQuestOpenConditionRepository;
 import com.giunne.questservice.domain.quest.application.dto.request.UpdateQuestInfoRequestDto;
 import com.giunne.questservice.domain.quest.application.interfaces.QuestRepository;
 import com.giunne.questservice.domain.quest.domain.Quest;
@@ -13,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +28,7 @@ public class QuestRepositoryImpl implements QuestRepository {
     private final JpaQuestRepository jpaQuestRepository;
     private final QQuestEntity qQuestEntity = QQuestEntity.questEntity;
     private final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
+    private final JpaQuestOpenConditionRepository jpaQuestOpenConditionRepository;
 
     public List<Quest> findByRoadMap(Long roadMapId) {
         List<QuestEntity> fetch = queryFactory.selectFrom(qQuestEntity)
@@ -72,5 +78,28 @@ public class QuestRepositoryImpl implements QuestRepository {
         return saved.toQuest();
     }
 
+    @Override
+    @Transactional
+    public List<QuestOpenCondition> insertOpenConditions(Quest node, List<Quest> openConditions) {
+        if (openConditions.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<QuestOpenCondition> questOpenConditions = new ArrayList<>();
+        for (Quest openCondition : openConditions) {
+            questOpenConditions.add(
+                    QuestOpenCondition.builder()
+                            .node(node)
+                            .parents(openCondition)
+                            .build()
+            );
+        }
+
+        List<QuestOpenConditionEntity> save = new ArrayList<>();
+        List<QuestOpenConditionEntity> list = questOpenConditions.stream().map(QuestOpenConditionEntity::new).toList();
+        save = jpaQuestOpenConditionRepository.saveAll(list);
+
+        return save.stream().map(QuestOpenConditionEntity::toQuestOpenCondition).toList();
+    }
 
 }

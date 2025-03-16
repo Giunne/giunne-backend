@@ -14,7 +14,6 @@ import com.giunne.questservice.domain.course.repository.jpa.JpaCoursePathReposit
 import com.giunne.questservice.domain.course.repository.jpa.JpaCourseRepository;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestEntity;
 import com.giunne.questservice.domain.questState.repository.entity.QQuestStateEntity;
-import com.giunne.questservice.domain.roadMap.domain.RoadMap;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -43,7 +42,6 @@ public class CourseRepositoryImpl implements CourseRepository {
     private final QCourseParentEntity qCourseParentEntity = QCourseParentEntity.courseParentEntity;
     private final QQuestStateEntity qQuestStateEntity = QQuestStateEntity.questStateEntity;
     private final JpaCourseParentRepository jpaCourseParentRepository;
-
 
     @Transactional
     @Override
@@ -570,9 +568,6 @@ public class CourseRepositoryImpl implements CourseRepository {
         return course;
     }
 
-
-
-
     @Override
     @Transactional
     public Course updateCourseInfo(UpdateCourseInfoRequestDto dto) {
@@ -592,16 +587,12 @@ public class CourseRepositoryImpl implements CourseRepository {
         return save.toCourseParent();
     }
 
-    public void insertCourseParentEntity(List<CourseParentEntity> courseParentEntities) {
-        jpaCourseParentRepository.saveAll(courseParentEntities);
-    }
-
     @Override
     @Transactional
     public List<CourseParent> insertCourseParent(List<CourseParent> parents) {
-        List<CourseParentEntity> list = parents.stream().map(i -> new CourseParentEntity(i)).toList();
+        List<CourseParentEntity> list = parents.stream().map(CourseParentEntity::new).toList();
         List<CourseParentEntity> save = jpaCourseParentRepository.saveAll(list);
-        return save.stream().map(i -> i.toCourseParent()).toList();
+        return save.stream().map(CourseParentEntity::toCourseParent).toList();
     }
 
     private void saveCoursePath(Course node) {
