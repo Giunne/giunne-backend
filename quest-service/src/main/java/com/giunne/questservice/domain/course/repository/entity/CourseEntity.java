@@ -87,27 +87,6 @@ public class CourseEntity extends BaseEntity {
     @Embedded
     private GuideUrl guideUrl;
 
-    /**
-     * 부모 ID 목록을 변경합니다.
-     * 기존 데이터와 새로운 데이터를 비교하여 필요한 변경만 수행합니다.
-     */
-//    public void changeParent(List<Long> parentIdList) {
-//        if (parentIdList == null) {
-//            throw new IllegalArgumentException("부모 ID 목록은 null일 수 없습니다.");
-//        }
-//
-//        // 중복 제거 및 정렬을 위한 새로운 리스트 생성
-//        List<Long> newParentIds = new ArrayList<>(new LinkedHashSet<>(parentIdList));
-//        Collections.sort(newParentIds);
-//
-//        // 실제로 변경이 필요할 때만 업데이트 수행
-//        if (!Objects.equals(this.parent, newParentIds)) {
-//            if(this.parent != null) {
-//                this.parent.clear();
-//            }
-//            this.parent= newParentIds;
-//        }
-//    }
 
     public Course toCourse() {
         return Course.builder()

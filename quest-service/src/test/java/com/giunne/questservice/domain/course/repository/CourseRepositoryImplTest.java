@@ -15,6 +15,7 @@ import com.giunne.questservice.domain.course.repository.jpa.JpaCourseRepository;
 import com.giunne.questservice.domain.quest.application.interfaces.QuestRepository;
 import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.questservice.domain.quest.domain.type.*;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import com.giunne.questservice.domain.roadMap.application.interfaces.RoadMapRepository;
 import com.giunne.questservice.domain.roadMap.domain.RoadMap;
 import jakarta.persistence.EntityManager;
@@ -70,7 +71,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_코어 = courseRepository.insertRootCourse(코어.toCourse());
 
-        questRepository.saveQuest(
+        Quest 저장_코어_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("0.코어"))
                         .course(저장_코어)
@@ -78,6 +79,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .startQuestProgress(QuestProgress.CONFIRM)
                         .build()
         );
 
@@ -92,7 +94,6 @@ class CourseRepositoryImplTest {
                         .sortSeq(SortSeq.from(1L))
                         .cooperationType(CooperationType.ALL)
                         .trainingType(TrainingType.CORE)
-//                        .parent(List.of(저장_코어.getId()))
                         .roadMap(roadMap)
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][1]버드독.png"))
                         .build()
@@ -101,7 +102,7 @@ class CourseRepositoryImplTest {
 
         Course 저장_버드독 = courseRepository.insertCourse(버드독.toCourse(), 저장_코어);
 
-        questRepository.saveQuest(
+        Quest 저장_버드독_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1.버드독"))
                         .course(저장_버드독)
@@ -109,6 +110,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.ALL)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .startQuestProgress(QuestProgress.LOCK_OPEN)
                         .build()
         );
 
@@ -129,14 +131,8 @@ class CourseRepositoryImplTest {
                         .build()
         );
         Course 저장_데드버그 = courseRepository.insertCourse(데드버그.toCourse(), 저장_버드독);
-//
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_버드독)
-//                .child(저장_데드버그)
-//                .build());
 
-
-        questRepository.saveQuest(
+        Quest 저장_데드버그_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2.데드버그"))
                         .course(저장_데드버그)
@@ -146,6 +142,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_데드버그_퀘스트, List.of(저장_버드독_퀘스트));
 
         CourseEntity 비스트 = new CourseEntity(
                 Course.builder()
@@ -159,19 +156,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.ALL)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_데드버그.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][3]비스트.png"))
                         .build()
         );
         Course 저장_비스트 = courseRepository.insertCourse(비스트.toCourse(), 저장_데드버그);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_데드버그)
-//                .child(저장_비스트)
-//                .build());
-
-
-        questRepository.saveQuest(
+        Quest 저장_비스트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("3.비스트"))
                         .course(저장_비스트)
@@ -181,6 +171,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_퀘스트, List.of(저장_데드버그_퀘스트));
 
         CourseEntity 플랭크 = new CourseEntity(
                 Course.builder()
@@ -194,18 +186,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.ALL)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_비스트.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][4-a]플랭크.png"))
                         .build()
         );
         Course 저장_플랭크 = courseRepository.insertCourse(플랭크.toCourse(), 저장_비스트);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트)
-//                .child(저장_플랭크)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_플랭크_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4-a.플랭크"))
                         .course(저장_플랭크)
@@ -215,6 +202,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_플랭크_퀘스트, List.of(저장_비스트_퀘스트));
 
         CourseEntity 하이플랭크 = new CourseEntity(
                 Course.builder()
@@ -228,18 +216,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.ALL)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_비스트.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][4-b]하이플랭크.png"))
                         .build()
         );
         Course 저장_하이플랭크 = courseRepository.insertCourse(하이플랭크.toCourse(), 저장_비스트);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트)
-//                .child(저장_하이플랭크)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_하이플랭크_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4-b.하이플랭크"))
                         .course(저장_하이플랭크)
@@ -249,6 +232,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_하이플랭크_퀘스트, List.of(저장_비스트_퀘스트));
 
         CourseEntity 플랭크_앤_플랭크 = new CourseEntity(
                 Course.builder()
@@ -262,18 +247,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.ALL)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_비스트.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][4-c]플랭크 앤 플랭크.png"))
                         .build()
         );
         Course 저장_플랭크_앤_플랭크 = courseRepository.insertCourse(플랭크_앤_플랭크.toCourse(), 저장_비스트);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트)
-//                .child(저장_플랭크_앤_플랭크)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_플랭크_앤_플랭크_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4-c.플랭크 앤 플랭크"))
                         .course(저장_플랭크_앤_플랭크)
@@ -283,6 +263,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_플랭크_앤_플랭크_퀘스트, List.of(저장_비스트_퀘스트));
 
         CourseEntity 플랭크_한발들기 = new CourseEntity(
                 Course.builder()
@@ -296,18 +278,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_하이플랭크.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][5-a]플랭크 한발들기.png"))
                         .build()
         );
         Course 저장_플랭크_한발들기 = courseRepository.insertCourse(플랭크_한발들기.toCourse(), 저장_하이플랭크);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크)
-//                .child(저장_플랭크_한발들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_플랭크_한발들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("5-a.플랭크 한발들기"))
                         .course(저장_플랭크_한발들기)
@@ -317,6 +294,12 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_플랭크_한발들기_퀘스트, List.of(
+                저장_플랭크_퀘스트,
+                저장_하이플랭크_퀘스트,
+                저장_플랭크_앤_플랭크_퀘스트
+        ));
 
         CourseEntity 비스트_한발들기 = new CourseEntity(
                 Course.builder()
@@ -330,18 +313,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_하이플랭크.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][5-b]비스트 한발들기.png"))
                         .build()
         );
         Course 저장_비스트_한발들기 = courseRepository.insertCourse(비스트_한발들기.toCourse(), 저장_하이플랭크);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크)
-//                .child(저장_비스트_한발들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_비스트_한발들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("5-b.비스트 한발들기"))
                         .course(저장_비스트_한발들기)
@@ -351,6 +329,12 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_한발들기_퀘스트, List.of(
+                저장_플랭크_퀘스트,
+                저장_하이플랭크_퀘스트,
+                저장_플랭크_앤_플랭크_퀘스트
+        ));
 
         CourseEntity 하이플랭크_한발들기 = new CourseEntity(
                 Course.builder()
@@ -364,18 +348,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_하이플랭크.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][5-c]하이플랭크 한발들기.png"))
                         .build()
         );
         Course 저장_하이플랭크_한발들기 = courseRepository.insertCourse(하이플랭크_한발들기.toCourse(), 저장_하이플랭크);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크)
-//                .child(저장_하이플랭크_한발들기)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_하이플랭크_한발들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("5-c.하이플랭크 한발들기"))
                         .course(저장_하이플랭크_한발들기)
@@ -386,6 +364,12 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
+        questRepository.insertOpenConditions(저장_하이플랭크_한발들기_퀘스트, List.of(
+                저장_플랭크_퀘스트,
+                저장_하이플랭크_퀘스트,
+                저장_플랭크_앤_플랭크_퀘스트
+        ));
+        
         CourseEntity 플랭크_한손들기 = new CourseEntity(
                 Course.builder()
                         .courseName(CourseName.from("6-a." + TrainingType.CORE))
@@ -398,18 +382,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_플랭크_한발들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][6-a]플랭크 한손들기.png"))
                         .build()
         );
         Course 저장_플랭크_한손들기 = courseRepository.insertCourse(플랭크_한손들기.toCourse(), 저장_플랭크_한발들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_플랭크_한발들기)
-//                .child(저장_플랭크_한손들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_플랭크_한손들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("6-a.플랭크 한손들기"))
                         .course(저장_플랭크_한손들기)
@@ -420,6 +399,7 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
+        questRepository.insertOpenConditions(저장_하이플랭크_한발들기_퀘스트, List.of(저장_플랭크_한발들기_퀘스트));
 
         CourseEntity 비스트_한손들기 = new CourseEntity(
                 Course.builder()
@@ -433,18 +413,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_비스트_한발들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][6-b]비스트 한손들기.png"))
                         .build()
         );
         Course 저장_비스트_한손들기 = courseRepository.insertCourse(비스트_한손들기.toCourse(), 저장_비스트_한발들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트_한발들기)
-//                .child(저장_비스트_한손들기)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_비스트_한손들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("6-b.비스트 한손들기"))
                         .course(저장_비스트_한손들기)
@@ -454,6 +428,9 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_한손들기_퀘스트, List.of(저장_비스트_한발들기_퀘스트));
+
 
         CourseEntity 하이플랭크_한손들기 = new CourseEntity(
                 Course.builder()
@@ -467,18 +444,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_하이플랭크_한발들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][6-c]하이플랭크 한손들기.png"))
                         .build()
         );
         Course 저장_하이플랭크_한손들기 = courseRepository.insertCourse(하이플랭크_한손들기.toCourse(), 저장_하이플랭크_한발들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크_한발들기)
-//                .child(저장_하이플랭크_한손들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_하이플랭크_한손들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("6-c.하이플랭크 한손들기"))
                         .course(저장_하이플랭크_한손들기)
@@ -488,6 +460,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_하이플랭크_한손들기_퀘스트, List.of(저장_하이플랭크_한발들기_퀘스트));
 
         CourseEntity 플랭크_한손_한발_들기 = new CourseEntity(
                 Course.builder()
@@ -501,18 +475,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_플랭크_한손들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][7-a]플랭크 한손 한발 들기.png"))
                         .build()
         );
         Course 저장_플랭크_한손_한발_들기 = courseRepository.insertCourse(플랭크_한손_한발_들기.toCourse(), 저장_플랭크_한손들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_플랭크_한손들기)
-//                .child(저장_플랭크_한손_한발_들기)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_플랭크_한손_한발_들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("7-a.플랭크 한손 한발 들기"))
                         .course(저장_플랭크_한손_한발_들기)
@@ -522,6 +490,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_플랭크_한손_한발_들기_퀘스트, List.of(저장_플랭크_한손들기_퀘스트));
 
         CourseEntity 비스트_한손_한발_들기 = new CourseEntity(
                 Course.builder()
@@ -535,18 +505,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_비스트_한손들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][7-b]비스트 한손 한발 들기.png"))
                         .build()
         );
         Course 저장_비스트_한손_한발_들기 = courseRepository.insertCourse(비스트_한손_한발_들기.toCourse(), 저장_비스트_한손들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트_한손들기)
-//                .child(저장_비스트_한손_한발_들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_비스트_한손_한발_들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("7-b.비스트 한손 한발 들기"))
                         .course(저장_비스트_한손_한발_들기)
@@ -556,6 +521,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_한손_한발_들기_퀘스트, List.of(저장_비스트_한손들기_퀘스트));
 
         CourseEntity 하이플랭크_한손_한발_들기 = new CourseEntity(
                 Course.builder()
@@ -569,18 +536,13 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(저장_하이플랭크_한손들기.getId()))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][7-c]하이플랭크 한손 한발 들기.png"))
                         .build()
         );
         Course 저장_하이플랭크_한손_한발_들기 = courseRepository.insertCourse(하이플랭크_한손_한발_들기.toCourse(), 저장_하이플랭크_한손들기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크_한손들기)
-//                .child(저장_하이플랭크_한손_한발_들기)
-//                .build());
 
-        questRepository.saveQuest(
+        Quest 저장_하이플랭크_한손_한발_들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("7-c.하이플랭크 한손 한발 들기"))
                         .course(저장_하이플랭크_한손_한발_들기)
@@ -590,7 +552,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
-
+        questRepository.insertOpenConditions(저장_하이플랭크_한손_한발_들기_퀘스트, List.of(저장_하이플랭크_한손들기_퀘스트));
 
         CourseEntity 비스트_걷기 = new CourseEntity(
                 Course.builder()
@@ -604,11 +566,6 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_플랭크_한손_한발_들기.getId(),
-//                                저장_비스트_한손_한발_들기.getId(),
-//                                저장_하이플랭크_한손_한발_들기.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][8]비스트 걷기.png"))
                         .build()
         );
@@ -617,21 +574,7 @@ class CourseRepositoryImplTest {
                 저장_하이플랭크_한손_한발_들기
         ));
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_플랭크_한손_한발_들기)
-//                .child(저장_비스트_걷기)
-//                .build());
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트_한손_한발_들기)
-//                .child(저장_비스트_걷기)
-//                .build());
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_하이플랭크_한손_한발_들기)
-//                .child(저장_비스트_걷기)
-//                .build());
-
-
-        questRepository.saveQuest(
+        Quest 저장_비스트_걷기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("8.비스트 걷기"))
                         .course(저장_비스트_걷기)
@@ -641,6 +584,11 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_걷기_퀘스트, List.of(저장_플랭크_한손_한발_들기_퀘스트,
+                저장_비스트_한손_한발_들기_퀘스트,
+                저장_하이플랭크_한손_한발_들기_퀘스트
+                ));
 
         CourseEntity 비스트_블럭_걷기 = new CourseEntity(
                 Course.builder()
@@ -654,20 +602,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.TEAM)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_비스트_걷기.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][9]비스트 블럭 걷기.png"))
                         .build()
         );
         Course 저장_비스트_블럭_걷기 = courseRepository.insertCourse(비스트_블럭_걷기.toCourse(), 저장_비스트_걷기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트_걷기)
-//                .child(저장_비스트_블럭_걷기)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_비스트_블럭_걷기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("9.비스트 블럭 걷기"))
                         .course(저장_비스트_블럭_걷기)
@@ -677,6 +617,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_비스트_블럭_걷기_퀘스트, List.of(저장_비스트_걷기_퀘스트));
 
         CourseEntity 언더스위치 = new CourseEntity(
                 Course.builder()
@@ -690,20 +632,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_비스트_블럭_걷기.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][10]언더스위치.png"))
                         .build()
         );
         Course 저장_언더스위치 = courseRepository.insertCourse(언더스위치.toCourse(), 저장_비스트_블럭_걷기);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_비스트_블럭_걷기)
-//                .child(저장_언더스위치)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_언더스위치_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("10.언더스위치"))
                         .course(저장_언더스위치)
@@ -713,6 +647,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_언더스위치_퀘스트, List.of(저장_비스트_블럭_걷기_퀘스트));
 
         CourseEntity 사이드킥_스루 = new CourseEntity(
                 Course.builder()
@@ -726,20 +662,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_언더스위치.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][11]사이드킥 스루.png"))
                         .build()
         );
         Course 저장_사이드킥_스루 = courseRepository.insertCourse(사이드킥_스루.toCourse(), 저장_언더스위치);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_언더스위치)
-//                .child(저장_사이드킥_스루)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_사이드킥_스루_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("11.사이드킥 스루"))
                         .course(저장_사이드킥_스루)
@@ -749,6 +677,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_사이드킥_스루_퀘스트, List.of(저장_언더스위치_퀘스트));
 
         CourseEntity 사이트플랭크 = new CourseEntity(
                 Course.builder()
@@ -762,20 +692,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_사이드킥_스루.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][12]사이드플랭크.png"))
                         .build()
         );
         Course 저장_사이트플랭크 = courseRepository.insertCourse(사이트플랭크.toCourse(), 저장_사이드킥_스루);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_사이드킥_스루)
-//                .child(저장_사이트플랭크)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_사이트플랭크_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("12.사이트플랭크"))
                         .course(저장_사이트플랭크)
@@ -785,6 +707,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_사이트플랭크_퀘스트, List.of(저장_사이드킥_스루_퀘스트));
 
         CourseEntity 사이드_플랭크_굴곡 = new CourseEntity(
                 Course.builder()
@@ -798,20 +721,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_사이트플랭크.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][13-a]사이드 플랭크 굴곡.png"))
                         .build()
         );
         Course 저장_사이드_플랭크_굴곡 = courseRepository.insertCourse(사이드_플랭크_굴곡.toCourse(), 저장_사이트플랭크);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_사이트플랭크)
-//                .child(저장_사이드_플랭크_굴곡)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_사이드_플랭크_굴곡_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("13-a.사이드 플랭크 굴곡"))
                         .course(저장_사이드_플랭크_굴곡)
@@ -821,6 +736,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_사이드_플랭크_굴곡_퀘스트, List.of(저장_사이트플랭크_퀘스트));
 
         CourseEntity 사이드_플랭크_발_들기 = new CourseEntity(
                 Course.builder()
@@ -834,20 +751,12 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_사이트플랭크.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][13-b]사이드 플랭크 발 들기.png"))
                         .build()
         );
         Course 저장_사이드_플랭크_발_들기 = courseRepository.insertCourse(사이드_플랭크_발_들기.toCourse(), 저장_사이트플랭크);
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_사이트플랭크)
-//                .child(저장_사이드_플랭크_발_들기)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_사이드_플랭크_발_들기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("13-b.사이드 플랭크 발 들기"))
                         .course(저장_사이드_플랭크_발_들기)
@@ -857,6 +766,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_사이드_플랭크_발_들기_퀘스트, List.of(저장_사이트플랭크_퀘스트));
 
         CourseEntity 사이드_플랭크_회전 = new CourseEntity(
                 Course.builder()
@@ -870,10 +781,6 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.CORE)
                         .roadMap(roadMap)
-//                        .parent(List.of(
-//                                저장_사이드_플랭크_굴곡.getId(),
-//                                저장_사이드_플랭크_발_들기.getId()
-//                        ))
                         .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[코어][14]사이드 플랭크 회전.png"))
                         .build()
         );
@@ -883,17 +790,7 @@ class CourseRepositoryImplTest {
                 )
         );
 
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_사이드_플랭크_굴곡)
-//                .child(저장_사이드_플랭크_회전)
-//                .build());
-//
-//        courseRepository.insertCourseParent(CourseParent.builder()
-//                .parents(저장_사이드_플랭크_발_들기)
-//                .child(저장_사이드_플랭크_회전)
-//                .build());
-
-        questRepository.saveQuest(
+        Quest 저장_사이드_플랭크_회전_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("14.사이드 플랭크 회전"))
                         .course(저장_사이드_플랭크_회전)
@@ -904,16 +801,17 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
+        questRepository.insertOpenConditions(저장_사이드_플랭크_회전_퀘스트, List.of(저장_사이드_플랭크_굴곡_퀘스트
+                , 저장_사이드_플랭크_발_들기_퀘스트));
 
 
-
-    }
-
-    @Test
-    @Rollback(false)
-    @DisplayName("코스(하체) 초기화 ")
-    void initLowerBodyCourse() {
-        RoadMap roadMap = roadMapRepository.findById(1L);
+//    }
+//
+//    @Test
+//    @Rollback(false)
+//    @DisplayName("코스(하체) 초기화 ")
+//    void initLowerBodyCourse() {
+//        RoadMap roadMap = roadMapRepository.findById(1L);
 
         CourseEntity 하체0 = new CourseEntity(
                 Course.builder()
@@ -940,6 +838,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
+                        .startQuestProgress(QuestProgress.CONFIRM)
                         .build()
         );
 
@@ -962,7 +861,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_누워서_고관절_굴곡 = courseRepository.insertCourse(누워서_고관절_굴곡.toCourse(), 저장_하체0);
 
-        questRepository.saveQuest(
+        Quest 저장_누워서_고관절_굴곡_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1-a.누워서 고관절 굴곡"))
                         .course(저장_누워서_고관절_굴곡)
@@ -972,6 +871,11 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_누워서_고관절_굴곡_퀘스트, List.of(
+                저장_플랭크_퀘스트,
+                저장_하이플랭크_퀘스트,
+                저장_플랭크_앤_플랭크_퀘스트));
 
         CourseEntity 서서_고관절_굴곡 = new CourseEntity(
                 Course.builder()
@@ -991,7 +895,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_서서_고관절_굴곡 = courseRepository.insertCourse(서서_고관절_굴곡.toCourse(), 저장_하체0);
 
-        questRepository.saveQuest(
+        Quest 저장_서서_고관절_굴곡_퀘스트  = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1-b.서서 고관절 굴곡"))
                         .course(저장_서서_고관절_굴곡)
@@ -1001,6 +905,11 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_서서_고관절_굴곡_퀘스트, List.of(
+                저장_플랭크_퀘스트,
+                저장_하이플랭크_퀘스트,
+                저장_플랭크_앤_플랭크_퀘스트));
 
         CourseEntity 엎드려_힙힌지 = new CourseEntity(
                 Course.builder()
@@ -1020,7 +929,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_엎드려_힙힌지 = courseRepository.insertCourse(엎드려_힙힌지.toCourse(), 저장_누워서_고관절_굴곡);
 
-        questRepository.saveQuest(
+        Quest 저장_엎드려_힙힌지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2-a.엎드려 힙힌지"))
                         .course(저장_엎드려_힙힌지)
@@ -1030,6 +939,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_엎드려_힙힌지_퀘스트, List.of(저장_누워서_고관절_굴곡_퀘스트));
 
         CourseEntity 무릎_꿇고_힙힌지 = new CourseEntity(
                 Course.builder()
@@ -1048,7 +959,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_무릎_꿇고_힙힌지 = courseRepository.insertCourse(무릎_꿇고_힙힌지.toCourse(), 저장_서서_고관절_굴곡);
 
-        questRepository.saveQuest(
+        Quest 저장_무릎_꿇고_힙힌지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2-b.무릎 꿇고 힙힌지"))
                         .course(저장_무릎_꿇고_힙힌지)
@@ -1058,6 +969,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_무릎_꿇고_힙힌지_퀘스트, List.of(저장_서서_고관절_굴곡_퀘스트));
 
         CourseEntity 한발서기 = new CourseEntity(
                 Course.builder()
@@ -1080,7 +993,7 @@ class CourseRepositoryImplTest {
         ));
 
 
-        questRepository.saveQuest(
+        Quest 저장_한발서기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("3.한발서기"))
                         .course(저장_한발서기)
@@ -1090,6 +1003,11 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LOWER_BODY)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_한발서기_퀘스트, List.of(
+                저장_엎드려_힙힌지_퀘스트,
+                저장_무릎_꿇고_힙힌지_퀘스트
+        ));
 
         CourseEntity 스쿼트0 = new CourseEntity(
                 Course.builder()
@@ -1115,6 +1033,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
+                        .startQuestProgress(QuestProgress.CONFIRM)
                         .build()
         );
 
@@ -1135,7 +1054,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_스쿼트 = courseRepository.insertCourse(스쿼트.toCourse(), 저장_스쿼트0);
 
-        questRepository.saveQuest(
+        Quest 저장_스쿼트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1.스쿼트"))
                         .course(저장_스쿼트)
@@ -1145,6 +1064,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_스쿼트_퀘스트, List.of(저장_한발서기_퀘스트));
 
         CourseEntity 까치발_스쿼트 = new CourseEntity(
                 Course.builder()
@@ -1163,7 +1083,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_까치발_스쿼트 = courseRepository.insertCourse(까치발_스쿼트.toCourse(), 저장_스쿼트);
 
-        questRepository.saveQuest(
+        Quest 저장_까치발_스쿼트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2.까치발 스쿼트"))
                         .course(저장_까치발_스쿼트)
@@ -1173,6 +1093,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_까치발_스쿼트_퀘스트, List.of(저장_스쿼트_퀘스트));
 
         CourseEntity 만세_스쿼트 = new CourseEntity(
                 Course.builder()
@@ -1191,7 +1113,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_만세_스쿼트 = courseRepository.insertCourse(만세_스쿼트.toCourse(), 저장_까치발_스쿼트);
 
-        questRepository.saveQuest(
+        Quest 저장_만세_스쿼트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("3.만세 스쿼트"))
                         .course(저장_만세_스쿼트)
@@ -1201,6 +1123,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_만세_스쿼트_퀘스트, List.of(저장_까치발_스쿼트_퀘스트));
 
         CourseEntity 점프_스쿼트 = new CourseEntity(
                 Course.builder()
@@ -1219,7 +1142,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_점프_스쿼트 = courseRepository.insertCourse(점프_스쿼트.toCourse(), 저장_만세_스쿼트);
 
-        questRepository.saveQuest(
+        Quest 저장_점프_스쿼트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4-a.점프 스쿼트"))
                         .course(저장_점프_스쿼트)
@@ -1229,6 +1152,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_점프_스쿼트_퀘스트, List.of(저장_만세_스쿼트_퀘스트));
 
         CourseEntity 변형_스쿼트 = new CourseEntity(
                 Course.builder()
@@ -1247,7 +1172,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_변형_스쿼트 = courseRepository.insertCourse(변형_스쿼트.toCourse(), 저장_만세_스쿼트);
 
-        questRepository.saveQuest(
+        Quest 저장_변형_스쿼트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4-b.변형 스쿼트"))
                         .course(저장_변형_스쿼트)
@@ -1257,6 +1182,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_변형_스쿼트_퀘스트, List.of(저장_만세_스쿼트_퀘스트));
 
         CourseEntity 런지0 = new CourseEntity(
                 Course.builder()
@@ -1282,6 +1208,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
+                        .startQuestProgress(QuestProgress.CONFIRM)
                         .build()
         );
 
@@ -1302,7 +1229,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_런지 = courseRepository.insertCourse(런지.toCourse(), 저장_런지0);
 
-        questRepository.saveQuest(
+        Quest 저장_런지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1.런지"))
                         .course(저장_런지)
@@ -1312,6 +1239,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_런지_퀘스트, List.of(저장_스쿼트_퀘스트));
 
         CourseEntity 워킹_런지 = new CourseEntity(
                 Course.builder()
@@ -1330,7 +1258,7 @@ class CourseRepositoryImplTest {
         );
         Course 워킹_워킹_런지 = courseRepository.insertCourse(워킹_런지.toCourse(), 저장_런지);
 
-        questRepository.saveQuest(
+        Quest 워킹_워킹_런지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2.워킹 런지"))
                         .course(워킹_워킹_런지)
@@ -1340,6 +1268,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
                         .build()
         );
+        questRepository.insertOpenConditions(워킹_워킹_런지_퀘스트, List.of(저장_런지_퀘스트));
 
         CourseEntity 점프런지_모으기 = new CourseEntity(
                 Course.builder()
@@ -1358,7 +1287,7 @@ class CourseRepositoryImplTest {
         );
         Course 워킹_점프런지_모으기 = courseRepository.insertCourse(점프런지_모으기.toCourse(), 워킹_워킹_런지);
 
-        questRepository.saveQuest(
+        Quest 워킹_점프런지_모으기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("3.점프런지 모으기"))
                         .course(워킹_점프런지_모으기)
@@ -1368,6 +1297,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
                         .build()
         );
+        questRepository.insertOpenConditions(워킹_점프런지_모으기_퀘스트, List.of(워킹_워킹_런지_퀘스트));
 
         CourseEntity 점프런지 = new CourseEntity(
                 Course.builder()
@@ -1386,7 +1316,7 @@ class CourseRepositoryImplTest {
         );
         Course 워킹_점프런지 = courseRepository.insertCourse(점프런지.toCourse(), 워킹_점프런지_모으기);
 
-        questRepository.saveQuest(
+        Quest 워킹_점프런지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4.점프런지"))
                         .course(워킹_점프런지)
@@ -1396,6 +1326,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
                         .build()
         );
+        questRepository.insertOpenConditions(워킹_점프런지_퀘스트, List.of(워킹_점프런지_모으기_퀘스트));
 
         CourseEntity 데드리프트0 = new CourseEntity(
                 Course.builder()
@@ -1421,6 +1352,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
+                        .startQuestProgress(QuestProgress.CONFIRM)
                         .build()
         );
 
@@ -1441,7 +1373,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_힙힌지_움직임 = courseRepository.insertCourse(힙힌지_움직임.toCourse(), 저장_데드리프트0);
 
-        questRepository.saveQuest(
+        Quest 저장_힙힌지_움직임_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1-a.힙힌지 움직임"))
                         .course(저장_힙힌지_움직임)
@@ -1451,6 +1383,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_힙힌지_움직임_퀘스트, List.of(저장_한발서기_퀘스트));
 
         CourseEntity 우산_힙힌지 = new CourseEntity(
                 Course.builder()
@@ -1469,7 +1403,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_우산_힙힌지 = courseRepository.insertCourse(우산_힙힌지.toCourse(), 저장_데드리프트0);
 
-        questRepository.saveQuest(
+        Quest 저장_우산_힙힌지_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("1-b.우산 힙힌지"))
                         .course(저장_우산_힙힌지)
@@ -1480,6 +1414,7 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
+        questRepository.insertOpenConditions(저장_우산_힙힌지_퀘스트, List.of(저장_한발서기_퀘스트));
 
         CourseEntity 데드리프트 = new CourseEntity(
                 Course.builder()
@@ -1500,7 +1435,7 @@ class CourseRepositoryImplTest {
                 저장_힙힌지_움직임, 저장_우산_힙힌지
         ));
 
-        questRepository.saveQuest(
+        Quest 저장_데드리프트_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("2.데드리프트"))
                         .course(저장_데드리프트)
@@ -1510,6 +1445,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_데드리프트_퀘스트, List.of(저장_힙힌지_움직임_퀘스트, 저장_우산_힙힌지_퀘스트));
 
 
         CourseEntity 케틀벨뽑기 = new CourseEntity(
@@ -1530,7 +1466,7 @@ class CourseRepositoryImplTest {
         Course 저장_케틀벨뽑기 = courseRepository.insertCourse(케틀벨뽑기.toCourse(), 저장_데드리프트);
 
 
-        questRepository.saveQuest(
+        Quest 저장_케틀벨뽑기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("3.케틀벨뽑기"))
                         .course(저장_케틀벨뽑기)
@@ -1540,6 +1476,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_케틀벨뽑기_퀘스트, List.of(저장_데드리프트_퀘스트));
 
         CourseEntity 케틀벨_스윙 = new CourseEntity(
                 Course.builder()
@@ -1558,7 +1495,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_케틀벨_스윙 = courseRepository.insertCourse(케틀벨_스윙.toCourse(), 저장_케틀벨뽑기);
 
-        questRepository.saveQuest(
+        Quest 저장_케틀벨_스윙_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("4.케틀벨 스윙"))
                         .course(저장_케틀벨_스윙)
@@ -1568,6 +1505,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_케틀벨_스윙_퀘스트, List.of(저장_케틀벨뽑기_퀘스트));
 
         CourseEntity 한다리_데드_찍기 = new CourseEntity(
                 Course.builder()
@@ -1586,7 +1524,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_한다리_데드_찍기 = courseRepository.insertCourse(한다리_데드_찍기.toCourse(), 저장_케틀벨_스윙);
 
-        questRepository.saveQuest(
+        Quest 저장_한다리_데드_찍기_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("5.한다리 데드 찍기"))
                         .course(저장_한다리_데드_찍기)
@@ -1596,6 +1534,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_한다리_데드_찍기_퀘스트, List.of(저장_케틀벨_스윙_퀘스트));
 
         CourseEntity 한다리_데드 = new CourseEntity(
                 Course.builder()
@@ -1614,7 +1553,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_한다리_데드 = courseRepository.insertCourse(한다리_데드.toCourse(), 저장_한다리_데드_찍기);
 
-        questRepository.saveQuest(
+        Quest 저장_한다리_데드_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("6.한다리 데드"))
                         .course(저장_한다리_데드)
@@ -1624,6 +1563,7 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+        questRepository.insertOpenConditions(저장_한다리_데드_퀘스트, List.of(저장_한다리_데드_찍기_퀘스트));
 
         CourseEntity 한다리_데드_만세 = new CourseEntity(
                 Course.builder()
@@ -1643,7 +1583,7 @@ class CourseRepositoryImplTest {
         Course 저장_한다리_데드_만세 = courseRepository.insertCourse(한다리_데드_만세.toCourse(), 저장_한다리_데드);
 
 
-        questRepository.saveQuest(
+        Quest 저장_한다리_데드_만세_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("7.한다리 데드 만세"))
                         .course(저장_한다리_데드_만세)
@@ -1653,6 +1593,8 @@ class CourseRepositoryImplTest {
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_한다리_데드_만세_퀘스트, List.of(저장_한다리_데드_퀘스트));
     }
 
     @Test
@@ -1677,12 +1619,13 @@ class CourseRepositoryImplTest {
         );
 
         Course 저장_주차1 = courseRepository.insertRootCourse(주차1.toCourse());
-        questRepository.saveQuest(
+        Quest 저장_주차1_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
-                .questName(QuestName.from("조깅 1주차"))
-                .course(저장_주차1)
-                .deadline(LocalDateTime.now())
-                .build()
+                        .questName(QuestName.from("조깅 1주차"))
+                        .course(저장_주차1)
+                        .deadline(LocalDateTime.now())
+                        .startQuestProgress(QuestProgress.LOCK_OPEN)
+                        .build()
         );
 
 
@@ -1697,19 +1640,20 @@ class CourseRepositoryImplTest {
                         .sortSeq(SortSeq.from(1L))
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.RUNNING)
-//                        .parent(List.of(저장_주차1.getId()))
                         .roadMap(roadMap)
                         .build()
         );
         Course 저장_주차2 = courseRepository.insertCourse(주차2.toCourse(), 저장_주차1);
 
-        questRepository.saveQuest(
+        Quest 저장_주차2_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 2주차"))
                         .course(저장_주차2)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+
+        questRepository.insertOpenConditions(저장_주차2_퀘스트, List.of(저장_주차1_퀘스트));
 
         CourseEntity 주차3 = new CourseEntity(
                 Course.builder()
@@ -1728,7 +1672,7 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차3 = courseRepository.insertCourse(주차3.toCourse(), 저장_주차2);
 
-        questRepository.saveQuest(
+        Quest 저장_주차3_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 3주차"))
                         .course(저장_주차3)
@@ -1736,6 +1680,7 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
+        questRepository.insertOpenConditions(저장_주차3_퀘스트, List.of(저장_주차2_퀘스트));
 
         CourseEntity 주차4 = new CourseEntity(
                 Course.builder()
@@ -1754,13 +1699,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차4 = courseRepository.insertCourse(주차4.toCourse(), 저장_주차3);
 
-        questRepository.saveQuest(
+        Quest 저장_주차4_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 4주차"))
                         .course(저장_주차4)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차4_퀘스트, List.of(저장_주차3_퀘스트));
 
         CourseEntity 주차5 = new CourseEntity(
                 Course.builder()
@@ -1779,13 +1725,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차5 = courseRepository.insertCourse(주차5.toCourse(), 저장_주차4);
 
-        questRepository.saveQuest(
+        Quest 저장_주차5_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 5주차"))
                         .course(저장_주차5)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차5_퀘스트, List.of(저장_주차4_퀘스트));
 
         CourseEntity 주차6 = new CourseEntity(
                 Course.builder()
@@ -1804,13 +1751,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차6 = courseRepository.insertCourse(주차6.toCourse(), 저장_주차5);
 
-        questRepository.saveQuest(
+        Quest 저장_주차6_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 6주차"))
                         .course(저장_주차6)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차6_퀘스트, List.of(저장_주차5_퀘스트));
 
         CourseEntity 주차7 = new CourseEntity(
                 Course.builder()
@@ -1829,13 +1777,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차7 = courseRepository.insertCourse(주차7.toCourse(), 저장_주차6);
 
-        questRepository.saveQuest(
+        Quest 저장_주차7_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 7주차"))
                         .course(저장_주차7)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차7_퀘스트, List.of(저장_주차6_퀘스트));
 
         CourseEntity 주차8 = new CourseEntity(
                 Course.builder()
@@ -1854,14 +1803,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차8 = courseRepository.insertCourse(주차8.toCourse(), 저장_주차7);
 
-        questRepository.saveQuest(
+        Quest 저장_주차8_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 8주차"))
                         .course(저장_주차8)
                         .deadline(LocalDateTime.now())
                         .build()
         );
-
+        questRepository.insertOpenConditions(저장_주차8_퀘스트, List.of(저장_주차7_퀘스트));
 
         CourseEntity 주차9 = new CourseEntity(
                 Course.builder()
@@ -1880,13 +1829,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차9 = courseRepository.insertCourse(주차9.toCourse(), 저장_주차8);
 
-        questRepository.saveQuest(
+        Quest 저장_주차9_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 9주차"))
                         .course(저장_주차9)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차9_퀘스트, List.of(저장_주차8_퀘스트));
 
         CourseEntity 주차10 = new CourseEntity(
                 Course.builder()
@@ -1905,13 +1855,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차10 = courseRepository.insertCourse(주차10.toCourse(), 저장_주차9);
 
-        questRepository.saveQuest(
+        Quest 저장_주차10_퀘스트= questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 10주차"))
                         .course(저장_주차10)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차10_퀘스트, List.of(저장_주차9_퀘스트));
 
         CourseEntity 주차11 = new CourseEntity(
                 Course.builder()
@@ -1930,14 +1881,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차11 = courseRepository.insertCourse(주차11.toCourse(), 저장_주차10);
 
-        questRepository.saveQuest(
+        Quest 저장_주차11_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 11주차"))
                         .course(저장_주차11)
                         .deadline(LocalDateTime.now())
                         .build()
         );
-
+        questRepository.insertOpenConditions(저장_주차11_퀘스트, List.of(저장_주차10_퀘스트));
 
         CourseEntity 주차12 = new CourseEntity(
                 Course.builder()
@@ -1956,13 +1907,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차12 = courseRepository.insertCourse(주차12.toCourse(), 저장_주차11);
 
-        questRepository.saveQuest(
+        Quest 저장_주차12_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 12주차"))
                         .course(저장_주차12)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차12_퀘스트, List.of(저장_주차11_퀘스트));
 
         CourseEntity 주차13 = new CourseEntity(
                 Course.builder()
@@ -1981,13 +1933,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차13 = courseRepository.insertCourse(주차13.toCourse(), 저장_주차12);
 
-        questRepository.saveQuest(
+        Quest 저장_주차13_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 13주차"))
                         .course(저장_주차13)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차13_퀘스트, List.of(저장_주차12_퀘스트));
 
         CourseEntity 주차14 = new CourseEntity(
                 Course.builder()
@@ -2000,19 +1953,19 @@ class CourseRepositoryImplTest {
                         .sortSeq(SortSeq.from(1L))
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.RUNNING)
-//                        .parent(List.of(저장_주차13.getId()))
                         .roadMap(roadMap)
                         .build()
         );
         Course 저장_주차14 = courseRepository.insertCourse(주차14.toCourse(), 저장_주차13);
 
-        questRepository.saveQuest(
+        Quest 저장_주차14_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 14주차"))
                         .course(저장_주차14)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차14_퀘스트, List.of(저장_주차13_퀘스트));
 
         CourseEntity 주차15 = new CourseEntity(
                 Course.builder()
@@ -2031,13 +1984,14 @@ class CourseRepositoryImplTest {
         );
         Course 저장_주차15 = courseRepository.insertCourse(주차15.toCourse(), 저장_주차14);
 
-        questRepository.saveQuest(
+        Quest 저장_주차15_퀘스트 = questRepository.saveQuest(
                 Quest.builder()
                         .questName(QuestName.from("조깅 15주차"))
                         .course(저장_주차15)
                         .deadline(LocalDateTime.now())
                         .build()
         );
+        questRepository.insertOpenConditions(저장_주차15_퀘스트, List.of(저장_주차14_퀘스트));
 
     }
 

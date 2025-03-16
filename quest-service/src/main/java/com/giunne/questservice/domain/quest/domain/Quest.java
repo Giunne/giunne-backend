@@ -3,6 +3,7 @@ package com.giunne.questservice.domain.quest.domain;
 import com.giunne.questservice.domain.course.domain.Course;
 import com.giunne.questservice.domain.quest.application.dto.request.UpdateQuestInfoRequestDto;
 import com.giunne.questservice.domain.quest.domain.type.*;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,6 +55,8 @@ public class Quest {
     private QuestDescription questDescription = QuestDescription.from(""); // 퀘스트 설명
     @Builder.Default
     private TrainingDescription trainingDescription = TrainingDescription.from(""); // 운동 설명
+    @Builder.Default
+    private QuestProgress startQuestProgress = QuestProgress.LOCK; // 퀘스트 시작 상태
 
     public void updateQuestDescription(String questDescription) {
         this.questDescription = QuestDescription.from(questDescription);
