@@ -399,7 +399,7 @@ class CourseRepositoryImplTest {
                         .build()
         );
 
-        questRepository.insertOpenConditions(저장_하이플랭크_한발들기_퀘스트, List.of(저장_플랭크_한발들기_퀘스트));
+        questRepository.insertOpenConditions(저장_플랭크_한손들기_퀘스트, List.of(저장_플랭크_한발들기_퀘스트));
 
         CourseEntity 비스트_한손들기 = new CourseEntity(
                 Course.builder()

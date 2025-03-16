@@ -101,6 +101,7 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
 
         boolean isAllQuestStatusConfirm = true;
 
+        // 부모가 모두 CONFIRM 확인
         for (QuestStateEntity fetchParentQuestState : fetchParentQuestStates) {
             if (!QuestProgress.CONFIRM.equals(fetchParentQuestState.getQuestProgress())) {
                 isAllQuestStatusConfirm = false;
@@ -112,11 +113,14 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
             return;
         }
 
+        // 다음 자식드 OPEN
         for (QuestStateEntity questStateEntity : fetchChildQuestStates) {
             if (QuestProgress.LOCK.equals(questStateEntity.getQuestProgress())) {
                 QuestState childQuestState = questStateEntity.toQuestState();
-                childQuestState.updateQuestProgress(QuestProgress.LOCK_OPEN);
-                save(childQuestState);
+                if(questStateEntity.getQuestProgress() == QuestProgress.LOCK){
+                    childQuestState.updateQuestProgress(QuestProgress.LOCK_OPEN);
+                    save(childQuestState);
+                }
             }
         }
 
