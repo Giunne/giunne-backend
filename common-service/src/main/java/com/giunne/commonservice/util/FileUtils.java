@@ -1,8 +1,9 @@
 package com.giunne.commonservice.util;
 
-import org.springframework.mock.web.MockMultipartFile;
+import com.giunne.commonservice.type.CustomMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -45,12 +46,16 @@ public class FileUtils {
     }
 
     public static MultipartFile renameMultipartFile(MultipartFile file, String newFileName) throws IOException {
-        return new MockMultipartFile(
-                newFileName,            // 새로운 파일명
-                newFileName,            // 새로운 원본 파일명
-                file.getContentType(),  // 기존 파일의 Content-Type 유지
-                file.getBytes()         // 기존 파일의 데이터 유지
-        );
+        // 기존 MultipartFile을 File로 변환
+        File tempFile = File.createTempFile("temp", null);
+        file.transferTo(tempFile);
+
+        // 새 파일명 적용
+        File renamedFile = new File(tempFile.getParent(), newFileName);
+        tempFile.renameTo(renamedFile);
+
+        // 다시 MultipartFile로 변환
+        return new CustomMultipartFile(renamedFile, file.getContentType());
     }
 
 }
