@@ -12,7 +12,6 @@ import com.giunne.questservice.domain.questState.repository.entity.QuestStateEnt
 import com.giunne.questservice.domain.questState.repository.jpa.JpaQuestStateRepository;
 import com.giunne.questservice.domain.questState.application.interfaces.QuestStateRepository;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +31,20 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
     private final QQuestEntity qQuestEntity = QQuestEntity.questEntity;
     private final QQuestStateEntity qQuestStateEntity = QQuestStateEntity.questStateEntity;
     private final QQuestOpenConditionEntity qQuestOpenConditionEntity = QQuestOpenConditionEntity.questOpenConditionEntity;
+    private final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
 
     @Override
     public QuestState findById(Long id) {
         QuestStateEntity questStateEntity = jpaQuestStateRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 ID입니다.")
+        );
+        return questStateEntity.toQuestState();
+    }
+
+    @Override
+    public QuestState findByPlayerAndQuest(Long playerId, Long questId) {
+        QuestStateEntity questStateEntity = jpaQuestStateRepository.findByPlayer_AvatarIdAndQuest_Id(playerId, questId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 퀘스트입니다.")
         );
         return questStateEntity.toQuestState();
     }
@@ -134,6 +142,9 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
     public List<QuestInfoResponseDto> findInProgressQuestByRoadMap(Long roadMapId, Long avatarId) {
         List<Tuple> joinResults = queryFactory
                 .select(
+                        qCourseEntity.id,
+                        qCourseEntity.thumbnailUrl.thumbnailUrl,
+
                         qQuestEntity.id,
                         qQuestEntity.questName.value,
                         qQuestEntity.deadline,
@@ -162,8 +173,9 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestStateEntity.starPoint.value,
                         qQuestStateEntity.hasExtraPoints.value
                 )
-                .from(qQuestStateEntity)
-                .join(qQuestEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
+                .from(qCourseEntity)
+                .join(qQuestEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
+                .join(qQuestStateEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
                 .where(
                         qQuestEntity.course.roadMap.id.eq(roadMapId)
                                 .and(qQuestStateEntity.player.avatarId.eq(avatarId))
@@ -184,27 +196,28 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
             Long questId = tuple.get(qQuestEntity.id);
 
             questMap.computeIfAbsent(questId, id -> {
-                QuestInfoResponseDto questInfoDto = new QuestInfoResponseDto();
-                questInfoDto.setId(id);
-                questInfoDto.setQuestName(tuple.get(qQuestEntity.questName.value));
-                questInfoDto.setDeadline(tuple.get(qQuestEntity.deadline));
-                questInfoDto.setNeedLevel(tuple.get(qQuestEntity.needLevel.value));
-                questInfoDto.setDifficultyLevel(tuple.get(qQuestEntity.difficultyLevel.value));
-                questInfoDto.setIsTeam(tuple.get(qQuestEntity.isTeam.value));
-                questInfoDto.setCooperationType(tuple.get(qQuestEntity.cooperationType));
-                questInfoDto.setTrainingType(tuple.get(qQuestEntity.trainingType));
-                questInfoDto.setMaxPlayer(tuple.get(qQuestEntity.maxPlayer.value));
-                questInfoDto.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
-                questInfoDto.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
-                questInfoDto.setQuestType(tuple.get(qQuestEntity.questType));
-                questInfoDto.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
-                questInfoDto.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
-                questInfoDto.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
-                questInfoDto.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
-                questInfoDto.setTrainingDescription(tuple.get(qQuestEntity.trainingDescription.value));
-                questInfoDto.setGuideUrl(tuple.get(qQuestEntity.guideUrl.guideUrl));
-                questInfoDto.setQuestDescription(tuple.get(qQuestEntity.questDescription.value));
-                return questInfoDto;
+                        QuestInfoResponseDto questInfoDto = new QuestInfoResponseDto();
+                        questInfoDto.setId(id);
+                        questInfoDto.setThumbnailUrl(tuple.get(qCourseEntity.thumbnailUrl.thumbnailUrl));
+                        questInfoDto.setQuestName(tuple.get(qQuestEntity.questName.value));
+                        questInfoDto.setDeadline(tuple.get(qQuestEntity.deadline));
+                        questInfoDto.setNeedLevel(tuple.get(qQuestEntity.needLevel.value));
+                        questInfoDto.setDifficultyLevel(tuple.get(qQuestEntity.difficultyLevel.value));
+                        questInfoDto.setIsTeam(tuple.get(qQuestEntity.isTeam.value));
+                        questInfoDto.setCooperationType(tuple.get(qQuestEntity.cooperationType));
+                        questInfoDto.setTrainingType(tuple.get(qQuestEntity.trainingType));
+                        questInfoDto.setMaxPlayer(tuple.get(qQuestEntity.maxPlayer.value));
+                        questInfoDto.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
+                        questInfoDto.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
+                        questInfoDto.setQuestType(tuple.get(qQuestEntity.questType));
+                        questInfoDto.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
+                        questInfoDto.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
+                        questInfoDto.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
+                        questInfoDto.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
+                        questInfoDto.setTrainingDescription(tuple.get(qQuestEntity.trainingDescription.value));
+                        questInfoDto.setGuideUrl(tuple.get(qQuestEntity.guideUrl.guideUrl));
+                        questInfoDto.setQuestDescription(tuple.get(qQuestEntity.questDescription.value));
+                        return questInfoDto;
                     }
             );
 
@@ -230,6 +243,9 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
     public List<QuestInfoResponseDto> findConfirmQuestByRoadMap(Long roadMapId, Long avatarId) {
         List<Tuple> joinResults = queryFactory
                 .select(
+                        qCourseEntity.id,
+                        qCourseEntity.thumbnailUrl.thumbnailUrl,
+
                         qQuestEntity.id,
                         qQuestEntity.questName.value,
                         qQuestEntity.deadline,
@@ -258,8 +274,9 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestStateEntity.starPoint.value,
                         qQuestStateEntity.hasExtraPoints.value
                 )
-                .from(qQuestStateEntity)
-                .join(qQuestEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
+                .from(qCourseEntity)
+                .join(qQuestEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
+                .join(qQuestStateEntity).on(qQuestEntity.id.eq(qQuestStateEntity.quest.id))
                 .where(
                         qQuestEntity.course.roadMap.id.eq(roadMapId)
                                 .and(qQuestStateEntity.player.avatarId.eq(avatarId))
@@ -280,6 +297,7 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
             questMap.computeIfAbsent(questId, id -> {
                         QuestInfoResponseDto questInfoDto = new QuestInfoResponseDto();
                         questInfoDto.setId(id);
+                        questInfoDto.setThumbnailUrl(tuple.get(qCourseEntity.thumbnailUrl.thumbnailUrl));
                         questInfoDto.setQuestName(tuple.get(qQuestEntity.questName.value));
                         questInfoDto.setDeadline(tuple.get(qQuestEntity.deadline));
                         questInfoDto.setNeedLevel(tuple.get(qQuestEntity.needLevel.value));

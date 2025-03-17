@@ -2,10 +2,10 @@ package com.giunne.memberservice.domain.avatar.repository;
 
 import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.ui.PaginationModel;
-import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetAvatarProfileListRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.GetMyRecreationAvatarRequestDto;
-import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.avatar.repository.entity.AvatarEntity;

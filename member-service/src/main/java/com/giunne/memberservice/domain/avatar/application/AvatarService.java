@@ -5,6 +5,8 @@ import com.giunne.commonservice.infra.external.domain.item.client.ItemInfoClient
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.ItemInfoResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.jwt.constant.GrantType;
@@ -15,7 +17,7 @@ import com.giunne.commonservice.ui.Response;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
-import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
