@@ -1,4 +1,4 @@
-package com.giunne.questservice.domain.questState.application.dto.response;
+package com.giunne.questservice.domain.quest.application.dto.response;
 
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.questservice.domain.quest.domain.Quest;
@@ -12,13 +12,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "퀘스트 조회 응답DTO")
-public class QuestInfoResponseDto {
+public class UploadQuestInfoResponseDto {
     @Schema(
             description = "퀘스트 ID",
             example = "1"
@@ -111,15 +113,16 @@ public class QuestInfoResponseDto {
             example = "퀘스트 설명"
     )
     String questDescription;
-    @Schema(
-            description = "썸네일 URL",
-            example = "썸네일 URL"
-    )
-    String thumbnailUrl;
-    @Schema(description = "퀘스트 상태 정보")
-    QuestStateInfoResponseDto questStateInfo;
+    @Schema(description = "퀘스트 게시판 정보")
+    List<UploadQuestPostInfoResponseDto> questPostInfo = new ArrayList<>();
 
-    public QuestInfoResponseDto(Quest quest) {
+    @Schema(description = "퀘스트 상태 정보")
+    UploadQuestStateInfoResponseDto questStateInfo;
+
+    @Schema(description = "플레이어 프로필 정보")
+    GetMyRecreationAvatarResponseDto playerInfo;
+
+    public UploadQuestInfoResponseDto(Quest quest) {
         this.id = quest.getId();
         this.questName = quest.getQuestName().getValue();
         this.difficultyLevel = quest.getDifficultyLevel().getValue();
@@ -140,5 +143,4 @@ public class QuestInfoResponseDto {
         this.currentApproveCount = quest.getCurrentApproveCount().getValue();
         this.questDescription = quest.getQuestDescription().getValue();
     }
-
 }

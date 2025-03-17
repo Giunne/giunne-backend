@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.avatar.application.dto.reqeuest;
+package com.giunne.commonservice.infra.external.domain.member.client.dto.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -2,8 +2,8 @@ package com.giunne.questservice.domain.questPostAttachment.repository.entity;
 
 import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
-import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
 import com.giunne.questservice.domain.questPost.repository.entity.QuestPostEntity;
+import com.giunne.questservice.domain.questPostAttachment.domain.QuestPostAttachment;
 import com.giunne.questservice.domain.questPostAttachment.domain.type.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,14 +11,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "quest_attachment")
+@Table(name = "quest_post_attachment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestPostAttachmentEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "quest_attachment_no")
+    @Column(name = "quest_post_attachment_no")
     private Long id;
 
     @Embedded
@@ -29,10 +29,6 @@ public class QuestPostAttachmentEntity extends BaseEntity {
 
     @Embedded
     private FileSize fileSize; // 파일 사이즈
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quest_no")
-    private QuestEntity quest; // 퀘스트
 
     @Embedded
     private Active isActive = Active.from(true);
@@ -47,7 +43,26 @@ public class QuestPostAttachmentEntity extends BaseEntity {
     @JoinColumn(name = "quest_post_no", nullable = true)
     private QuestPostEntity questPost;
 
+    public QuestPostAttachmentEntity(QuestPostAttachment questPostAttachment) {
+        this.id = questPostAttachment.getId();
+        this.fileName = questPostAttachment.getFileName();
+        this.fileUrl = questPostAttachment.getFileUrl();
+        this.fileSize = questPostAttachment.getFileSize();
+        this.isRepresent = questPostAttachment.getIsRepresent();
+        this.sortSeq = questPostAttachment.getSortSeq();
+        this.questPost = new QuestPostEntity(questPostAttachment.getQuestPost());
+    }
 
-
+    public QuestPostAttachment toQuestPostAttachment(){
+        return QuestPostAttachment.builder()
+                .id(id)
+                .fileName(fileName)
+                .fileUrl(fileUrl)
+                .fileSize(fileSize)
+                .isRepresent(isRepresent)
+                .sortSeq(sortSeq)
+                .questPost(questPost.toQuestPost())
+                .build();
+    }
 
 }

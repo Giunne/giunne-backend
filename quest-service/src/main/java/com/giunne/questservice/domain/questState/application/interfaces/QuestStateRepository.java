@@ -12,6 +12,8 @@ public interface QuestStateRepository {
 
     QuestState save(QuestState questState);
 
+    QuestState findByPlayerAndQuest(Long playerId, Long questId);
+
     List<QuestState> saveAll(List<QuestState> questStates);
 
     void updateChildQuestOpen(QuestState questState);

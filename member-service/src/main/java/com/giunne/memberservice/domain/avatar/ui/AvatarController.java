@@ -1,6 +1,8 @@
 package com.giunne.memberservice.domain.avatar.ui;
 
 import com.giunne.commonservice.domain.common.Pageable;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -9,7 +11,7 @@ import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
-import com.giunne.memberservice.domain.avatar.application.dto.response.GetMyRecreationAvatarResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -2,7 +2,7 @@ package com.giunne.questservice.domain.questPost.repository.entity;
 
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
-import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
+import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import com.giunne.questservice.domain.questPost.domain.type.QuestPostContent;
 import com.giunne.questservice.domain.questPost.domain.type.QuestPostTitle;
 import com.giunne.questservice.domain.questPost.domain.type.QuestPostProgressType;
@@ -34,15 +34,31 @@ public class QuestPostEntity extends BaseEntity {
     private QuestPostContent questPostContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quest_no")
-    private QuestEntity quest; // 퀘스트
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quest_state_no", nullable = true)
-    private QuestStateEntity questStateEntity;
+    private QuestStateEntity questState;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "quest_post_progress_type", nullable = false)
     private QuestPostProgressType questPostProgressType = QuestPostProgressType.UPLOAD;
+
+    public QuestPostEntity(QuestPost questPost) {
+        this.id = questPost.getId();
+        this.player = new PlayerEntity(questPost.getPlayer());
+        this.questPostTitle = questPost.getQuestPostTitle();
+        this.questPostContent = questPost.getQuestPostContent();
+        this.questState = new QuestStateEntity(questPost.getQuestState());
+        this.questPostProgressType = questPost.getQuestPostProgressType();
+    }
+
+    public QuestPost toQuestPost() {
+        return QuestPost.builder()
+                .id(id)
+                .player(player.toPlayer())
+                .questPostTitle(questPostTitle)
+                .questPostContent(questPostContent)
+                .questState(questState.toQuestState())
+                .questPostProgressType(questPostProgressType)
+                .build();
+    }
 
 }

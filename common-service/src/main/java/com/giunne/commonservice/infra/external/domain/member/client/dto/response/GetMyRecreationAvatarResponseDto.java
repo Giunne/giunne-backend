@@ -1,4 +1,4 @@
-package com.giunne.memberservice.domain.avatar.application.dto.response;
+package com.giunne.commonservice.infra.external.domain.member.client.dto.response;
 
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
