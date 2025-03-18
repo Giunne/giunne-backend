@@ -1,11 +1,12 @@
 package com.giunne.questservice.domain.questPost.repository.entity;
 
+import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
 import com.giunne.questservice.domain.questPost.domain.QuestPost;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostContent;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostTitle;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostProgressType;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostContent;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostTitle;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostProgressType;
 import com.giunne.questservice.domain.questState.repository.entity.QuestStateEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -40,6 +41,9 @@ public class QuestPostEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "quest_post_progress_type", nullable = false)
     private QuestPostProgressType questPostProgressType = QuestPostProgressType.UPLOAD;
+
+    @Embedded
+    private Active isActive = Active.from(true);
 
     public QuestPostEntity(QuestPost questPost) {
         this.id = questPost.getId();

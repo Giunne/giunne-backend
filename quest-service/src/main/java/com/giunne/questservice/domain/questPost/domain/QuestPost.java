@@ -1,10 +1,9 @@
 package com.giunne.questservice.domain.questPost.domain;
 
 import com.giunne.questservice.domain.player.domain.Player;
-import com.giunne.questservice.domain.quest.domain.Quest;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostContent;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostProgressType;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostTitle;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostContent;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostProgressType;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostTitle;
 import com.giunne.questservice.domain.questState.domain.QuestState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

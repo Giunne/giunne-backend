@@ -21,7 +21,7 @@ public interface MemberInfoClient {
     Response<String> insertInventory(@RequestBody InsertInventoryItemRequestDto dto);
 
     @GetMapping(value = "/avatar/avatar-profile")
-    Response<GetMyRecreationAvatarResponseDto > getAvatarProfileInfo(@ParameterObject GetAvatarProfileRequestDto dto);
+    Response<GetMyRecreationAvatarResponseDto > getAvatarProfileInfo(@RequestParam("playerId") Long playerId);
 
     @GetMapping(value = "/avatar/avatar-profiles")
     Response<List<GetMyRecreationAvatarResponseDto> > getAvatarProfileListInfo(@RequestParam("playerId") List<Long> playerId);
