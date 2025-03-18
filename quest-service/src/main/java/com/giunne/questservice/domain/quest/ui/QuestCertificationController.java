@@ -61,9 +61,9 @@ public class QuestCertificationController {
         return Response.ok(inProgressQuestByRoadMap);
     }
 
-    @Operation(summary = "퀘스트(로드맵) 인증하기", description = """
+    @Operation(summary = "게시글 업로드 퀘스트(로드맵) 인증하기", description = """
             ## 기능설명
-            * 퀘스트(로드맵) 인증하기
+            * 게시글 업로드 퀘스트(로드맵) 인증하기
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")

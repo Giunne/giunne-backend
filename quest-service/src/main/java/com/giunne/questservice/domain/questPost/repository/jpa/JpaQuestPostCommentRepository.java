@@ -1,0 +1,24 @@
+package com.giunne.questservice.domain.questPost.repository.jpa;
+
+import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
+import com.giunne.questservice.domain.questPost.repository.entity.QuestPostCommentEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCommentEntity, Long> {
+
+    @Modifying
+    @Query("UPDATE QuestPostCommentEntity c "
+            + "SET c.likeCounter.value = :#{#comment.getLikeCounter()} "
+            + "WHERE c.id = :#{#comment.getId()}")
+    void updateLikeCount(QuestPostComment comment);
+
+
+    @Modifying
+    @Query("UPDATE QuestPostCommentEntity c "
+            + "SET c.content = :#{#comment.getContent()},"
+            + "c.updateTime = now() "
+            + "WHERE c.id = :#{#comment.getId()}")
+    void updateComment(QuestPostComment comment);
+}

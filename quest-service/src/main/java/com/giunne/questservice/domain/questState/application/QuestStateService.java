@@ -2,19 +2,16 @@ package com.giunne.questservice.domain.questState.application;
 
 
 import com.giunne.commonservice.infra.external.domain.synology.client.SynologyInfoClient;
-import com.giunne.commonservice.infra.external.domain.synology.client.request.UploadFileRequestDto;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.util.FileUtils;
-import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestRequestDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
 import com.giunne.questservice.domain.questPost.domain.QuestPost;
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostProgressType;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostProgressType;
 import com.giunne.questservice.domain.questPostAttachment.application.interfaces.QuestPostAttachmentRepository;
 import com.giunne.questservice.domain.questPostAttachment.domain.QuestPostAttachment;
 import com.giunne.questservice.domain.questPostAttachment.domain.type.FileName;
 import com.giunne.questservice.domain.questPostAttachment.domain.type.FileSize;
 import com.giunne.questservice.domain.questPostAttachment.domain.type.FileUrl;
-import com.giunne.questservice.domain.questState.application.dto.request.CertificateQuestRequestDto;
 import com.giunne.questservice.domain.questState.application.dto.request.GetConfirmQuestRequestDto;
 import com.giunne.questservice.domain.questState.application.dto.request.GetProgressQuestRequestDto;
 import com.giunne.questservice.domain.questState.application.dto.request.UpdateQuestStateRequestDto;
@@ -32,11 +29,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,16 +122,9 @@ public class QuestStateService {
         QuestPost savedQuestPost = questPostRepository.save(questPost);
         // 파일 이름만 생성
         String fileName = FileUtils.buildFileName(CATEGORY, memberPrincipal.getPlayerId(), savedQuestPost.getId(), file.getOriginalFilename());
-        // 파일 이름만 생성
-//        String fileName = FileUtils.buildFileName(CATEGORY, memberPrincipal.getPlayerId(), savedQuestPost.getId());
 
-        // postAttachment 추가
-
-        // MultipartFile을 File로 변환 및 저장
         try {
             MultipartFile renamedFile = FileUtils.renameMultipartFile(file, fileName);
-//            renamedFile.transferTo(new File(fileName));
-
 
             // Synology API로 원본 파일을 직접 업로드 (변환 없이)
             String uploadResult = synologyInfoClient.uploadFile(renamedFile);
@@ -160,13 +147,6 @@ public class QuestStateService {
         QuestProgress questProgress = QuestProgress.UPLOAD;
         questState.updateQuestProgress(questProgress);
         questStateRepository.save(questState);
-    }
-
-    public void findUploadQuests(GetUploadQuestRequestDto dto){
-
-
-
-
     }
 
 }

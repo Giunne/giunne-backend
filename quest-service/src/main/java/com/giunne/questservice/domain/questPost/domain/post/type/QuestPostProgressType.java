@@ -1,4 +1,4 @@
-package com.giunne.questservice.domain.questPost.domain.type;
+package com.giunne.questservice.domain.questPost.domain.post.type;
 
 import com.giunne.commonservice.domain.common.EnumMapperType;
 

@@ -1,6 +1,6 @@
 package com.giunne.questservice.domain.quest.application.dto.response;
 
-import com.giunne.questservice.domain.questPost.domain.type.QuestPostProgressType;
+import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostProgressType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

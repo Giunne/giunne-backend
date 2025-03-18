@@ -208,7 +208,6 @@ public class QuestRepositoryImpl implements QuestRepository {
             );
 
 
-            // 퀘스트 게시판 추가
             if (tuple.get(qQuestPostEntity.id) != null) {
                 UploadQuestPostInfoResponseDto questPostInfoDto = new UploadQuestPostInfoResponseDto();
                 questPostInfoDto.setId(tuple.get(qQuestPostEntity.id));
@@ -219,8 +218,7 @@ public class QuestRepositoryImpl implements QuestRepository {
                 questMap.get(questId).getQuestPostInfo().add(questPostInfoDto);
             }
 
-            // 퀘스트 게시판 추가
-            if (tuple.get(qQuestPostEntity.id) != null) {
+            if (tuple.get(qQuestStateEntity.id) != null) {
                 UploadQuestStateInfoResponseDto questState = new UploadQuestStateInfoResponseDto();
                 questState.setId(tuple.get(qQuestStateEntity.id));
                 questState.setPlayerId(tuple.get(qQuestStateEntity.player.avatarId));
