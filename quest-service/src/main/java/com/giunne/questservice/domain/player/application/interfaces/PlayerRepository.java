@@ -9,4 +9,5 @@ public interface PlayerRepository {
     Optional<PlayerEntity> findById(Long id);
     Optional<PlayerEntity> findByAvatarId(Long id);
     Player save(PlayerEntity playerEntity);
+    boolean existsByAvatarId(Long id);
 }

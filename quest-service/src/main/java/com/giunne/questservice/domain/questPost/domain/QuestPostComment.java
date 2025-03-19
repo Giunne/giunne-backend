@@ -18,4 +18,21 @@ public class QuestPostComment {
     private QuestPostCommentContent content = QuestPostCommentContent.from("");
     @Builder.Default
     private QuestPostCommentLikeCounter likeCounter = QuestPostCommentLikeCounter.from(0L);
+
+
+    public void updateContent(String content) {
+        this.content = QuestPostCommentContent.from(content);
+    }
+
+    public void like(Player player) {
+        if (this.player.equals(player)) {
+            throw new IllegalArgumentException("author cannot like own comment");
+        }
+        likeCounter.increase();
+    }
+
+    public void unlike() {
+        likeCounter.decrease();
+    }
+
 }

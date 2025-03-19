@@ -5,6 +5,7 @@ import com.giunne.questservice.domain.questPost.repository.entity.QuestPostComme
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCommentEntity, Long> {
 
@@ -20,5 +21,5 @@ public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCo
             + "SET c.content = :#{#comment.getContent()},"
             + "c.updateTime = now() "
             + "WHERE c.id = :#{#comment.getId()}")
-    void updateComment(QuestPostComment comment);
+    void updateComment(@Param("comment")QuestPostComment comment);
 }
