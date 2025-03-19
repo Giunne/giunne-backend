@@ -11,6 +11,7 @@ import com.giunne.questservice.domain.questPost.application.dto.response.GetPost
 import com.giunne.questservice.domain.questPost.application.dto.response.GetPostResponseDto;
 import com.giunne.questservice.domain.questPost.application.dto.response.QuestInfoResponseDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
+import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,9 @@ public class QuestPostService {
                 .playerInfo(avatarProfileInfo.value())
                 .questInfo(new QuestInfoResponseDto(questInfo))
                 .build();
+    }
+
+    public QuestPost getPost(Long id) {
+        return questPostRepository.getPost(id);
     }
 }

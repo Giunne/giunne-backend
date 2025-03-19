@@ -10,6 +10,7 @@ public interface QuestPostRepository {
     QuestPost save(QuestPost questPost);
 
     GetPostResponseDto findById(Long id);
+    QuestPost getPost(Long id);
 
     List<GetPostDetailResponseDto> findMyQuest(Long questId, Long playerId);
 }

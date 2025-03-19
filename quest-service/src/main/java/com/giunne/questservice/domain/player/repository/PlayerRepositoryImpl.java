@@ -25,6 +25,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return jpaPlayerRepository.findByAvatarId(id);
     }
 
+    public boolean existsByAvatarId(Long id) {
+        return jpaPlayerRepository.existsByAvatarId(id);
+    }
+
     @Transactional
     public Player save(PlayerEntity playerEntity) {
         return jpaPlayerRepository.save(playerEntity).toPlayer();

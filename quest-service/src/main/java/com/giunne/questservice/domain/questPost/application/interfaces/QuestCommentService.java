@@ -1,0 +1,92 @@
+package com.giunne.questservice.domain.questPost.application.interfaces;
+
+import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
+import com.giunne.questservice.domain.player.domain.Player;
+import com.giunne.questservice.domain.player.repository.PlayerRepositoryImpl;
+import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
+import com.giunne.questservice.domain.questPost.application.QuestPostService;
+import com.giunne.questservice.domain.questPost.application.dto.request.CommentLikeRequestDto;
+import com.giunne.questservice.domain.questPost.application.dto.request.CreateCommentRequestDto;
+import com.giunne.questservice.domain.questPost.application.dto.request.UpdateCommentRequestDto;
+import com.giunne.questservice.domain.questPost.domain.QuestPost;
+import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
+import com.giunne.questservice.domain.questPost.domain.comment.type.QuestPostCommentContent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class QuestCommentService {
+
+    private final QuestPostCommentRepository questCommentRepository;
+    private final QuestPostRepository questPostRepository;
+    private final QuestPostService postService;
+    private final PlayerRepository playerRepository;
+    private final QuestPostCommentLikeRepository likeRepository;
+
+    public QuestPostComment getComment(Long id) {
+        return questCommentRepository.findById(id);
+    }
+
+    public QuestPostComment createComment(MemberPrincipal memberPrincipal, CreateCommentRequestDto dto) {
+        QuestPost post = postService.getPost(dto.postId());
+
+        Player player = playerRepository.findByAvatarId(memberPrincipal.getPlayerId())
+                .orElseThrow(() -> new IllegalArgumentException("Player not found"))
+                .toPlayer();
+
+        QuestPostComment comment = QuestPostComment.builder()
+                .content(QuestPostCommentContent.from(dto.content()))
+                .player(player)
+                .post(post)
+                .build();
+
+        return questCommentRepository.save(comment);
+    }
+
+    public QuestPostComment updateComment(MemberPrincipal memberPrincipal, Long commentId, UpdateCommentRequestDto dto) {
+
+        QuestPostComment comment = getComment(commentId);
+        if (!playerRepository.existsByAvatarId(memberPrincipal.getPlayerId())) {
+            throw new IllegalArgumentException("Player not found");
+        }
+        if (!comment.getPlayer().getAvatarId().equals(memberPrincipal.getPlayerId())) {
+            throw new IllegalArgumentException("only author can update content");
+        }
+
+        comment.updateContent(dto.content());
+        return questCommentRepository.save(comment);
+    }
+
+
+
+    public void likeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
+        QuestPostComment comment = getComment(dto.postId());
+        Player player = playerRepository.findByAvatarId(memberPrincipal.getPlayerId())
+                .orElseThrow(() -> new IllegalArgumentException("Player not found"))
+                .toPlayer();
+
+        if (likeRepository.checkLike(comment, player)) {
+            return;
+        }
+
+        comment.like(player);
+        likeRepository.like(comment, player);
+    }
+
+    public void unlikeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
+        QuestPostComment comment = getComment(dto.postId());
+        Player player = playerRepository.findByAvatarId(memberPrincipal.getPlayerId())
+                .orElseThrow(() -> new IllegalArgumentException("Player not found"))
+                .toPlayer();
+
+        if (likeRepository.checkLike(comment, player)) {
+            comment.unlike();
+            likeRepository.unlike(comment, player);
+        }
+    }
+
+}

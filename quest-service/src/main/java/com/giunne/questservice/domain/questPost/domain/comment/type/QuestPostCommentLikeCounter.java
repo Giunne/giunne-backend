@@ -26,4 +26,16 @@ public class QuestPostCommentLikeCounter {
         return new QuestPostCommentLikeCounter(value);
     }
 
+
+    public void increase() {
+        value++;
+    }
+
+    public void decrease() {
+        if (value <= 0) {
+            return;
+        }
+        value--;
+    }
+
 }

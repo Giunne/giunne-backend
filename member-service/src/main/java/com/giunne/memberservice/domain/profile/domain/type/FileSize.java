@@ -31,7 +31,7 @@ public class FileSize {
     }
 
     private static void validate(final Long value) {
-        if (value > 1000000) {
+        if (value > 50000000) {
             throw new BusinessException(ErrorCode.PROFILE_SIZE_LIMIT);
         }
     }

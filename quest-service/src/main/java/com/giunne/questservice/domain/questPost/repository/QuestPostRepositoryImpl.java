@@ -62,6 +62,12 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                 .fetchOne();
     }
 
+    @Override
+    public QuestPost getPost(Long id) {
+        QuestPostEntity postEntity = jpaQuestPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        return postEntity.toQuestPost();
+    }
+
 
     public List<GetPostDetailResponseDto> findMyQuest(Long questId, Long playerId) {
         return queryFactory
