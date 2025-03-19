@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Schema(description = "퀘스트 게시물 응답DTO")
 public class GetPostDetailResponseDto {
     @Schema(
-            description = "퀘스트 ID",
+            description = "게시물 ID",
             example = "1"
     )
     Long id;
@@ -40,7 +42,15 @@ public class GetPostDetailResponseDto {
     )
     String fileUrl;
     @Schema(
-            description = "퀘스트 타입"
+            description = "퀘스트 ID"
     )
-    QuestType questType;
+    Long questId;
+    @Schema(
+            description = "생성날짜"
+    )
+    LocalDateTime createTime;
+    @Schema(
+            description = "수정날짜"
+    )
+    LocalDateTime updateTime;
 }

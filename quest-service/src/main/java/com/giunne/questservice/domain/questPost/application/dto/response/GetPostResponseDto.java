@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -23,12 +25,14 @@ public class GetPostResponseDto {
     Long id;
     @Schema(
             description = "게시물 제목",
-            example = "게시물 제목"
+            example = "게시물 제목",
+            hidden = true
     )
     String title;
     @Schema(
             description = "게시물 내용",
-            example = "게시물 내용"
+            example = "게시물 내용",
+            hidden = true
     )
     String content;
     @Schema(
@@ -40,15 +44,27 @@ public class GetPostResponseDto {
     )
     String fileUrl;
     @Schema(
-            description = "퀘스트 타입"
-    )
-    QuestType questType;
-    @Schema(
             description = "플레이어 번호"
     )
     Long playerId;
     @Schema(
+            description = "퀘스트 ID"
+    )
+    Long questId;
+    @Schema(
             description = "플레이어 프로필 정보"
     )
     GetMyRecreationAvatarResponseDto playerInfo;
+    @Schema(
+            description = "퀘스트 정보"
+    )
+    QuestInfoResponseDto questInfo;
+    @Schema(
+            description = "생성날짜"
+    )
+    LocalDateTime createTime;
+    @Schema(
+            description = "수정날짜"
+    )
+    LocalDateTime updateTime;
 }
