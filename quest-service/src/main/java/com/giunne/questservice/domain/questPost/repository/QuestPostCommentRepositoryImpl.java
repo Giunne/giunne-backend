@@ -1,13 +1,9 @@
 package com.giunne.questservice.domain.questPost.repository;
 
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostCommentRepository;
-import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
-import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
 import com.giunne.questservice.domain.questPost.repository.entity.QuestPostCommentEntity;
-import com.giunne.questservice.domain.questPost.repository.entity.QuestPostEntity;
 import com.giunne.questservice.domain.questPost.repository.jpa.JpaQuestPostCommentRepository;
-import com.giunne.questservice.domain.questPost.repository.jpa.JpaQuestPostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

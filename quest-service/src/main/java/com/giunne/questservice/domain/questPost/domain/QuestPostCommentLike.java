@@ -1,7 +1,6 @@
 package com.giunne.questservice.domain.questPost.domain;
 
 import com.giunne.questservice.domain.player.domain.Player;
-import com.giunne.questservice.domain.questPost.repository.entity.QuestPostCommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -47,9 +47,11 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                                 qQuestPostEntity.questPostTitle.value.as("title"),
                                 qQuestPostEntity.questPostContent.value.as("content"),
                                 qQuestPostEntity.questPostProgressType.as("questPostProgressType"),
+                                qQuestPostEntity.createTime.as("createTime"),
+                                qQuestPostEntity.updateTime.as("updateTime"),
                                 qQuestPostAttachmentEntity.fileUrl.value.as("fileUrl"),
                                 qQuestStateEntity.player.avatarId.as("playerId"),
-                                qQuestEntity.questType.as("questType")
+                                qQuestEntity.id.as("questId")
                         )
                 )
                 .from(qQuestPostEntity)
@@ -70,8 +72,11 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                                 qQuestPostEntity.questPostTitle.value.as("title"),
                                 qQuestPostEntity.questPostContent.value.as("content"),
                                 qQuestPostEntity.questPostProgressType.as("questPostProgressType"),
+                                qQuestPostEntity.createTime.as("createTime"),
+                                qQuestPostEntity.updateTime.as("updateTime"),
                                 qQuestPostAttachmentEntity.fileUrl.value.as("fileUrl"),
-                                qQuestEntity.questType.as("questType")
+                                qQuestStateEntity.player.avatarId.as("playerId"),
+                                qQuestEntity.id.as("questId")
                         )
                 )
                 .from(qQuestPostEntity)
@@ -79,7 +84,7 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                 .join(qQuestEntity).on(qQuestStateEntity.quest.id.eq(qQuestEntity.id))
                 .join(qQuestPostAttachmentEntity).on(qQuestPostEntity.id.eq(qQuestPostAttachmentEntity.questPost.id))
                 .where(
-                        qQuestPostEntity.id.eq(questId)
+                        qQuestEntity.id.eq(questId)
                                 .and(qQuestPostEntity.player.avatarId.eq(playerId))
                 )
                 .fetch();

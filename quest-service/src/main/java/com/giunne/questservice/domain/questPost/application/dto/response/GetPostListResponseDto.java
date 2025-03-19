@@ -21,5 +21,9 @@ public class GetPostListResponseDto {
             description = "플레이어 프로필 정보"
     )
     GetMyRecreationAvatarResponseDto playerInfo;
+    @Schema(
+            description = "퀘스트 정보"
+    )
+    QuestInfoResponseDto questInfo;
 
 }
