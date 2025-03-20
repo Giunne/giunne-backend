@@ -9,6 +9,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
+import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
@@ -83,14 +84,22 @@ public class AvatarService {
         questInfoClient.savePlayerQuestStates(
                 CreateQuestStateRequestDto.builder()
                         .roadMapId(1L)
+                        .memberId(member.getId())
+                        .userName(member.getUserName().getUserName())
+                        .nickname(member.getNickname().getNickname())
                         .avatarId(createdAvatar.getId())
+                        .avatarNickname(createdAvatar.getNickname().getNickname())
                         .build()
         );
         // TODO: 로드맵 번호 하드코딩 수정예정
         questInfoClient.savePlayerQuestStates(
                 CreateQuestStateRequestDto.builder()
                         .roadMapId(2L)
+                        .memberId(member.getId())
+                        .userName(member.getUserName().getUserName())
+                        .nickname(member.getNickname().getNickname())
                         .avatarId(createdAvatar.getId())
+                        .avatarNickname(createdAvatar.getNickname().getNickname())
                         .build()
         );
 
@@ -114,6 +123,19 @@ public class AvatarService {
         Avatar avatar = avatarRepository.findById(dto.playerId());
 
         LevelUpPolicy level = levelUpPolicyRepository.findByCurrentLevel(avatar.getLevel().getLevel());
+        Member member = memberService.getMember(memberPrincipal.getMemberId());
+
+        questInfoClient.updatePlayer(
+                UpdatePlayerRequestDto.builder()
+                        .userName(member.getNickname().getNickname())
+                        .memberId(member.getId())
+                        .userName(member.getUserName().getUserName())
+                        .nickname(member.getNickname().getNickname())
+                        .avatarId(avatar.getId())
+                        .avatarNickname(avatar.getNickname().getNickname())
+                        .build()
+        );
+
 
         return LoginPlayerResponseDto.builder()
                 .id(avatar.getId())

@@ -1,6 +1,8 @@
 package com.giunne.questservice.domain.quest.application.interfaces;
 
-import com.giunne.questservice.domain.course.domain.Course;
+import com.giunne.commonservice.ui.PaginationModel;
+import com.giunne.questservice.domain.quest.application.dto.request.GetQuestTypeSearchRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetQuestSearchResponseDto;
 import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestInfoResponseDto;
 import com.giunne.questservice.domain.quest.domain.QuestOpenCondition;
 import com.giunne.questservice.domain.quest.application.dto.request.UpdateQuestInfoRequestDto;
@@ -22,4 +24,6 @@ public interface QuestRepository {
     List<QuestOpenCondition> insertOpenConditions(Quest node, List<Quest> openConditions);
 
     List<UploadQuestInfoResponseDto> findUploadQuests(Long roadMapId);
+
+    PaginationModel<GetQuestSearchResponseDto> getQuestTypeList(GetQuestTypeSearchRequestDto dto);
 }

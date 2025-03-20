@@ -1,7 +1,9 @@
 package com.giunne.questservice.domain.questPost.repository;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.player.repository.entity.QPlayerEntity;
 import com.giunne.questservice.domain.questPost.application.dto.response.GetQuestCommentResponseDto;
@@ -14,9 +16,13 @@ import com.giunne.questservice.domain.questPost.repository.jpa.JpaQuestPostComme
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
+import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
 
 @Slf4j
 @Repository
@@ -48,7 +57,6 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
     @Transactional
     public QuestPostComment save(QuestPostComment comment) {
         if (comment.getId() != null) {
-            comment.getContent();
             jpaQuestPostCommentRepository.updateComment(comment);
             return comment;
         }
@@ -56,7 +64,25 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
         return save.toQuestPostComment();
     }
 
-    public List<GetQuestCommentResponseDto> getCommentList(Long postId, Long playerId, Long lastContentId) {
+    public PaginationModel<GetQuestCommentResponseDto> getCommentList(Long postId, Long playerId, Pageable dto) {
+
+        org.springframework.data.domain.Pageable pageable = getPageRequest(
+                dto.getPageIndex(),
+                dto.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(dto.getDirection()), dto.getSortProperty())
+        );
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(
+                        commentEntity.count()
+                )
+                .from(commentEntity)
+                .join(playerEntity).on(commentEntity.player.id.eq(playerEntity.id))
+                .leftJoin(likeEntity).on(hasLike(playerId))
+                .where(
+                        commentEntity.post.id.eq(postId)
+                );
+
         List<GetQuestCommentResponseDto> fetch = queryFactory
                 .select(
                         Projections.fields(
@@ -74,11 +100,11 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
                 .join(playerEntity).on(commentEntity.player.id.eq(playerEntity.id))
                 .leftJoin(likeEntity).on(hasLike(playerId))
                 .where(
-                        commentEntity.post.id.eq(postId),
-                        hasLastData(lastContentId)
+                        commentEntity.post.id.eq(postId)
                 )
                 .orderBy(commentEntity.id.desc())
-                .limit(10)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<Long> playerIdlist = fetch.stream().map(GetQuestCommentResponseDto::getPlayerId).toList();
@@ -99,7 +125,9 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
             }
         }
 
-        return fetch;
+        Page<GetQuestCommentResponseDto> pageResult = PageableExecutionUtils.getPage(fetch, pageable, countQuery::fetchCount);
+
+        return toPaginationModel(pageResult);
     }
 
     private BooleanExpression hasLike(Long playerId) {
