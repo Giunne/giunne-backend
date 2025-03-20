@@ -1,7 +1,9 @@
 package com.giunne.questservice.domain.questPost.ui;
 
+import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.questPost.application.QuestPostService;
 import com.giunne.questservice.domain.questPost.application.dto.request.CommentLikeRequestDto;
@@ -16,7 +18,6 @@ import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
 import com.giunne.questservice.domain.questPost.repository.QuestPostCommentRepositoryImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +57,7 @@ public class QuestPostController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping
-    public Response<GetPostListResponseDto> findMyQuest(
-                                                          @ParameterObject GetPostRequestDto dto) {
+    public Response<GetPostListResponseDto> findMyQuest(@ParameterObject GetPostRequestDto dto) {
         GetPostListResponseDto myQuest = questPostService.findMyQuest(dto);
         return Response.ok(myQuest);
     }
@@ -98,7 +98,7 @@ public class QuestPostController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    }, hidden = true)
+    })
     @PostMapping("comment/like")
     public Response<String> likeComment(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
                                         @RequestBody CommentLikeRequestDto dto) {
@@ -112,7 +112,7 @@ public class QuestPostController {
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
-    }, hidden = true)
+    })
     @PostMapping("comment/unlike")
     public Response<String> unlikeComment( @AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
                                          @RequestBody CommentLikeRequestDto dto) {
@@ -128,16 +128,17 @@ public class QuestPostController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/comment/{postId}")
-    public Response<List<GetQuestCommentResponseDto>> getCommentList(
+    public Response<PaginationModel<GetQuestCommentResponseDto>> getCommentList(
             @AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
             @PathVariable(name = "postId") Long postId,
-            @RequestParam(name = "lastCommentId", required = false) Long lastCommentId) {
+            @ParameterObject Pageable dto
+    ) {
 
         Long playerId = null;
         if (memberPrincipal != null && memberPrincipal.getPlayerId() != null) {
             playerId = memberPrincipal.getPlayerId();
         }
-        List<GetQuestCommentResponseDto> commentList = commentQueryRepository.getCommentList(postId, playerId, lastCommentId);
+        PaginationModel<GetQuestCommentResponseDto> commentList = commentQueryRepository.getCommentList(postId,  playerId, dto);
         return Response.ok(commentList);
     }
 

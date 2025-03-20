@@ -1,9 +1,9 @@
 package com.giunne.questservice.domain.quest.repository;
 
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.questservice.domain.course.domain.Course;
-import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestInfoResponseDto;
-import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestPostInfoResponseDto;
-import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestStateInfoResponseDto;
+import com.giunne.questservice.domain.quest.application.dto.request.GetQuestTypeSearchRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.response.*;
 import com.giunne.questservice.domain.quest.domain.QuestOpenCondition;
 import com.giunne.questservice.domain.quest.repository.entity.QuestOpenConditionEntity;
 import com.giunne.questservice.domain.course.repository.entity.QCourseEntity;
@@ -14,6 +14,7 @@ import com.giunne.questservice.domain.quest.domain.Quest;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestEntity;
 import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
 import com.giunne.questservice.domain.quest.repository.jpa.JpaQuestRepository;
+import com.giunne.questservice.domain.questPost.application.dto.response.GetPostDetailResponseDto;
 import com.giunne.questservice.domain.questPost.repository.entity.QQuestPostEntity;
 import com.giunne.questservice.domain.questPost.repository.jpa.JpaQuestPostRepository;
 import com.giunne.questservice.domain.questState.application.dto.response.QuestInfoResponseDto;
@@ -21,9 +22,19 @@ import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import com.giunne.questservice.domain.questState.repository.entity.QQuestStateEntity;
 import com.giunne.questservice.domain.questState.repository.jpa.JpaQuestStateRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +42,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
+import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
 
 @Slf4j
 @Repository
@@ -232,6 +246,65 @@ public class QuestRepositoryImpl implements QuestRepository {
         }
 
         return new ArrayList<>(questMap.values());
+    }
+
+    @Override
+    public PaginationModel<GetQuestSearchResponseDto> getQuestTypeList(GetQuestTypeSearchRequestDto dto) {
+
+        Pageable pageable = getPageRequest(
+                dto.getPageIndex(),
+                dto.getPageSize(),
+                Sort.by(Sort.Direction.valueOf(dto.getDirection()), dto.getSortProperty())
+        );
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(
+                        qQuestEntity.count()
+                )
+                .from(qQuestEntity)
+                .join(qCourseEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
+                .where(
+                        qQuestEntity.course.roadMap.id.eq(dto.getRoadmapId()),
+                        (qQuestEntity.startQuestProgress.ne(QuestProgress.CONFIRM))
+                );
+
+        List<GetQuestSearchResponseDto> questList = queryFactory
+                .select(
+                        Projections.fields(
+                                GetQuestSearchResponseDto.class,
+                                qQuestEntity.id,
+                                qQuestEntity.questName.value.as("questName"),
+                                qQuestEntity.questType,
+                                qQuestEntity.trainingType,
+                                qQuestEntity.cooperationType
+                        )
+                )
+                .from(qQuestEntity)
+                .join(qCourseEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
+                .where(
+                        qQuestEntity.course.roadMap.id.eq(dto.getRoadmapId()),
+                        (qQuestEntity.startQuestProgress.ne(QuestProgress.CONFIRM))
+                )
+                .orderBy(getOrderSpecifier(dto.getSortProperty(), dto.getDirection()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Page<GetQuestSearchResponseDto> pageResult = PageableExecutionUtils.getPage(questList, pageable, countQuery::fetchCount);
+        return toPaginationModel(pageResult);
+    }
+
+    private OrderSpecifier<?> getOrderSpecifier(String property, String direction) {
+        Order order = direction.equalsIgnoreCase("ASC") ? Order.ASC : Order.DESC;
+
+        return switch (property) {
+            case "id" -> new OrderSpecifier<>(order, qQuestEntity.id);
+            case "questName" -> new OrderSpecifier<>(order, qQuestEntity.questName.value);
+            case "questType" -> new OrderSpecifier<>(order, qQuestEntity.questType);
+            case "trainingType" -> new OrderSpecifier<>(order, qQuestEntity.trainingType);
+            case "cooperationType" -> new OrderSpecifier<>(order, qQuestEntity.cooperationType);
+            default -> new OrderSpecifier<>(order, qQuestEntity.id);
+        };
     }
 
 }

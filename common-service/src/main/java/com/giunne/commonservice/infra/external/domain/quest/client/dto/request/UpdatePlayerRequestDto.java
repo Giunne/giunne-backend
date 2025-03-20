@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
-@Schema(description = "퀘스트 상태 생성 요청DTO")
-public record CreateQuestStateRequestDto(
-        Long roadMapId,
+@Schema(description = "플레이어 정보 수정 요청DTO")
+public record UpdatePlayerRequestDto(
         Long avatarId,
         String avatarNickname,
         Long memberId,

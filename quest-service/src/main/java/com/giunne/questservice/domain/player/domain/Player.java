@@ -9,5 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Player {
     private Long id;
+    private Long memberId;
+    private String userName;
+    private String nickname;
     private Long avatarId;
+    private String avatarNickname;
 }

@@ -56,15 +56,20 @@ public class QuestStateService {
 
         Player playerEntity;
         Optional<PlayerEntity> optionalPlayerEntity = playerRepository.findByAvatarId(dto.avatarId());
-        if (optionalPlayerEntity.isEmpty()) {
-            playerEntity = playerRepository.save(new PlayerEntity(
-                    Player.builder()
-                            .avatarId(dto.avatarId())
-                            .build()
-            ));
-        } else {
-            playerEntity = optionalPlayerEntity.get().toPlayer();
+
+        if(optionalPlayerEntity.isPresent()) {
+            return;
         }
+
+        playerEntity = playerRepository.save(new PlayerEntity(
+                Player.builder()
+                        .avatarId(dto.avatarId())
+                        .avatarNickname(dto.avatarNickname())
+                        .memberId(dto.memberId())
+                        .userName(dto.userName())
+                        .nickname(dto.nickname())
+                        .build()
+        ));
 
         List<QuestState> questStates = quests.stream().map(i -> QuestState.builder()
                         .quest(i)
@@ -74,7 +79,6 @@ public class QuestStateService {
                 .toList();
         questStateRepository.saveAll(questStates);
     }
-
 
     @Transactional
     public void updateQuestProgress(UpdateQuestStateRequestDto dto) {

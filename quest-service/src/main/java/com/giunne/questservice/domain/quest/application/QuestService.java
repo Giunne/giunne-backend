@@ -1,12 +1,15 @@
 package com.giunne.questservice.domain.quest.application;
 
 import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.quest.application.dto.request.CreateQuestRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.request.GetQuestTypeSearchRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.request.UpdateQuestInfoRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetQuestSearchListResponseDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetQuestSearchResponseDto;
 import com.giunne.questservice.domain.quest.application.dto.response.QuestInfoResponseDto;
 import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestInfoResponseDto;
 import com.giunne.questservice.domain.quest.application.interfaces.QuestRepository;
@@ -69,6 +72,10 @@ public class QuestService {
         }
 
         return uploadQuests;
+    }
+
+    public PaginationModel<GetQuestSearchResponseDto> getQuestTypeList(GetQuestTypeSearchRequestDto dto){
+        return questRepository.getQuestTypeList(dto);
     }
 
 }

@@ -54,6 +54,6 @@ public class Pageable {
     }
 
     public String getDirection() {
-        return sortDirection.name();
+        return sortDirection.name().toUpperCase();
     }
 }

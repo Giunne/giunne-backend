@@ -1,18 +1,22 @@
 package com.giunne.questservice.domain.quest.ui;
 
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.quest.application.QuestService;
+import com.giunne.questservice.domain.quest.application.dto.request.GetQuestTypeSearchRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.request.UpdateQuestInfoRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetQuestSearchListResponseDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetQuestSearchResponseDto;
 import com.giunne.questservice.domain.quest.application.dto.response.QuestInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "퀘스트 관리", description = "퀘스트 조회 및 저장")
 @RestController
@@ -34,5 +38,19 @@ public class QuestController {
         QuestInfoResponseDto questInfoResponseDto = questService.updateQuestInfo(dto);
         return Response.ok(questInfoResponseDto);
     }
+
+    @Operation(summary = "로드맵별 퀘스트 종류 조회 ", description = """
+            ## 기능설명
+            * 로드맵별 퀘스트 종류 조회 
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/quest-type")
+    public Response<PaginationModel<GetQuestSearchResponseDto>> findQuestTypeByRoadMapId(@Valid @ParameterObject GetQuestTypeSearchRequestDto dto){
+        PaginationModel<GetQuestSearchResponseDto> questTypeSearch = questService.getQuestTypeList(dto);
+        return Response.ok(questTypeSearch);
+    }
+
 
 }

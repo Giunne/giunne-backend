@@ -13,7 +13,7 @@ public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCo
     @Query("UPDATE QuestPostCommentEntity c "
             + "SET c.likeCounter.value = :#{#comment.getLikeCounter()} "
             + "WHERE c.id = :#{#comment.getId()}")
-    void updateLikeCount(QuestPostComment comment);
+    void updateLikeCount(@Param("comment")QuestPostComment comment);
 
 
     @Modifying

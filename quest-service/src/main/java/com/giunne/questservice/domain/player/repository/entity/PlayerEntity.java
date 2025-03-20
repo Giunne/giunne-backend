@@ -23,15 +23,35 @@ public class PlayerEntity {
     @Column(name = "avatar_no", nullable = false)
     private Long avatarId;
 
+    @Column(name = "userName")
+    private String userName;
+
+    @Column(name = "nickname")
+    private String nickname;
+
+    @Column(name = "avatar_nickname")
+    private String avatarNickname;
+
+    @Column(name = "member_no")
+    private Long memberId;
+
     public PlayerEntity(Player player) {
         this.id = player.getId();
         this.avatarId = player.getAvatarId();
+        this.userName = player.getUserName();
+        this.nickname = player.getNickname();
+        this.avatarNickname = player.getAvatarNickname();
+        this.memberId = player.getMemberId();
     }
 
     public Player toPlayer() {
         return Player.builder()
                 .id(id)
                 .avatarId(avatarId)
+                .userName(userName)
+                .nickname(nickname)
+                .avatarNickname(avatarNickname)
+                .memberId(memberId)
                 .build();
     }
 
