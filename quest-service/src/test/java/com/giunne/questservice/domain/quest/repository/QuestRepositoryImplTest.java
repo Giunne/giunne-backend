@@ -1,6 +1,9 @@
 package com.giunne.questservice.domain.quest.repository;
 
+import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.questservice.QuestTestConfiguration;
+import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestForStudentRequestDto;
+import com.giunne.questservice.domain.quest.application.dto.response.GetUploadQuestResponseDto;
 import com.giunne.questservice.domain.questPost.application.dto.response.GetPostResponseDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +39,16 @@ class QuestRepositoryImplTest {
     void findMyQuest(){
         // when
         questPostRepository.findMyQuest(24L, 28L);
+    }
+
+    @Test
+    @Rollback(false)
+    @DisplayName("게시판 리스트 조회 ")
+    void findUploadQuest(){
+        // when
+        GetUploadQuestForStudentRequestDto getUploadQuestForStudentRequestDto = new GetUploadQuestForStudentRequestDto(null,"테스트 학생 2" );
+        PaginationModel<GetUploadQuestResponseDto> uploadQuest = questPostRepository.findUploadQuest(getUploadQuestForStudentRequestDto);
+        System.out.println(uploadQuest);
     }
 
 }
