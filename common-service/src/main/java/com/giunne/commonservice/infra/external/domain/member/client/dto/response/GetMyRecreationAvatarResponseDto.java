@@ -78,7 +78,8 @@ public class GetMyRecreationAvatarResponseDto {
     )
     Long characterNo;
     @Schema(
-            description = "착용중인 아이템 번호 List"
+            description = "착용중인 아이템 번호 List",
+            hidden = true
     )
     List<Long> wearingItemIds;
     @Schema(
