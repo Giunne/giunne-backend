@@ -3,6 +3,8 @@ package com.giunne.memberservice.domain.avatar.ui;
 import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -112,6 +114,45 @@ public class AvatarController {
     public Response<List<GetMyRecreationAvatarResponseDto> > getAvatarProfileListInfo(@ParameterObject GetAvatarProfileListRequestDto dto) {
         List<GetMyRecreationAvatarResponseDto> avatarProfileInfos = avatarService.getAvatarProfileListInfo(dto);
         return Response.ok(avatarProfileInfos);
+    }
+
+    @Operation(summary = "경험치 증가", description = """
+            ## 기능설명
+            * 경험치 증가
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/increase-experience")
+    public Response<String> increaseExperience(@RequestBody UpdateExpRequestDto dto) {
+        avatarService.increaseExperience(dto);
+        return Response.ok("성공");
+    }
+
+    @Operation(summary = "포인트 증가", description = """
+            ## 기능설명
+            * 포인트 증가
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/increase-point")
+    public Response<String> increasePoint(@RequestBody UpdatePointRequestDto dto) {
+        avatarService.increasePoint(dto);
+        return Response.ok("성공");
+    }
+
+    @Operation(summary = "포인트 차감", description = """
+            ## 기능설명
+            * 포인트 차감
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/decrease-point")
+    public Response<String> decreasePoint(@RequestBody UpdatePointRequestDto dto) {
+        avatarService.decreasePoint(dto);
+        return Response.ok("성공");
     }
 
 }

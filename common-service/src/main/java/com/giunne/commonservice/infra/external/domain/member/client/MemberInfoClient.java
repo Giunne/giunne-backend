@@ -1,8 +1,6 @@
 package com.giunne.commonservice.infra.external.domain.member.client;
 
-import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.request.InsertInventoryItemRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.*;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.commonservice.ui.Response;
 import org.springdoc.core.annotations.ParameterObject;
@@ -21,8 +19,21 @@ public interface MemberInfoClient {
     Response<String> insertInventory(@RequestBody InsertInventoryItemRequestDto dto);
 
     @GetMapping(value = "/avatar/avatar-profile")
-    Response<GetMyRecreationAvatarResponseDto > getAvatarProfileInfo(@RequestParam("playerId") Long playerId);
+    Response<GetMyRecreationAvatarResponseDto> getAvatarProfileInfo(@RequestParam("playerId") Long playerId);
 
     @GetMapping(value = "/avatar/avatar-profiles")
-    Response<List<GetMyRecreationAvatarResponseDto> > getAvatarProfileListInfo(@RequestParam("playerId") List<Long> playerId);
+    Response<List<GetMyRecreationAvatarResponseDto>> getAvatarProfileListInfo(@RequestParam("playerId") List<Long> playerId);
+
+    @GetMapping(value = "/avatar/increase-experience")
+    Response<String> increaseExperience(@RequestPart(name = "playerId") Long playerId,
+                                        @RequestPart(name = "exp") Long exp);
+
+    @GetMapping(value = "/avatar/increase-point")
+    Response<String> increasePoint(@RequestPart(name = "playerId") Long playerId,
+                                   @RequestPart(name = "point") Long point);
+
+    @GetMapping(value = "/avatar/decrease-point")
+    Response<String> decreasePoint(@RequestPart(name = "playerId") Long playerId,
+                                   @RequestPart(name = "point") Long point);
+
 }

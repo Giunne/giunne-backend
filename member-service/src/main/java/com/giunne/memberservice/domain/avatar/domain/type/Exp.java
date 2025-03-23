@@ -26,4 +26,12 @@ public class Exp {
         return new Exp(value);
     }
 
+    public void increaseExp(final Long value) {
+    	this.exp += value;
+    }
+
+    public void updateExp(final Long value) {
+        this.exp = value;
+    }
+
 }

@@ -13,9 +13,16 @@ import java.util.List;
 
 public interface AvatarRepository {
     Avatar createAvatar(Avatar avatar);
+
     Avatar findById(Long avatarId);
+
     PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(Member member, Pageable dto);
+
     List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(Long playerId, GetMyRecreationAvatarRequestDto dto);
+
     GetMyRecreationAvatarResponseDto getAvatarProfileInfo(Long playerId);
+
     List<GetMyRecreationAvatarResponseDto> getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto);
+
+    Avatar save(Avatar avatar);
 }

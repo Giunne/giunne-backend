@@ -7,6 +7,8 @@ import com.giunne.commonservice.infra.external.domain.item.client.dto.response.G
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.ItemInfoResponseDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileListRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
@@ -36,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,10 +53,10 @@ public class AvatarService {
     private final QuestInfoClient questInfoClient;
 
     @Transactional
-    public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto){
+    public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto) {
 
         Response<ItemInfoResponseDto> itemInfoResponseDtoResponse = itemInfoClient.requestItemInfo(dto.characterNo());
-        ItemInfoResponseDto  itemInfoResponseDto = itemInfoResponseDtoResponse.value();
+        ItemInfoResponseDto itemInfoResponseDto = itemInfoResponseDtoResponse.value();
         Member member = memberService.getMember(memberPrincipal.getMemberId());
         Recreation recreation = recreationService.getRecreation(dto.recreationId());
         Avatar avatar = Avatar.builder()
@@ -189,7 +192,7 @@ public class AvatarService {
         return getMyRecreationAvatarResponseDto;
     }
 
-    public List<GetMyRecreationAvatarResponseDto>  getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto) {
+    public List<GetMyRecreationAvatarResponseDto> getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto) {
         List<GetMyRecreationAvatarResponseDto> myAvatarList = avatarRepository.getAvatarProfileListInfo(dto);
         for (GetMyRecreationAvatarResponseDto getMyRecreationAvatarResponseDto : myAvatarList) {
             GetWearingItemsRequestDto getWearingItemsRequestDto = new GetWearingItemsRequestDto(getMyRecreationAvatarResponseDto.getWearingItemIds(), getMyRecreationAvatarResponseDto.getLevel());
@@ -199,5 +202,49 @@ public class AvatarService {
         return myAvatarList;
     }
 
+    @Transactional
+    public void increaseExperience(UpdateExpRequestDto dto) {
+        Avatar avatar = avatarRepository.findById(dto.getPlayerId());
+        avatar.getExp().increaseExp(dto.getExp());
+        levelUp(avatar);
+        avatarRepository.save(avatar);
+    }
+
+    private void levelUp(Avatar avatar) {
+
+        while (true) {
+            boolean isNotLevelUp = true;
+            LevelUpPolicy level = levelUpPolicyRepository.findByCurrentLevel(avatar.getLevel().getLevel());
+
+            // 만렙인경우
+            if(level.isMaxLevel()) {
+                return;
+            }
+
+            if(level.getNeedExp().getValue() <= avatar.getExp().getExp()) {
+                avatar.getExp().updateExp(avatar.getExp().getExp() - level.getNeedExp().getValue());
+                avatar.getLevel().increaseLevel();
+                isNotLevelUp = false;
+            }
+
+            if(isNotLevelUp) {
+                return;
+            }
+        }
+    }
+
+    @Transactional
+    public void increasePoint(UpdatePointRequestDto dto) {
+        Avatar avatar = avatarRepository.findById(dto.getPlayerId());
+        avatar.getPoint().increasePoint(dto.getPoint());
+        avatarRepository.save(avatar);
+    }
+
+    @Transactional
+    public void decreasePoint(UpdatePointRequestDto dto) {
+        Avatar avatar = avatarRepository.findById(dto.getPlayerId());
+        avatar.getPoint().decreasePoint(dto.getPoint());
+        avatarRepository.save(avatar);
+    }
 
 }

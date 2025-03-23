@@ -27,4 +27,8 @@ public class Level {
         return new Level(value);
     }
 
+
+    public void increaseLevel() {
+        this.level++;
+    }
 }

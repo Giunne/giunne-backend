@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 필요 경험치
+ * 현재 레벨
  */
 
 @Getter
