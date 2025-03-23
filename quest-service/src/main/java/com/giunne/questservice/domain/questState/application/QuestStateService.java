@@ -2,8 +2,10 @@ package com.giunne.questservice.domain.questState.application;
 
 
 import com.giunne.commonservice.domain.auth.MemberRole;
+import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
 import com.giunne.commonservice.infra.external.domain.synology.client.SynologyInfoClient;
 import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.commonservice.ui.Response;
 import com.giunne.commonservice.util.FileUtils;
 import com.giunne.questservice.domain.quest.application.dto.request.CertificateRequestDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
@@ -29,6 +31,7 @@ import com.giunne.questservice.domain.questState.domain.QuestState;
 import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +53,7 @@ public class QuestStateService {
     private final QuestPostAttachmentRepository questPostAttachmentRepository;
     private final QuestPostRepository questPostRepository;
     private final SynologyInfoClient synologyInfoClient;
+    private final MemberInfoClient memberInfoClient;
 
     private final String CATEGORY = "certificate";
 
@@ -161,7 +165,7 @@ public class QuestStateService {
             throw new IllegalArgumentException("아바타 정보가 없습니다.");
         }
 
-        if (memberPrincipal.getRole() == MemberRole.ROLE_TEACHER) {
+        if (memberPrincipal.getRole() != MemberRole.ROLE_TEACHER) {
             throw new IllegalArgumentException("선생님만 채점이 가능합니다.");
         }
 
@@ -171,7 +175,7 @@ public class QuestStateService {
 
         if (questPost.getQuestPostProgressType() == QuestPostProgressType.PASS) {
             QuestState foundQuestState = questStateRepository.findByQuestPostId(dto.questPostId());
-            Quest quest = questRepository.findById(foundQuestState.getId());
+            Quest quest = questRepository.findById(foundQuestState.getQuest().getId());
             foundQuestState.getCurrentApproveCount().increase();
             foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
 
@@ -182,6 +186,18 @@ public class QuestStateService {
                         .questStateId(foundQuestState.getId())
                         .questProgress(QuestProgress.CONFIRM.name())
                         .build());
+
+                // 경험치 증가
+                Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(questPost.getPlayer().getAvatarId(), quest.getRewardExp().getValue());
+                if(memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
+                    throw new IllegalArgumentException("경험치 증가 실패");
+                }
+
+                // 포인트 증가
+                Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().getValue());
+                if(memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
+                    throw new IllegalArgumentException("포인트 증가 실패");
+                }
             }
         }
     }

@@ -24,4 +24,12 @@ public class Point {
     public static Point from(final Long value) {
         return new Point(value);
     }
+
+    public void increasePoint(final Long value) {
+        this.point += value;
+    }
+
+    public void decreasePoint(final Long value) {
+        this.point -= value;
+    }
 }

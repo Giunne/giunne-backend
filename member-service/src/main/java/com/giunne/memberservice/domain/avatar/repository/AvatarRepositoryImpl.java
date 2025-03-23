@@ -390,4 +390,12 @@ public class AvatarRepositoryImpl implements AvatarRepository {
         return new ArrayList<>(avatarMap.values());
     }
 
+    @Override
+    @Transactional
+    public Avatar save(Avatar avatar) {
+        AvatarEntity avatarEntity = new AvatarEntity(avatar);
+        AvatarEntity entity = jpaAvatarRepository.save(avatarEntity);
+        return entity.toAvatar();
+    }
+
 }
