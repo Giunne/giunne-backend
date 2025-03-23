@@ -1,6 +1,7 @@
 package com.giunne.questservice.domain.questPost.repository;
 
 import com.giunne.commonservice.ui.PaginationModel;
+import com.giunne.questservice.domain.course.repository.entity.QCourseEntity;
 import com.giunne.questservice.domain.player.repository.entity.QPlayerEntity;
 import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestForStudentRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.response.GetUploadQuestResponseDto;
@@ -51,6 +52,7 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
     private static final QQuestEntity qQuestEntity = QQuestEntity.questEntity;
     private static final QQuestPostCommentEntity qQuestPostCommentEntity = QQuestPostCommentEntity.questPostCommentEntity;
     private static final QPlayerEntity qPlayerEntity = QPlayerEntity.playerEntity;
+    private static final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
 
 
     @Transactional
@@ -137,12 +139,14 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         Optional.ofNullable(equalToQuestName(dto.getQuestName())).ifPresent(whereClause::and);
         Optional.ofNullable(likeNickName(dto.getNickName())).ifPresent(whereClause::and);
+        Optional.ofNullable(qCourseEntity.roadMap.id.eq(dto.getRoadMapId())).ifPresent(whereClause::and);
 
         JPAQuery<Long> count = queryFactory
                 .select(qQuestPostEntity.count())
                 .from(qQuestPostEntity)
                 .join(qQuestStateEntity).on(qQuestPostEntity.questState.id.eq(qQuestStateEntity.id))
                 .join(qQuestEntity).on(qQuestStateEntity.quest.id.eq(qQuestEntity.id))
+                .join(qCourseEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
                 .join(qPlayerEntity).on(qQuestPostEntity.player.id.eq(qPlayerEntity.id))
                 .where(
                         whereClause
@@ -175,6 +179,7 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                 .from(qQuestPostEntity)
                 .join(qQuestStateEntity).on(qQuestPostEntity.questState.id.eq(qQuestStateEntity.id))
                 .join(qQuestEntity).on(qQuestStateEntity.quest.id.eq(qQuestEntity.id))
+                .join(qCourseEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
                 .join(qPlayerEntity).on(qQuestPostEntity.player.id.eq(qPlayerEntity.id))
                 .where(
                         whereClause
