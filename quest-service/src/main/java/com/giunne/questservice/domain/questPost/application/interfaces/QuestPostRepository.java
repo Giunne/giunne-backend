@@ -14,10 +14,15 @@ import java.util.List;
 public interface QuestPostRepository {
     QuestPost save(QuestPost questPost);
 
+    QuestPost getQuestPost(Long id);
+
     GetPostResponseDto findById(Long id);
+
     QuestPost getPost(Long id);
 
     List<GetPostDetailResponseDto> findMyQuest(Long questId, Long playerId);
 
     PaginationModel<GetUploadQuestResponseDto> findUploadQuest(GetUploadQuestForStudentRequestDto dto);
+
+    QuestPost updatePostProgress(QuestPost questPost);
 }

@@ -136,7 +136,6 @@ public class CourseEntity extends BaseEntity {
                 .isRoot(isRoot)
                 .isLeaf(isLeaf)
                 .deadline(deadline)
-//                .parent(parent)
                 .thumbnailUrl(thumbnailUrl)
                 .currentApproveCnt(currentApproveCnt)
                 .needApproveCnt(needApproveCnt)
@@ -163,7 +162,6 @@ public class CourseEntity extends BaseEntity {
         this.trainingType = course.getTrainingType();
         this.deadline = course.getDeadline();
         this.thumbnailUrl = course.getThumbnailUrl();
-//        this.parent = course.getParent();
         this.currentApproveCnt = course.getCurrentApproveCnt();
         this.needApproveCnt = course.getNeedApproveCnt();
         this.rewardPoint = course.getRewardPoint();

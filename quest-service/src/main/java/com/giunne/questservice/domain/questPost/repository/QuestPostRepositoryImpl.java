@@ -2,12 +2,9 @@ package com.giunne.questservice.domain.questPost.repository;
 
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.questservice.domain.player.repository.entity.QPlayerEntity;
-import com.giunne.questservice.domain.quest.application.dto.request.GetQuestTypeSearchRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestForStudentRequestDto;
-import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.response.GetUploadQuestResponseDto;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestEntity;
-import com.giunne.questservice.domain.questAttachment.repository.entity.QQuestAttachmentEntity;
 import com.giunne.questservice.domain.questPost.application.dto.response.GetPostDetailResponseDto;
 import com.giunne.questservice.domain.questPost.application.dto.response.GetPostResponseDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
@@ -17,8 +14,6 @@ import com.giunne.questservice.domain.questPost.repository.entity.QQuestPostEnti
 import com.giunne.questservice.domain.questPost.repository.entity.QuestPostEntity;
 import com.giunne.questservice.domain.questPost.repository.jpa.JpaQuestPostRepository;
 import com.giunne.questservice.domain.questPostAttachment.repository.entity.QQuestPostAttachmentEntity;
-import com.giunne.questservice.domain.questState.application.dto.response.QuestInfoResponseDto;
-import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import com.giunne.questservice.domain.questState.repository.entity.QQuestStateEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
@@ -64,6 +59,13 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
         return save.toQuestPost();
     }
 
+    @Override
+    public QuestPost getQuestPost(Long id) {
+        QuestPostEntity questPostEntity = jpaQuestPostRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        return questPostEntity.toQuestPost();
+    }
+
     public GetPostResponseDto findById(Long id) {
         return queryFactory
                 .select(
@@ -77,6 +79,7 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                                 qQuestPostEntity.updateTime.as("updateTime"),
                                 qQuestPostAttachmentEntity.fileUrl.value.as("fileUrl"),
                                 qQuestStateEntity.player.avatarId.as("playerId"),
+                                qQuestStateEntity.currentApproveCount.value.as("currentApproveCount"),
                                 qQuestEntity.id.as("questId")
                         )
                 )
@@ -108,6 +111,7 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                                 qQuestPostEntity.updateTime.as("updateTime"),
                                 qQuestPostAttachmentEntity.fileUrl.value.as("fileUrl"),
                                 qQuestStateEntity.player.avatarId.as("playerId"),
+                                qQuestStateEntity.currentApproveCount.value.as("currentApproveCount"),
                                 qQuestEntity.id.as("questId")
                         )
                 )
@@ -153,7 +157,6 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                         qQuestEntity.cooperationType,
                         qQuestEntity.trainingType,
                         qQuestEntity.needApproveCount.value,
-                        qQuestEntity.currentApproveCount.value,
 
                         qQuestPostEntity.id,
                         qQuestPostEntity.questPostProgressType,
@@ -216,7 +219,6 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
                             .cooperationType(tuple.get(qQuestEntity.cooperationType))
                             .trainingType(tuple.get(qQuestEntity.trainingType))
                             .needApproveCount(tuple.get(qQuestEntity.needApproveCount.value))
-                            .currentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value))
                             .questPostId(tuple.get(qQuestPostEntity.id))
                             .questPostProgressType(tuple.get(qQuestPostEntity.questPostProgressType))
                             .createTime(tuple.get(qQuestPostEntity.createTime))
@@ -253,4 +255,14 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
         Order order = direction.equalsIgnoreCase("ASC") ? Order.ASC : Order.DESC;
         return new OrderSpecifier<>(order, qQuestPostEntity.updateTime);
     }
+
+    @Override
+    @Transactional
+    public QuestPost updatePostProgress(QuestPost questPost) {
+        QuestPostEntity questPostEntity = jpaQuestPostRepository.findById(questPost.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        jpaQuestPostRepository.updatePostProgress(questPost);
+        return questPost;
+    }
+
 }

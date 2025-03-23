@@ -50,8 +50,6 @@ public class Quest {
     @Builder.Default
     private NeedApproveCount needApproveCount = NeedApproveCount.from(1); // 필요 승인 카운트
     @Builder.Default
-    private CurrentApproveCount currentApproveCount = CurrentApproveCount.from(0); // 승인 카운트
-    @Builder.Default
     private QuestDescription questDescription = QuestDescription.from(""); // 퀘스트 설명
     @Builder.Default
     private TrainingDescription trainingDescription = TrainingDescription.from(""); // 운동 설명

@@ -46,6 +46,11 @@ public class GetPostDetailResponseDto {
     )
     Long questId;
     @Schema(
+            description = "현재 인증 횟수",
+            example = "1"
+    )
+    Integer currentApproveCount;
+    @Schema(
             description = "생성날짜"
     )
     LocalDateTime createTime;

@@ -3,6 +3,8 @@ package com.giunne.questservice.domain.questState.repository;
 import com.giunne.questservice.domain.course.repository.entity.QCourseEntity;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestEntity;
 import com.giunne.questservice.domain.quest.repository.entity.QQuestOpenConditionEntity;
+import com.giunne.questservice.domain.questPost.repository.entity.QQuestPostEntity;
+import com.giunne.questservice.domain.questPost.repository.entity.QuestPostEntity;
 import com.giunne.questservice.domain.questState.application.dto.response.QuestInfoResponseDto;
 import com.giunne.questservice.domain.questState.application.dto.response.QuestStateInfoResponseDto;
 import com.giunne.questservice.domain.questState.domain.QuestState;
@@ -32,6 +34,8 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
     private final QQuestStateEntity qQuestStateEntity = QQuestStateEntity.questStateEntity;
     private final QQuestOpenConditionEntity qQuestOpenConditionEntity = QQuestOpenConditionEntity.questOpenConditionEntity;
     private final QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
+    private final QQuestPostEntity qQuestPostEntity = QQuestPostEntity.questPostEntity;
+
 
     @Override
     public QuestState findById(Long id) {
@@ -157,7 +161,6 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestEntity.maxPlayer.value,
                         qQuestEntity.sortSeq.value,
                         qQuestEntity.questType,
-                        qQuestEntity.currentApproveCount.value,
                         qQuestEntity.needApproveCount.value,
                         qQuestEntity.rewardPoint.value,
                         qQuestEntity.rewardExp.value,
@@ -171,7 +174,8 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
                         qQuestStateEntity.starPoint.value,
-                        qQuestStateEntity.hasExtraPoints.value
+                        qQuestStateEntity.hasExtraPoints.value,
+                        qQuestStateEntity.currentApproveCount.value
                 )
                 .from(qCourseEntity)
                 .join(qQuestEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
@@ -210,7 +214,6 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         questInfoDto.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
                         questInfoDto.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
                         questInfoDto.setQuestType(tuple.get(qQuestEntity.questType));
-                        questInfoDto.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
                         questInfoDto.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
                         questInfoDto.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
                         questInfoDto.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
@@ -232,6 +235,7 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                 questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                 questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
                 questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                questState.setCurrentApproveCount(tuple.get(qQuestStateEntity.currentApproveCount.value));
                 questInfoResponseDto.setQuestStateInfo(questState);
             }
         }
@@ -258,7 +262,6 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestEntity.maxPlayer.value,
                         qQuestEntity.sortSeq.value,
                         qQuestEntity.questType,
-                        qQuestEntity.currentApproveCount.value,
                         qQuestEntity.needApproveCount.value,
                         qQuestEntity.rewardPoint.value,
                         qQuestEntity.rewardExp.value,
@@ -272,7 +275,8 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
                         qQuestStateEntity.starPoint.value,
-                        qQuestStateEntity.hasExtraPoints.value
+                        qQuestStateEntity.hasExtraPoints.value,
+                        qQuestStateEntity.currentApproveCount.value
                 )
                 .from(qCourseEntity)
                 .join(qQuestEntity).on(qQuestEntity.course.id.eq(qCourseEntity.id))
@@ -309,7 +313,6 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                         questInfoDto.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
                         questInfoDto.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
                         questInfoDto.setQuestType(tuple.get(qQuestEntity.questType));
-                        questInfoDto.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
                         questInfoDto.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
                         questInfoDto.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
                         questInfoDto.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
@@ -331,11 +334,24 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
                 questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                 questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
                 questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                questState.setCurrentApproveCount(tuple.get(qQuestStateEntity.currentApproveCount.value));
                 questInfoResponseDto.setQuestStateInfo(questState);
             }
         }
 
         return new ArrayList<>(questMap.values());
+    }
+
+    public QuestState findByQuestPostId(Long questPostId) {
+
+        QuestStateEntity questStateEntity = queryFactory
+                .selectFrom(qQuestStateEntity)
+                .join(qQuestPostEntity).on(qQuestStateEntity.id.eq(qQuestPostEntity.questState.id))
+                .where(
+                        qQuestPostEntity.id.eq(questPostId)
+                )
+                .fetchOne();
+        return questStateEntity.toQuestState();
     }
 
 }

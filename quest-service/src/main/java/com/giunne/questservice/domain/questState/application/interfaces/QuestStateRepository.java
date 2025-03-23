@@ -21,4 +21,6 @@ public interface QuestStateRepository {
     List<QuestInfoResponseDto> findInProgressQuestByRoadMap(Long roadMapId, Long avatarId);
 
     List<QuestInfoResponseDto> findConfirmQuestByRoadMap(Long roadMapId, Long avatarId);
+
+    QuestState findByQuestPostId(Long questPostId);
 }
