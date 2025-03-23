@@ -3,6 +3,7 @@ package com.giunne.questservice.domain.questState.repository.entity;
 import com.giunne.commonservice.domain.common.Active;
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.questservice.domain.player.repository.entity.PlayerEntity;
+import com.giunne.questservice.domain.quest.domain.type.CurrentApproveCount;
 import com.giunne.questservice.domain.quest.repository.entity.QuestEntity;
 import com.giunne.questservice.domain.questState.domain.QuestState;
 import com.giunne.questservice.domain.questState.domain.type.*;
@@ -59,6 +60,9 @@ public class QuestStateEntity extends BaseEntity {
     @Embedded
     private HasExtraPoints hasExtraPoints = HasExtraPoints.from(false);
 
+    @Embedded
+    private CurrentApproveCount currentApproveCount; // 승인 카운트
+
     public QuestStateEntity(QuestState state) {
         this.id = state.getId();
         this.quest = new QuestEntity(state.getQuest());
@@ -69,6 +73,7 @@ public class QuestStateEntity extends BaseEntity {
         this.rewardPoint = state.getRewardPoint();
         this.starPoint = state.getStarPoint();
         this.hasExtraPoints = state.getHasExtraPoints();
+        this.currentApproveCount = state.getCurrentApproveCount();
     }
 
     public QuestState toQuestState() {
@@ -82,6 +87,7 @@ public class QuestStateEntity extends BaseEntity {
                 .rewardPoint(rewardPoint)
                 .starPoint(starPoint)
                 .hasExtraPoints(hasExtraPoints)
+                .currentApproveCount(currentApproveCount)
                 .build();
     }
 

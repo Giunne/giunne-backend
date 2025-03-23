@@ -31,7 +31,6 @@ public class Course {
     private LocalDateTime deadline;
     @Builder.Default
     private IsRootCourse isRootCourse = IsRootCourse.from(false);
-//    private List<Long> parent;
     private ThumbnailUrl thumbnailUrl;
     @Builder.Default
     private CurrentApproveCnt currentApproveCnt = CurrentApproveCnt.from(0);

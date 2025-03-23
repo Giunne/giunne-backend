@@ -102,11 +102,6 @@ public class QuestInfoResponseDto {
     )
     TrainingType trainingType;
     @Schema(
-            description = "현재 인증 횟수",
-            example = "1"
-    )
-    Integer currentApproveCount;
-    @Schema(
             description = "퀘스트 설명",
             example = "퀘스트 설명"
     )
@@ -137,7 +132,6 @@ public class QuestInfoResponseDto {
         this.questType = quest.getQuestType();
         this.cooperationType = quest.getCooperationType();
         this.trainingType = quest.getTrainingType();
-        this.currentApproveCount = quest.getCurrentApproveCount().getValue();
         this.questDescription = quest.getQuestDescription().getValue();
     }
 

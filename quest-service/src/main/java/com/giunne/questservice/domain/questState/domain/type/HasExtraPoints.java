@@ -29,4 +29,10 @@ public class HasExtraPoints {
         return this.value;
     }
 
+    public void updateExtraPoints(Boolean value) {
+        if (value == null) {
+            return;
+        }
+        this.value = true;
+    }
 }

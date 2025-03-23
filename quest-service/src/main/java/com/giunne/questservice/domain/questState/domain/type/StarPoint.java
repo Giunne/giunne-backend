@@ -25,5 +25,12 @@ public class StarPoint {
     public static StarPoint from(final Long value) {
         return new StarPoint(value);
     }
-    
+
+    public void updateStartPoint(Long value) {
+        if (value == null) {
+            value = 0L;
+        }
+
+        this.value = value;
+    }
 }

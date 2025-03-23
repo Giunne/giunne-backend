@@ -1,9 +1,11 @@
 package com.giunne.questservice.domain.questState.application;
 
 
+import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.infra.external.domain.synology.client.SynologyInfoClient;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.util.FileUtils;
+import com.giunne.questservice.domain.quest.application.dto.request.CertificateRequestDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostRepository;
 import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import com.giunne.questservice.domain.questPost.domain.post.type.QuestPostProgressType;
@@ -57,7 +59,7 @@ public class QuestStateService {
         Player playerEntity;
         Optional<PlayerEntity> optionalPlayerEntity = playerRepository.findByAvatarId(dto.avatarId());
 
-        if(optionalPlayerEntity.isPresent()) {
+        if (optionalPlayerEntity.isPresent()) {
             return;
         }
 
@@ -151,6 +153,37 @@ public class QuestStateService {
         QuestProgress questProgress = QuestProgress.UPLOAD;
         questState.updateQuestProgress(questProgress);
         questStateRepository.save(questState);
+    }
+
+    @Transactional
+    public void certificate(MemberPrincipal memberPrincipal, CertificateRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+
+        if (memberPrincipal.getRole() == MemberRole.ROLE_TEACHER) {
+            throw new IllegalArgumentException("선생님만 채점이 가능합니다.");
+        }
+
+        QuestPost questPost = questPostRepository.getQuestPost(dto.questPostId());
+        questPost.passOrFailProgress(dto.isPass());
+        questPostRepository.updatePostProgress(questPost);
+
+        if (questPost.getQuestPostProgressType() == QuestPostProgressType.PASS) {
+            QuestState foundQuestState = questStateRepository.findByQuestPostId(dto.questPostId());
+            Quest quest = questRepository.findById(foundQuestState.getId());
+            foundQuestState.getCurrentApproveCount().increase();
+            foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
+
+            if (quest.getNeedApproveCount().getValue().equals(foundQuestState.getCurrentApproveCount().getValue())) {
+                foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
+                questStateRepository.save(foundQuestState);
+                updateQuestProgress(UpdateQuestStateRequestDto.builder()
+                        .questStateId(foundQuestState.getId())
+                        .questProgress(QuestProgress.CONFIRM.name())
+                        .build());
+            }
+        }
     }
 
 }

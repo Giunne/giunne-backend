@@ -21,5 +21,15 @@ public class CurrentApproveCount {
     public static CurrentApproveCount from(final Integer value) {
         return new CurrentApproveCount(value);
     }
-    
+
+    public void increase() {
+        value++;
+    }
+
+    public void decrease() {
+        if (value <= 0) {
+            return;
+        }
+        value--;
+    }
 }

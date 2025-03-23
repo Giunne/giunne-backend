@@ -52,9 +52,6 @@ public class QuestEntity extends BaseEntity {
     private NeedApproveCount needApproveCount; // 필요 승인 카운트
 
     @Embedded
-    private CurrentApproveCount currentApproveCount; // 승인 카운트
-
-    @Embedded
     private DifficultyLevel difficultyLevel; // 난이도
 
     @Embedded
@@ -118,7 +115,6 @@ public class QuestEntity extends BaseEntity {
         this.questDescription = quest.getQuestDescription();
         this.guideUrl = quest.getGuideUrl();
         this.needApproveCount = quest.getNeedApproveCount();
-        this.currentApproveCount = quest.getCurrentApproveCount();
         this.trainingDescription = quest.getTrainingDescription();
         this.startQuestProgress = quest.getStartQuestProgress();
     }
@@ -143,7 +139,6 @@ public class QuestEntity extends BaseEntity {
                 .deadline(deadline)
                 .guideUrl(guideUrl)
                 .needApproveCount(needApproveCount)
-                .currentApproveCount(currentApproveCount)
                 .questDescription(questDescription)
                 .trainingDescription(trainingDescription)
                 .startQuestProgress(startQuestProgress)

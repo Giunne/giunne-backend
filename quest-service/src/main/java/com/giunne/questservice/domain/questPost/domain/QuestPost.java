@@ -22,4 +22,17 @@ public class QuestPost {
     private QuestState questState;
     @Builder.Default
     private QuestPostProgressType questPostProgressType = QuestPostProgressType.UPLOAD;
+
+    public void updateQuestPostProgressType(QuestPostProgressType questPostProgressType) {
+        this.questPostProgressType = questPostProgressType;
+    }
+
+    public void passOrFailProgress(boolean isPass) {
+        if (isPass) {
+            updateQuestPostProgressType(QuestPostProgressType.PASS);
+            return;
+        }
+
+        updateQuestPostProgressType(QuestPostProgressType.FAIL);
+    }
 }

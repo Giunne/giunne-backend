@@ -149,7 +149,6 @@ public class QuestRepositoryImpl implements QuestRepository {
                         qQuestEntity.maxPlayer.value,
                         qQuestEntity.sortSeq.value,
                         qQuestEntity.questType,
-                        qQuestEntity.currentApproveCount.value,
                         qQuestEntity.needApproveCount.value,
                         qQuestEntity.rewardPoint.value,
                         qQuestEntity.rewardExp.value,
@@ -165,6 +164,7 @@ public class QuestRepositoryImpl implements QuestRepository {
                         qQuestStateEntity.rewardExp.value,
                         qQuestStateEntity.starPoint.value,
                         qQuestStateEntity.hasExtraPoints.value,
+                        qQuestStateEntity.currentApproveCount.value,
 
                         qQuestPostEntity.id,
                         qQuestPostEntity.questState.id,
@@ -208,7 +208,6 @@ public class QuestRepositoryImpl implements QuestRepository {
                         questInfoDto.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
                         questInfoDto.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
                         questInfoDto.setQuestType(tuple.get(qQuestEntity.questType));
-                        questInfoDto.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
                         questInfoDto.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
                         questInfoDto.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
                         questInfoDto.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
@@ -241,6 +240,7 @@ public class QuestRepositoryImpl implements QuestRepository {
                 questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                 questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
                 questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                questState.setCurrentApproveCount(tuple.get(qQuestStateEntity.currentApproveCount.value));
                 questMap.get(questId).setQuestStateInfo(questState);
             }
         }

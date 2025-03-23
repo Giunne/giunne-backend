@@ -249,7 +249,6 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestEntity.maxPlayer.value,
                         qQuestEntity.sortSeq.value,
                         qQuestEntity.questType,
-                        qQuestEntity.currentApproveCount.value,
                         qQuestEntity.needApproveCount.value,
                         qQuestEntity.rewardPoint.value,
                         qQuestEntity.rewardExp.value,
@@ -262,7 +261,8 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
                         qQuestStateEntity.starPoint.value,
-                        qQuestStateEntity.hasExtraPoints.value
+                        qQuestStateEntity.hasExtraPoints.value,
+                        qQuestStateEntity.currentApproveCount.value
                 )
                 .from(courseEntity)
                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
@@ -326,7 +326,6 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questInfo.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
                     questInfo.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
                     questInfo.setQuestType(tuple.get(qQuestEntity.questType));
-                    questInfo.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
                     questInfo.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
                     questInfo.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
                     questInfo.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
@@ -346,6 +345,7 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                     questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
                     questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                    questState.setCurrentApproveCount(tuple.get(qQuestStateEntity.currentApproveCount.value));
                     questInfo.setQuestStateInfo(questState);
                 }
             }
@@ -421,7 +421,6 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestEntity.maxPlayer.value,
                         qQuestEntity.sortSeq.value,
                         qQuestEntity.questType,
-                        qQuestEntity.currentApproveCount.value,
                         qQuestEntity.needApproveCount.value,
                         qQuestEntity.rewardPoint.value,
                         qQuestEntity.rewardExp.value,
@@ -434,7 +433,8 @@ public class CourseRepositoryImpl implements CourseRepository {
                         qQuestStateEntity.rewardPoint.value,
                         qQuestStateEntity.rewardExp.value,
                         qQuestStateEntity.starPoint.value,
-                        qQuestStateEntity.hasExtraPoints.value
+                        qQuestStateEntity.hasExtraPoints.value,
+                        qQuestStateEntity.currentApproveCount.value
                 )
                 .from(courseEntity)
                 .leftJoin(qCourseParentEntity).on(courseEntity.id.eq(qCourseParentEntity.node.id))
@@ -496,7 +496,6 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questInfo.setMinPlayer(tuple.get(qQuestEntity.minPlayer.value));
                     questInfo.setSortSeq(tuple.get(qQuestEntity.sortSeq.value));
                     questInfo.setQuestType(tuple.get(qQuestEntity.questType));
-                    questInfo.setCurrentApproveCount(tuple.get(qQuestEntity.currentApproveCount.value));
                     questInfo.setNeedApproveCount(tuple.get(qQuestEntity.needApproveCount.value));
                     questInfo.setRewardPoint(tuple.get(qQuestEntity.rewardPoint.value));
                     questInfo.setRewardExp(tuple.get(qQuestEntity.rewardExp.value));
@@ -517,6 +516,7 @@ public class CourseRepositoryImpl implements CourseRepository {
                     questState.setRewardPoint(tuple.get(qQuestStateEntity.rewardPoint.value));
                     questState.setStarPoint(tuple.get(qQuestStateEntity.starPoint.value));
                     questState.setHasExtraPoints(tuple.get(qQuestStateEntity.hasExtraPoints.value));
+                    questState.setCurrentApproveCount(tuple.get(qQuestStateEntity.currentApproveCount.value));
                     questInfo.getQuestStateInfos().add(questState);
                 }
             }

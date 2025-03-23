@@ -4,6 +4,7 @@ import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.quest.application.QuestService;
+import com.giunne.questservice.domain.quest.application.dto.request.CertificateRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.request.GetUploadQuestRequestDto;
 import com.giunne.questservice.domain.quest.application.dto.response.UploadQuestInfoResponseDto;
 import com.giunne.questservice.domain.questState.application.QuestStateService;
@@ -90,6 +91,21 @@ public class QuestCertificationController {
     public Response<List<UploadQuestInfoResponseDto>> findUploadQuests(@ParameterObject GetUploadQuestRequestDto dto) {
         List<UploadQuestInfoResponseDto> uploadQuests = questService.findUploadQuests(dto);
         return Response.ok(uploadQuests);
+    }
+
+    @Operation(summary = "채점하기(선생님용)", description = """
+            ## 기능설명
+            * 채점하기
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping(value = "/teacher/certificate")
+    public Response<String> certificate(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                                                  @RequestBody CertificateRequestDto dto
+                                                                  ) {
+        questStateService.certificate(memberPrincipal, dto);
+        return Response.ok("성공");
     }
 
 }

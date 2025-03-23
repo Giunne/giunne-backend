@@ -49,6 +49,11 @@ public class UploadQuestStateInfoResponseDto {
             example = "false"
     )
     Boolean hasExtraPoints;
+    @Schema(
+            description = "현재 인증 횟수",
+            example = "1"
+    )
+    Integer currentApproveCount;
 
     public UploadQuestStateInfoResponseDto(QuestState questState) {
         this.id = questState.getId();
@@ -58,6 +63,7 @@ public class UploadQuestStateInfoResponseDto {
         this.rewardPoint = questState.getRewardPoint().getValue();
         this.rewardExp = questState.getRewardExp().getValue();
         this.starPoint = questState.getStarPoint().getValue();
+        this.currentApproveCount = questState.getCurrentApproveCount().getValue();
     }
 
 }
