@@ -14,6 +14,11 @@ import lombok.Setter;
 @Schema(description = "게시판 리스트 조회 요청DTO")
 public class GetUploadQuestForStudentRequestDto extends Pageable {
     @Schema(
+            description = "로드맵ID",
+            example = "1"
+    )
+    Long roadMapId;
+    @Schema(
             description = "퀘스트명",
             example = "코어 1-1"
     )
