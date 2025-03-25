@@ -105,8 +105,21 @@ public class CourseController {
     })
     @GetMapping("/road-map")
     public Response<CourseQuestInfoResponseDto> getByRoadMapCategories(@AuthPrincipal @Parameter(hidden=true) MemberPrincipal memberPrincipal,
-                                                                       @ParameterObject GetICourseByRoadmapRequestDto dto) {
+                                                                       @ParameterObject GetCourseByRoadmapRequestDto dto) {
         CourseQuestInfoResponseDto courses = courseService.getCoursesByRoadMapId(memberPrincipal, dto);
+        return Response.ok(courses);
+    }
+
+    @Operation(summary = "특정 학생 로드맵별 코스 조회", description = """
+            ## 기능설명
+            * 특정 학생 로드맵별 코스 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/teacher/road-map-view")
+    public Response<CourseQuestInfoResponseDto> findRoadMapView(@ParameterObject GetCourseByRoadmapForTeacherRequestDto dto) {
+        CourseQuestInfoResponseDto courses = courseService.findRoadMapView(dto);
         return Response.ok(courses);
     }
 
@@ -118,7 +131,7 @@ public class CourseController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/teacher/road-map")
-    public Response<CourseQuestInfoForTeacherResponseDto> getCoursesByRoadMapIdForTeacher(@ParameterObject GetICourseByRoadmapRequestDto dto) {
+    public Response<CourseQuestInfoForTeacherResponseDto> getCoursesByRoadMapIdForTeacher(@ParameterObject GetCourseByRoadmapRequestDto dto) {
         CourseQuestInfoForTeacherResponseDto courses = courseService.getCoursesByRoadMapIdForTeacher(dto);
         return Response.ok(courses);
     }
