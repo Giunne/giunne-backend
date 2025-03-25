@@ -92,6 +92,21 @@ public class QuestPostController {
         return Response.ok(comment.getId());
     }
 
+    @Operation(summary = "댓글 삭제", description = """
+            ## 기능설명
+            * 댓글 삭제
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @DeleteMapping("comment/{commentId}")
+    public Response<String> deleteComment(
+            @AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+            @PathVariable(name = "commentId") Long commentId) {
+        commentService.deleteComment(memberPrincipal, commentId);
+        return Response.ok("성공");
+    }
+
     @Operation(summary = "댓글 좋아요", description = """
             ## 기능설명
             * 댓글 좋아요

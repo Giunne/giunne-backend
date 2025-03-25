@@ -7,4 +7,6 @@ public interface QuestPostCommentRepository {
     QuestPostComment findById(Long id);
 
     QuestPostComment save(QuestPostComment comment);
+
+    void delete(QuestPostComment comment);
 }

@@ -5,6 +5,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -74,6 +75,36 @@ public class AvatarController {
             , @ParameterObject Pageable dto) {
         PaginationModel<AvatarWithWearingItemResponseDto> myAvatarList = avatarService.getMyAvatarList(memberPrincipal, dto);
         return Response.ok(myAvatarList);
+    }
+
+    @Operation(summary = "회원 아바타 정보 수정(학생용)", description = """
+            ## 기능설명
+            * 회원 아바타 정보 수정
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping
+    public Response<String> updateMyAvatarInfo(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
+            , @RequestBody UpdateAvatarRequestDto dto
+    ) {
+        avatarService.updateMyAvatarInfo(memberPrincipal, dto);
+        return Response.ok("성공");
+    }
+
+    @Operation(summary = "회원 아바타 정보 수정", description = """
+            ## 기능설명
+            * 회원 아바타 정보 수정
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/teacher")
+    public Response<String> updateAvatarInfoForTeacher(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal
+            , @RequestBody UpdateAvatarForTeacherRequestDto dto
+    ) {
+        avatarService.updateMyAvatarInfoForTeacher(memberPrincipal, dto);
+        return Response.ok("성공");
     }
 
     @Operation(summary = "레크레이션의 학생 아바타 조회", description = """
@@ -155,4 +186,29 @@ public class AvatarController {
         return Response.ok("성공");
     }
 
+    @Operation(summary = "특정회원 포인트 수정(선생님용)", description = """
+            ## 기능설명
+            * 특정회원 포인트 수정
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/point")
+    public Response<String> updatePoint(@RequestBody UpdatePointRequestDto dto) {
+        avatarService.updatePoint(dto);
+        return Response.ok("성공");
+    }
+
+    @Operation(summary = "나의 포인트 조회", description = """
+            ## 기능설명
+            * 나의 포인트 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/point")
+    public Response<GetMyPointResponseDto> getMyPoint(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
+        GetMyPointResponseDto myPoint = avatarService.getMyPoint(memberPrincipal);
+        return Response.ok(myPoint);
+    }
 }

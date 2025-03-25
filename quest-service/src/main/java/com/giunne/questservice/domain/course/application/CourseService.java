@@ -75,7 +75,7 @@ public class CourseService {
                 .build();
     }
 
-    public CourseQuestInfoResponseDto getCoursesByRoadMapId(MemberPrincipal memberPrincipal,GetICourseByRoadmapRequestDto dto) {
+    public CourseQuestInfoResponseDto getCoursesByRoadMapId(MemberPrincipal memberPrincipal, GetCourseByRoadmapRequestDto dto) {
         if (memberPrincipal.getPlayerId() == null) {
             throw new IllegalArgumentException("아바타 정보가 없습니다.");
         }
@@ -86,7 +86,15 @@ public class CourseService {
                 .build();
     }
 
-    public CourseQuestInfoForTeacherResponseDto getCoursesByRoadMapIdForTeacher(GetICourseByRoadmapRequestDto dto) {
+    public CourseQuestInfoResponseDto findRoadMapView(GetCourseByRoadmapForTeacherRequestDto dto) {
+        Map<Long, List<CourseQuestResponseDto>> courses = courseRepository.getCoursesByRoadMapId(dto.getPlayerId(), dto.getRoadmapId());
+
+        return CourseQuestInfoResponseDto.builder()
+                .courseInfo(courses)
+                .build();
+    }
+
+    public CourseQuestInfoForTeacherResponseDto getCoursesByRoadMapIdForTeacher(GetCourseByRoadmapRequestDto dto) {
 
         Map<Long, List<CourseQuestForTeacherResponseDto>> courses = courseRepository.getCoursesByRoadMapIdForTeacher(dto.getRoadmapId());
 

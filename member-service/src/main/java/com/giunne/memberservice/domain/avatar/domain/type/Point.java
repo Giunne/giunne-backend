@@ -32,4 +32,8 @@ public class Point {
     public void decreasePoint(final Long value) {
         this.point -= value;
     }
+
+    public void updatePoint(final Long value) {
+        this.point = value;
+    }
 }
