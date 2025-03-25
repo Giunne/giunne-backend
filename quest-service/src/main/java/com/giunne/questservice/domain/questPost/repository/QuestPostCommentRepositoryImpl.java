@@ -64,6 +64,11 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
         return save.toQuestPostComment();
     }
 
+    @Override
+    public void delete(QuestPostComment comment) {
+        jpaQuestPostCommentRepository.deleteById(comment.getId());
+    }
+
     public PaginationModel<GetQuestCommentResponseDto> getCommentList(Long postId, Long playerId, Pageable dto) {
 
         org.springframework.data.domain.Pageable pageable = getPageRequest(

@@ -56,6 +56,8 @@ public class QuestStateService {
     private final MemberInfoClient memberInfoClient;
 
     private final String CATEGORY = "certificate";
+    private static final String FILE_UPLOAD_FAIL = "파일 업로드 실패";
+
 
     public void savePlayerQuestStates(CreateQuestStateRequestDto dto) {
         List<Quest> quests = questRepository.findByRoadMap(dto.roadMapId());
@@ -138,7 +140,9 @@ public class QuestStateService {
 
             // Synology API로 원본 파일을 직접 업로드 (변환 없이)
             String uploadResult = synologyInfoClient.uploadFile(renamedFile);
-            System.out.println(uploadResult);
+            if (FILE_UPLOAD_FAIL.equals(uploadResult)) {
+                throw new IllegalArgumentException("파일 업로드에 실패했습니다");
+            }
 
             QuestPostAttachment questPostAttachment = QuestPostAttachment.builder()
                     .questPost(savedQuestPost)
@@ -150,7 +154,7 @@ public class QuestStateService {
             questPostAttachmentRepository.save(questPostAttachment);
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("파일 전송 중 오류가 발생했습니다: " + e.getMessage());
+            throw new IllegalArgumentException("파일 전송 중 오류가 발생했습니다.");
         }
 
 
@@ -189,13 +193,13 @@ public class QuestStateService {
 
                 // 경험치 증가
                 Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(questPost.getPlayer().getAvatarId(), quest.getRewardExp().getValue());
-                if(memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
+                if (memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("경험치 증가 실패");
                 }
 
                 // 포인트 증가
                 Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().getValue());
-                if(memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
+                if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
             }

@@ -1,5 +1,6 @@
 package com.giunne.questservice.domain.questPost.application.interfaces;
 
+import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
 import com.giunne.questservice.domain.player.domain.Player;
@@ -51,14 +52,30 @@ public class QuestCommentService {
 
         QuestPostComment comment = getComment(commentId);
         if (!playerRepository.existsByAvatarId(memberPrincipal.getPlayerId())) {
-            throw new IllegalArgumentException("Player not found");
+            throw new IllegalArgumentException("플레이어를 찾을 수 없습니다.");
         }
-        if (!comment.getPlayer().getAvatarId().equals(memberPrincipal.getPlayerId())) {
-            throw new IllegalArgumentException("only author can update content");
+        if (!(comment.getPlayer().getAvatarId().equals(memberPrincipal.getPlayerId())
+                || memberPrincipal.getRole() == MemberRole.ROLE_TEACHER)
+        ) {
+            throw new IllegalArgumentException("본인 또는 선생님만 수정 가능합니다.");
         }
 
         comment.updateContent(dto.content());
         return questCommentRepository.save(comment);
+    }
+
+    public void deleteComment(MemberPrincipal memberPrincipal, Long commentId) {
+
+        QuestPostComment comment = getComment(commentId);
+        if (!playerRepository.existsByAvatarId(memberPrincipal.getPlayerId())) {
+            throw new IllegalArgumentException("플레이어를 찾을 수 없습니다.");
+        }
+        if (!(comment.getPlayer().getAvatarId().equals(memberPrincipal.getPlayerId())
+        || memberPrincipal.getRole() == MemberRole.ROLE_TEACHER)
+        ) {
+            throw new IllegalArgumentException("본인 또는 선생님만 삭제 가능합니다.");
+        }
+        questCommentRepository.delete(comment);
     }
 
 
