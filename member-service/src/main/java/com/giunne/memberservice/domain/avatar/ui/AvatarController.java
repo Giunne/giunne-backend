@@ -155,4 +155,17 @@ public class AvatarController {
         return Response.ok("성공");
     }
 
+
+    @Operation(summary = "나의 포인트 조회", description = """
+            ## 기능설명
+            * 나의 포인트 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/point")
+    public Response<GetMyPointResponseDto> getMyPoint(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
+        GetMyPointResponseDto myPoint = avatarService.getMyPoint(memberPrincipal);
+        return Response.ok(myPoint);
+    }
 }

@@ -1,5 +1,6 @@
 package com.giunne.memberservice.domain.avatar.application;
 
+import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.infra.external.domain.item.client.ItemInfoClient;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
@@ -9,6 +10,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
@@ -247,4 +249,12 @@ public class AvatarService {
         avatarRepository.save(avatar);
     }
 
+
+    public GetMyPointResponseDto getMyPoint(MemberPrincipal memberPrincipal) {
+        Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
+        return GetMyPointResponseDto
+                .builder()
+                .point(avatar.getPoint().getPoint())
+                .build();
+    }
 }
