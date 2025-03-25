@@ -29,4 +29,10 @@ public class ClassRoom {
         this.classNumber = classNumber;
         this.studentNumber = studentNumber;
     }
+
+    public void updateClassRoom(Integer grade, Integer classNumber, Integer studentNumber) {
+        this.grade = grade;
+        this.classNumber = classNumber;
+        this.studentNumber = studentNumber;
+    }
 }

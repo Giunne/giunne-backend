@@ -172,6 +172,33 @@ public class AvatarService {
         return paginationModel;
     }
 
+    @Transactional
+    public void updateMyAvatarInfo(MemberPrincipal memberPrincipal, UpdateAvatarRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
+        avatar.getNickname().updateNickname(dto.nickName());
+        avatar.getClassRoom().updateClassRoom(dto.grade(), dto.classNumber(), dto.studentNumber());
+        avatarRepository.save(avatar);
+    }
+
+    @Transactional
+    public void updateMyAvatarInfoForTeacher(MemberPrincipal memberPrincipal, UpdateAvatarForTeacherRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        if (memberPrincipal.getRole() != MemberRole.ROLE_TEACHER) {
+            throw new IllegalArgumentException("선생님이 아닙니다.");
+        }
+
+        Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
+        avatar.getNickname().updateNickname(dto.nickName());
+        avatar.getClassRoom().updateClassRoom(dto.grade(), dto.classNumber(), dto.studentNumber());
+        avatarRepository.save(avatar);
+    }
+
+
 
     public List<GetMyRecreationAvatarResponseDto> getMyRecreationStudentList(MemberPrincipal memberPrincipal, GetMyRecreationAvatarRequestDto dto) {
 
@@ -249,6 +276,12 @@ public class AvatarService {
         avatarRepository.save(avatar);
     }
 
+    @Transactional
+    public void updatePoint(UpdatePointRequestDto dto) {
+        Avatar avatar = avatarRepository.findById(dto.getPlayerId());
+        avatar.getPoint().updatePoint(dto.getPoint());
+        avatarRepository.save(avatar);
+    }
 
     public GetMyPointResponseDto getMyPoint(MemberPrincipal memberPrincipal) {
         Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
@@ -257,4 +290,5 @@ public class AvatarService {
                 .point(avatar.getPoint().getPoint())
                 .build();
     }
+
 }

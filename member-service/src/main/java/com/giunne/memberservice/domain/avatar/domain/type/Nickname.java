@@ -24,4 +24,8 @@ public class Nickname {
     public static Nickname from(final String value) {
         return new Nickname(value);
     }
+
+    public void updateNickname(final String value) {
+        this.nickname = value;
+    }
 }

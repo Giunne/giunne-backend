@@ -54,7 +54,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
 
     public Avatar findById(Long avatarId) {
         AvatarEntity entity = jpaAvatarRepository.findById(avatarId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() ->  new IllegalArgumentException("존재하지않는 플레이어입니다."));
         return entity.toAvatar();
     }
 
