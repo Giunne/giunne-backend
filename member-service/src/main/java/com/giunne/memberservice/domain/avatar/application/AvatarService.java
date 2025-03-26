@@ -11,6 +11,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
@@ -34,6 +35,8 @@ import com.giunne.memberservice.domain.member.application.MemberService;
 import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.recreation.application.RecreationService;
 import com.giunne.memberservice.domain.recreation.domain.Recreation;
+import com.giunne.memberservice.domain.school.application.SchoolService;
+import com.giunne.memberservice.domain.school.domain.School;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +56,7 @@ public class AvatarService {
     private final InventoryService inventoryService;
     private final LevelUpPolicyRepository levelUpPolicyRepository;
     private final QuestInfoClient questInfoClient;
+    private final SchoolService schoolService;
 
     @Transactional
     public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto) {
@@ -288,6 +292,23 @@ public class AvatarService {
         return GetMyPointResponseDto
                 .builder()
                 .point(avatar.getPoint().getPoint())
+                .build();
+    }
+
+    public GetMySchoolInfoResponseDto getMySchoolInfo(MemberPrincipal memberPrincipal) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Member member = memberService.getMember(memberPrincipal.getMemberId());
+        School school = member.getSchool();
+        Avatar avatar = avatarRepository.findById(memberPrincipal.getPlayerId());
+        return GetMySchoolInfoResponseDto
+                .builder()
+                .schoolId(school.getId())
+                .schoolName(school.getSchoolNm().getValue())
+                .grade(avatar.getClassRoom().getGrade())
+                .classNumber(avatar.getClassRoom().getClassNumber())
+                .studentNumber(avatar.getClassRoom().getStudentNumber())
                 .build();
     }
 

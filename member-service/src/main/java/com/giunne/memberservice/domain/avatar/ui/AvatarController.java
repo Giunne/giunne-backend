@@ -6,6 +6,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -210,5 +211,18 @@ public class AvatarController {
     public Response<GetMyPointResponseDto> getMyPoint(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
         GetMyPointResponseDto myPoint = avatarService.getMyPoint(memberPrincipal);
         return Response.ok(myPoint);
+    }
+
+    @Operation(summary = "아바타의 학교정보 조회", description = """
+            ## 기능설명
+            * 아바타의 학교정보 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/school")
+    public Response<GetMySchoolInfoResponseDto> getMySchoolInfo(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
+        GetMySchoolInfoResponseDto mySchoolInfo = avatarService.getMySchoolInfo(memberPrincipal);
+        return Response.ok(mySchoolInfo);
     }
 }
