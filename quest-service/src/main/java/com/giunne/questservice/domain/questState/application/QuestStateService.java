@@ -176,17 +176,16 @@ public class QuestStateService {
         QuestPost questPost = questPostRepository.getQuestPost(dto.questPostId());
         questPost.passOrFailProgress(dto.isPass());
         questPostRepository.updatePostProgress(questPost);
+        QuestState foundQuestState = questStateRepository.findByQuestPostId(dto.questPostId());
+        updateQuestProgress(UpdateQuestStateRequestDto.builder()
+                .questStateId(foundQuestState.getId())
+                .questProgress(QuestProgress.CHECK.name())
+                .build());
 
         if (questPost.getQuestPostProgressType() == QuestPostProgressType.PASS) {
-            QuestState foundQuestState = questStateRepository.findByQuestPostId(dto.questPostId());
             Quest quest = questRepository.findById(foundQuestState.getQuest().getId());
             foundQuestState.getCurrentApproveCount().increase();
             foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
-
-            updateQuestProgress(UpdateQuestStateRequestDto.builder()
-                    .questStateId(foundQuestState.getId())
-                    .questProgress(QuestProgress.CHECK.name())
-                    .build());
 
             if (quest.getNeedApproveCount().getValue().equals(foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
