@@ -183,6 +183,11 @@ public class QuestStateService {
             foundQuestState.getCurrentApproveCount().increase();
             foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
 
+            updateQuestProgress(UpdateQuestStateRequestDto.builder()
+                    .questStateId(foundQuestState.getId())
+                    .questProgress(QuestProgress.CHECK.name())
+                    .build());
+
             if (quest.getNeedApproveCount().getValue().equals(foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
                 questStateRepository.save(foundQuestState);
