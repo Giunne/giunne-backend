@@ -1,7 +1,9 @@
 package com.giunne.questservice.domain.questPost.application.interfaces;
 
 import com.giunne.commonservice.domain.auth.MemberRole;
+import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
 import com.giunne.commonservice.principal.MemberPrincipal;
+import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
 import com.giunne.questservice.domain.player.domain.Player;
 import com.giunne.questservice.domain.player.repository.PlayerRepositoryImpl;
@@ -14,6 +16,7 @@ import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
 import com.giunne.questservice.domain.questPost.domain.comment.type.QuestPostCommentContent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +30,10 @@ public class QuestCommentService {
     private final QuestPostService postService;
     private final PlayerRepository playerRepository;
     private final QuestPostCommentLikeRepository likeRepository;
+    private final MemberInfoClient memberInfoClient;
+    private final static long LIKE_EXP = 3L;
+    private final static long LIKE_POINT = 3L;
+
 
     public QuestPostComment getComment(Long id) {
         return questCommentRepository.findById(id);
@@ -92,6 +99,19 @@ public class QuestCommentService {
 
         comment.like(player);
         likeRepository.like(comment, player);
+
+        Long targetAvatarId = comment.getPlayer().getAvatarId();
+        // 경험치 증가
+        Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(targetAvatarId, LIKE_EXP);
+        if (memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("경험치 증가 실패");
+        }
+
+        // 포인트 증가
+        Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(targetAvatarId, LIKE_POINT);
+        if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("포인트 증가 실패");
+        }
     }
 
     public void unlikeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
