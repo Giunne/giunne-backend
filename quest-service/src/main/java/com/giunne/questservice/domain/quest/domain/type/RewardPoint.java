@@ -25,5 +25,15 @@ public class RewardPoint {
     public static RewardPoint from(final Long value) {
         return new RewardPoint(value);
     }
-    
+
+    public Long calculatedPoint(Long starPoint) {
+        final double STAR_2_MULTIPLIER = 1.2;
+        final double STAR_3_MULTIPLIER = 1.4;
+
+        return switch (starPoint.intValue()) {
+            case 2 -> (long) Math.ceil(this.value * STAR_2_MULTIPLIER);
+            case 3 -> (long) Math.ceil(this.value * STAR_3_MULTIPLIER);
+            default -> this.value;
+        };
+    }
 }

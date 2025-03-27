@@ -48,6 +48,7 @@ public enum ErrorCode implements EnumMapperType {
 
     // 뽑기
     MAX_INVENTORY(HttpStatus.BAD_REQUEST, "뽑기가능한 상품이 없습니다."),
+    NOT_ENOUGH_POINTS(HttpStatus.BAD_REQUEST, "포인트가 부족합니다."),
     ;
 
     private final HttpStatus httpStatus;

@@ -202,7 +202,7 @@ public class QuestStateService {
                 }
 
                 // 포인트 증가
-                Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().getValue());
+                Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().calculatedPoint(dto.starPoint()));
                 if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
