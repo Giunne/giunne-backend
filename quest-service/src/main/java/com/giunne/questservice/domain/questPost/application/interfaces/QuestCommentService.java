@@ -18,6 +18,7 @@ import com.giunne.questservice.domain.questPost.domain.comment.type.QuestPostCom
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,8 +32,6 @@ public class QuestCommentService {
     private final PlayerRepository playerRepository;
     private final QuestPostCommentLikeRepository likeRepository;
     private final MemberInfoClient memberInfoClient;
-    private final static long LIKE_EXP = 3L;
-    private final static long LIKE_POINT = 3L;
 
 
     public QuestPostComment getComment(Long id) {
@@ -87,6 +86,7 @@ public class QuestCommentService {
 
 
 
+    @Transactional
     public void likeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
         QuestPostComment comment = getComment(dto.postId());
         Player player = playerRepository.findByAvatarId(memberPrincipal.getPlayerId())
@@ -102,15 +102,19 @@ public class QuestCommentService {
 
         Long targetAvatarId = comment.getPlayer().getAvatarId();
         // 경험치 증가
-        Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(targetAvatarId, LIKE_EXP);
-        if (memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
-            throw new IllegalArgumentException("경험치 증가 실패");
+        if(!(dto.rewardExp() == null || dto.rewardExp() == 0L)) {
+            Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(targetAvatarId, dto.rewardExp());
+            if (memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
+                throw new IllegalArgumentException("경험치 증가 실패");
+            }
         }
 
-        // 포인트 증가
-        Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(targetAvatarId, LIKE_POINT);
-        if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
-            throw new IllegalArgumentException("포인트 증가 실패");
+        if(!(dto.rewardPoint() == null || dto.rewardPoint() == 0L)) {
+            // 포인트 증가
+            Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(targetAvatarId, dto.rewardPoint());
+            if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
+                throw new IllegalArgumentException("포인트 증가 실패");
+            }
         }
     }
 
