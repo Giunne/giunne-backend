@@ -309,6 +309,7 @@ public class AvatarService {
                 .grade(avatar.getClassRoom().getGrade())
                 .classNumber(avatar.getClassRoom().getClassNumber())
                 .studentNumber(avatar.getClassRoom().getStudentNumber())
+                .nickName(avatar.getNickname().getNickname())
                 .build();
     }
 

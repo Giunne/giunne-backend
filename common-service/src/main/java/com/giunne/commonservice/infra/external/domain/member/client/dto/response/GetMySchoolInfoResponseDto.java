@@ -32,4 +32,9 @@ public class GetMySchoolInfoResponseDto {
             nullable = true
     )
     private Integer studentNumber;
+    @Schema(
+            description = "닉네임",
+            example = "아하! 어린이"
+    )
+    private String nickName;
 }
