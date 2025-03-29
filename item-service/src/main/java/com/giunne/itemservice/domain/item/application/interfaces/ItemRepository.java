@@ -4,6 +4,7 @@ import com.giunne.commonservice.infra.external.domain.item.client.dto.request.Ge
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
 import com.giunne.itemservice.domain.item.application.dto.response.GetItemPageResponseDto;
@@ -15,12 +16,22 @@ import java.util.List;
 
 public interface ItemRepository {
     List<Item> saveAll(List<Item> itemList);
+
     void updateItem(List<Item> itemList);
+
     List<Item> findByItemIdList(List<Long> itemIdList);
+
     Item findById(Long id);
+
     PaginationModel<GetItemPageResponseDto> findByCategory(GetItemPageRequestDto dto);
+
     List<GetWearingItemResponseDto> findWearingItems(GetWearingItemsRequestDto dto);
+
     PaginationModel<GetItemResponseDto> findByItems(GetItemsRequestDto dto);
-    List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory);
+
+    List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory, GetMyRecreationAvatarResponseDto avatarInfo);
+
+    Long countPossibleGacha(GachaType gachaType, List<Long> myInventory, GetMyRecreationAvatarResponseDto avatarInfo);
+
     List<String> findByGachaTypeIamgeList(GachaType gachaType);
 }

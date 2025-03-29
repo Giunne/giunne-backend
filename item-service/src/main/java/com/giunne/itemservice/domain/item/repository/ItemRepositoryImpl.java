@@ -5,6 +5,7 @@ import com.giunne.commonservice.infra.external.domain.item.client.dto.request.Ge
 import com.giunne.commonservice.infra.external.domain.item.client.dto.request.GetWearingItemsRequestDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetItemResponseDto;
 import com.giunne.commonservice.infra.external.domain.item.client.dto.response.GetWearingItemResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.itemservice.domain.category.repository.entity.QCategoryEntity;
 import com.giunne.itemservice.domain.item.application.dto.request.GetItemPageRequestDto;
@@ -47,7 +48,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     private static final QCategoryEntity categoryEntity = QCategoryEntity.categoryEntity;
     private static final QItemImageEntity itemImageEntity = QItemImageEntity.itemImageEntity;
     private static final QItemImagePositionEntity itemImagePositionEntity = QItemImagePositionEntity.itemImagePositionEntity;
-
+    private static final Long CHARACTER_ID = 1L;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -457,7 +458,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory) {
+    public List<GetItemOrderGachaResponseDto> findByGachaType(GachaType gachaType, List<Long> myInventory, GetMyRecreationAvatarResponseDto avatarInfo) {
         Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
 
         List<Tuple> results = queryFactory
@@ -476,6 +477,11 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .from(itemEntity)
                 .where(itemEntity.itemGrade.in(itemGrades)
                         .and(itemEntity.id.notIn(myInventory))
+                        .and(itemEntity.relatedCharacter.isNull()
+                                .or(itemEntity.relatedCharacter.id.eq(avatarInfo.getCharacterNo()))
+                        )
+                        .and(itemEntity.needLevel.value.loe(avatarInfo.getLevel()))
+                        .and(itemEntity.category.id.ne(CHARACTER_ID))
                 )
                 .fetch();
 
@@ -554,6 +560,26 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public Long countPossibleGacha(GachaType gachaType, List<Long> myInventory, GetMyRecreationAvatarResponseDto avatarInfo) {
+        Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
+
+        return queryFactory
+                .select(
+                        itemEntity.count()
+                )
+                .from(itemEntity)
+                .where(itemEntity.itemGrade.in(itemGrades)
+                        .and(itemEntity.id.notIn(myInventory))
+                        .and(itemEntity.relatedCharacter.isNull()
+                                .or(itemEntity.relatedCharacter.id.eq(avatarInfo.getCharacterNo()))
+                        )
+                        .and(itemEntity.needLevel.value.loe(avatarInfo.getLevel()))
+                        .and(itemEntity.category.id.ne(CHARACTER_ID))
+                )
+                .fetchOne();
+    }
+
+    @Override
     public List<String> findByGachaTypeIamgeList(GachaType gachaType) {
 
         Set<ItemGrade> itemGrades = gachaType.getItemGradeMap().keySet();
@@ -567,7 +593,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                     .from(itemEntity)
                     .leftJoin(itemImageEntity).on(itemEntity.id.eq(itemImageEntity.item.id))
                     .where(itemEntity.itemGrade.eq(itemGrade)
-                            .and(itemEntity.category.id.ne(1L))
+                            .and(itemEntity.category.id.ne(CHARACTER_ID))
                     )
                     .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
                     .limit(3)

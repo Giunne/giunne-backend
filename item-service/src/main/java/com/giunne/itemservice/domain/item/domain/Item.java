@@ -24,4 +24,5 @@ public class Item {
     private Store store;
     private ItemGrade itemGrade;
     private ThumbnailUrl thumbnailUrl;
+    private Item relatedCharacter;
 }
