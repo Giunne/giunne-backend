@@ -11,6 +11,7 @@ import com.giunne.itemservice.domain.gacha.domain.WeightedRandom;
 import com.giunne.itemservice.domain.item.application.interfaces.ItemRepository;
 import com.giunne.itemservice.domain.item.domain.Item;
 import com.giunne.itemservice.domain.item.domain.type.GachaType;
+import com.giunne.itemservice.domain.orders.api.response.GetItemOrderGachaPossibleCountResponseDto;
 import com.giunne.itemservice.domain.orders.api.response.GetItemOrderGachaResponseDto;
 import com.giunne.itemservice.domain.orders.application.dto.response.GachaTypeResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class OrderService {
 
         List<Long> myInventory = memberInfoClient.findMyInventory(memberPrincipal.getPlayerId()).value();
 
-        List<GetItemOrderGachaResponseDto> itemList = itemRepository.findByGachaType(gachaType,myInventory);
+        List<GetItemOrderGachaResponseDto> itemList = itemRepository.findByGachaType(gachaType,myInventory, avatarInfo);
 
         if (itemList.isEmpty()) {
             throw new BusinessException(ErrorCode.MAX_INVENTORY);
@@ -88,5 +89,22 @@ public class OrderService {
         }
 
         return random;
+    }
+
+    public GetItemOrderGachaPossibleCountResponseDto countPossibleGacha(MemberPrincipal memberPrincipal, String type){
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+
+        Response<GetMyRecreationAvatarResponseDto> avatarResponseDto = memberInfoClient.getAvatarProfileInfo(memberPrincipal.getPlayerId());
+        if (avatarResponseDto.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("회원정보를 불러올 수 없습니다.");
+        }
+
+        GetMyRecreationAvatarResponseDto avatarInfo = avatarResponseDto.value();
+        GachaType gachaType = GachaType.from(type);
+        List<Long> myInventory = memberInfoClient.findMyInventory(memberPrincipal.getPlayerId()).value();
+        Long possibleCount = itemRepository.countPossibleGacha(gachaType, myInventory, avatarInfo);
+        return new GetItemOrderGachaPossibleCountResponseDto(possibleCount);
     }
 }

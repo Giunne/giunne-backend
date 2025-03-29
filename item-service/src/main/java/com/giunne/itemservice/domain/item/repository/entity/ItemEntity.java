@@ -60,17 +60,9 @@ public class ItemEntity extends BaseEntity {
     @Column(name = "item_grad", nullable = false)
     private ItemGrade itemGrade;
 
-
-
-//
-//    @OneToMany(mappedBy = "item", orphanRemoval = true, cascade = CascadeType.ALL)
-//    private Set<Profile> profiles = new HashSet<>();  // 프로필
-
-//    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private Set<Order> orders = new HashSet<>(); // 주문
-
-//    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private Set<Cart> carts = new HashSet<>(); // 장바구니
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "related_character_id", referencedColumnName = "item_no")
+    private ItemEntity relatedCharacter; // 관련 캐릭터
 
     public ItemEntity(Item item) {
         this.id = item.getId();
@@ -84,6 +76,7 @@ public class ItemEntity extends BaseEntity {
         this.store = new StoreEntity(item.getStore());
         this.itemGrade = item.getItemGrade();
         this.thumbnailUrl = item.getThumbnailUrl();
+        this.relatedCharacter = item.getRelatedCharacter() != null ? new ItemEntity(item.getRelatedCharacter()) : null;
     }
 
     public Item toItem(){
@@ -99,6 +92,7 @@ public class ItemEntity extends BaseEntity {
                 .store(store.toStore())
                 .itemGrade(itemGrade)
                 .thumbnailUrl(thumbnailUrl)
+                .relatedCharacter(relatedCharacter != null ? relatedCharacter.toItem() : null)
                 .build();
     }
 
