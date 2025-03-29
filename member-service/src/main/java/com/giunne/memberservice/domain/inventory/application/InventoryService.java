@@ -33,7 +33,7 @@ public class InventoryService {
         Inventory inventory = Inventory.builder()
                 .quantity(Quantity.from(1L))
                 .sortSeq(SortSeq.from(1L))
-                .isWear(IsWear.from(true))
+                .isWear(IsWear.from(false))
                 .hasItem(HasItem.from(true))
                 .avatar(avatar)
                 .itemInfo(ItemInfo.builder()
