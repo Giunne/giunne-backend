@@ -59,6 +59,7 @@ public class QuestStateService {
     private static final String FILE_UPLOAD_FAIL = "파일 업로드 실패";
 
 
+    @Transactional
     public void savePlayerQuestStates(CreateQuestStateRequestDto dto) {
         List<Quest> quests = questRepository.findByRoadMap(dto.roadMapId());
 
@@ -66,18 +67,18 @@ public class QuestStateService {
         Optional<PlayerEntity> optionalPlayerEntity = playerRepository.findByAvatarId(dto.avatarId());
 
         if (optionalPlayerEntity.isPresent()) {
-            return;
+            playerEntity = optionalPlayerEntity.get().toPlayer();
+        }else {
+            playerEntity = playerRepository.save(new PlayerEntity(
+                    Player.builder()
+                            .avatarId(dto.avatarId())
+                            .avatarNickname(dto.avatarNickname())
+                            .memberId(dto.memberId())
+                            .userName(dto.userName())
+                            .nickname(dto.nickname())
+                            .build()
+            ));
         }
-
-        playerEntity = playerRepository.save(new PlayerEntity(
-                Player.builder()
-                        .avatarId(dto.avatarId())
-                        .avatarNickname(dto.avatarNickname())
-                        .memberId(dto.memberId())
-                        .userName(dto.userName())
-                        .nickname(dto.nickname())
-                        .build()
-        ));
 
         List<QuestState> questStates = quests.stream().map(i -> QuestState.builder()
                         .quest(i)

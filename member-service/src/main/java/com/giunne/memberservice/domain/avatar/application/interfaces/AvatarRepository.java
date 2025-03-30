@@ -25,4 +25,6 @@ public interface AvatarRepository {
     List<GetMyRecreationAvatarResponseDto> getAvatarProfileListInfo(GetAvatarProfileListRequestDto dto);
 
     Avatar save(Avatar avatar);
+
+    boolean existAvatarByMemberIdAndRecreationId(Long memberId, Long recreationId);
 }
