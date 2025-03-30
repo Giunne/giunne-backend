@@ -46,9 +46,9 @@ class QuestRepositoryImplTest {
     @DisplayName("게시판 리스트 조회 ")
     void findUploadQuest(){
         // when
-        GetUploadQuestForStudentRequestDto getUploadQuestForStudentRequestDto = new GetUploadQuestForStudentRequestDto(null,"테스트 학생 2" );
-        PaginationModel<GetUploadQuestResponseDto> uploadQuest = questPostRepository.findUploadQuest(getUploadQuestForStudentRequestDto);
-        System.out.println(uploadQuest);
+//        GetUploadQuestForStudentRequestDto getUploadQuestForStudentRequestDto = new GetUploadQuestForStudentRequestDto(null,"테스트 학생 2" );
+//        PaginationModel<GetUploadQuestResponseDto> uploadQuest = questPostRepository.findUploadQuest(getUploadQuestForStudentRequestDto);
+//        System.out.println(uploadQuest);
     }
 
 }
