@@ -45,11 +45,11 @@ public class AvatarEntity extends BaseEntity {
     private Long characterNo; // 캐릭터 번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recreation_no")
+    @JoinColumn(name = "recreation_no",nullable = false)
     private RecreationEntity recreation; // 레크레이션
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private MemberEntity member; // 회원
 
     @Embedded

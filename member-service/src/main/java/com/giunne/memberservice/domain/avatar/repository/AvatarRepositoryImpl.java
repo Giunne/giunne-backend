@@ -58,6 +58,10 @@ public class AvatarRepositoryImpl implements AvatarRepository {
         return entity.toAvatar();
     }
 
+    public boolean existAvatarByMemberIdAndRecreationId(Long memberId, Long recreationId) {
+        return jpaAvatarRepository.findByMemberIdAndRecreation_Id(memberId, recreationId).isPresent();
+    }
+
     @Override
     public PaginationModel<AvatarWithWearingItemResponseDto> getMyAvatarList(Member member, Pageable dto) {
 

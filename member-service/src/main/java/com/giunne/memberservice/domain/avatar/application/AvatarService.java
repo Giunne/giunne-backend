@@ -38,6 +38,7 @@ import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import com.giunne.memberservice.domain.school.application.SchoolService;
 import com.giunne.memberservice.domain.school.domain.School;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +83,13 @@ public class AvatarService {
                 .build();
 
 
+        boolean existAvatar = avatarRepository.existAvatarByMemberIdAndRecreationId(memberPrincipal.getMemberId(), dto.recreationId());
+
+        if(existAvatar){
+            throw new IllegalArgumentException("이미 레크레이션에 가입한 회원입니다.");
+        }
+
+
         Avatar createdAvatar = avatarRepository.createAvatar(avatar);
 
         inventoryService.insertInventory(createdAvatar, itemInfoResponseDto);
@@ -90,7 +98,7 @@ public class AvatarService {
 
 
         // TODO: 로드맵 번호 하드코딩 수정예정
-        questInfoClient.savePlayerQuestStates(
+        Response<String> saveTrainingQuestStates = questInfoClient.savePlayerQuestStates(
                 CreateQuestStateRequestDto.builder()
                         .roadMapId(1L)
                         .memberId(member.getId())
@@ -100,8 +108,12 @@ public class AvatarService {
                         .avatarNickname(createdAvatar.getNickname().getNickname())
                         .build()
         );
+
+        if(saveTrainingQuestStates.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("퀘스트 상태 저장 실패");
+        }
         // TODO: 로드맵 번호 하드코딩 수정예정
-        questInfoClient.savePlayerQuestStates(
+        Response<String> saveRunningQuestStates = questInfoClient.savePlayerQuestStates(
                 CreateQuestStateRequestDto.builder()
                         .roadMapId(2L)
                         .memberId(member.getId())
@@ -111,6 +123,9 @@ public class AvatarService {
                         .avatarNickname(createdAvatar.getNickname().getNickname())
                         .build()
         );
+        if(saveRunningQuestStates.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("퀘스트 상태 저장 실패");
+        }
 
         return CreateAvatarResponseDto.builder()
                 .id(createdAvatar.getId())
