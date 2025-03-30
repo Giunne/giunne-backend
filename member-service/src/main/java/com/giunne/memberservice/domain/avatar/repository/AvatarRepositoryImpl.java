@@ -94,6 +94,8 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         recreationEntity.recreationName.recreationName,
                         recreationEntity.recreationCode.recreationCode,
                         recreationEntity.teacher.id,
+                        recreationEntity.teacher.nickname.nickname,
+                        recreationEntity.teacher.loginId.loginId,
                         memberEntity.nickname.nickname,
                         memberEntity.loginId.loginId,
 
@@ -132,8 +134,8 @@ public class AvatarRepositoryImpl implements AvatarRepository {
                         .recreationName(tuple.get(recreationEntity.recreationName.recreationName))
                         .recreationCode(tuple.get(recreationEntity.recreationCode.recreationCode))
                         .teacherId(tuple.get(recreationEntity.teacher.id))
-                        .teacherName(tuple.get(memberEntity.nickname.nickname))
-                        .teacherLoginId(tuple.get(memberEntity.loginId.loginId))
+                        .teacherName(tuple.get(recreationEntity.teacher.nickname.nickname))
+                        .teacherLoginId(tuple.get(recreationEntity.teacher.loginId.loginId))
                         .exp(tuple.get(avatarEntity.exp.exp))
                         .level(tuple.get(avatarEntity.level.level))
                         .point(tuple.get(avatarEntity.point.point))
