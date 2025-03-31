@@ -261,6 +261,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.ALL)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .needApproveCount(NeedApproveCount.from(2))
                         .build()
         );
 
@@ -488,6 +489,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .needApproveCount(NeedApproveCount.from(2))
                         .build()
         );
 
@@ -519,6 +521,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .needApproveCount(NeedApproveCount.from(2))
                         .build()
         );
 
@@ -550,6 +553,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .needApproveCount(NeedApproveCount.from(2))
                         .build()
         );
         questRepository.insertOpenConditions(저장_하이플랭크_한손_한발_들기_퀘스트, List.of(저장_하이플랭크_한손들기_퀘스트));
@@ -798,6 +802,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.CORE)
+                        .needApproveCount(NeedApproveCount.from(2))
                         .build()
         );
 
@@ -1062,6 +1067,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
         questRepository.insertOpenConditions(저장_스쿼트_퀘스트, List.of(저장_한발서기_퀘스트));
@@ -1150,6 +1156,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
 
@@ -1180,6 +1187,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.SQUATS)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
         questRepository.insertOpenConditions(저장_변형_스쿼트_퀘스트, List.of(저장_만세_스쿼트_퀘스트));
@@ -1237,6 +1245,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
         questRepository.insertOpenConditions(저장_런지_퀘스트, List.of(저장_스쿼트_퀘스트));
@@ -1324,6 +1333,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.LUNGES)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
         questRepository.insertOpenConditions(워킹_점프런지_퀘스트, List.of(워킹_점프런지_모으기_퀘스트));
@@ -1443,6 +1453,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(true))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.TEAM)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
         questRepository.insertOpenConditions(저장_데드리프트_퀘스트, List.of(저장_힙힌지_움직임_퀘스트, 저장_우산_힙힌지_퀘스트));
@@ -1591,6 +1602,7 @@ class CourseRepositoryImplTest {
                         .isTeam(com.giunne.questservice.domain.quest.domain.type.IsTeam.from(false))
                         .cooperationType(com.giunne.questservice.domain.quest.domain.type.CooperationType.SOLO)
                         .trainingType(com.giunne.questservice.domain.quest.domain.type.TrainingType.DEADLIFT)
+                        .needApproveCount(NeedApproveCount.from(3))
                         .build()
         );
 
@@ -1615,6 +1627,7 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.RUNNING)
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
 
@@ -1641,6 +1654,7 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.RUNNING)
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차2 = courseRepository.insertCourse(주차2.toCourse(), 저장_주차1);
@@ -1668,6 +1682,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차2.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차3 = courseRepository.insertCourse(주차3.toCourse(), 저장_주차2);
@@ -1695,6 +1710,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차3.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차4 = courseRepository.insertCourse(주차4.toCourse(), 저장_주차3);
@@ -1721,6 +1737,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차4.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차5 = courseRepository.insertCourse(주차5.toCourse(), 저장_주차4);
@@ -1747,6 +1764,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차5.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차6 = courseRepository.insertCourse(주차6.toCourse(), 저장_주차5);
@@ -1773,6 +1791,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차6.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차7 = courseRepository.insertCourse(주차7.toCourse(), 저장_주차6);
@@ -1799,6 +1818,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차7.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차8 = courseRepository.insertCourse(주차8.toCourse(), 저장_주차7);
@@ -1825,6 +1845,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차8.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차9 = courseRepository.insertCourse(주차9.toCourse(), 저장_주차8);
@@ -1851,6 +1872,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차9.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차10 = courseRepository.insertCourse(주차10.toCourse(), 저장_주차9);
@@ -1877,6 +1899,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차10.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차11 = courseRepository.insertCourse(주차11.toCourse(), 저장_주차10);
@@ -1903,6 +1926,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차11.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차12 = courseRepository.insertCourse(주차12.toCourse(), 저장_주차11);
@@ -1929,6 +1953,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차12.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차13 = courseRepository.insertCourse(주차13.toCourse(), 저장_주차12);
@@ -1954,6 +1979,7 @@ class CourseRepositoryImplTest {
                         .cooperationType(CooperationType.SOLO)
                         .trainingType(TrainingType.RUNNING)
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차14 = courseRepository.insertCourse(주차14.toCourse(), 저장_주차13);
@@ -1980,6 +2006,7 @@ class CourseRepositoryImplTest {
                         .trainingType(TrainingType.RUNNING)
 //                        .parent(List.of(저장_주차14.getId()))
                         .roadMap(roadMap)
+                        .thumbnailUrl(ThumbnailUrl.from("web/pictogram/[러닝]러닝.png"))
                         .build()
         );
         Course 저장_주차15 = courseRepository.insertCourse(주차15.toCourse(), 저장_주차14);

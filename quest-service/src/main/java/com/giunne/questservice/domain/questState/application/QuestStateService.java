@@ -178,17 +178,27 @@ public class QuestStateService {
         questPost.passOrFailProgress(dto.isPass());
         questPostRepository.updatePostProgress(questPost);
         QuestState foundQuestState = questStateRepository.findByQuestPostId(dto.questPostId());
-        updateQuestProgress(UpdateQuestStateRequestDto.builder()
-                .questStateId(foundQuestState.getId())
-                .questProgress(QuestProgress.CHECK.name())
-                .build());
+
+        if(!QuestProgress.UPLOAD.equals(foundQuestState.getQuestProgress())){
+            throw new IllegalArgumentException("업로드 상태만 채점이 가능합니다.");
+        }
+
+        if (questPost.getQuestPostProgressType() == QuestPostProgressType.UPLOAD ||
+                questPost.getQuestPostProgressType() == QuestPostProgressType.FAIL) {
+            updateQuestProgress(UpdateQuestStateRequestDto.builder()
+                    .questStateId(foundQuestState.getId())
+                    .questProgress(QuestProgress.CHECK.name())
+                    .build());
+
+            return;
+        }
 
         if (questPost.getQuestPostProgressType() == QuestPostProgressType.PASS) {
             Quest quest = questRepository.findById(foundQuestState.getQuest().getId());
             foundQuestState.getCurrentApproveCount().increase();
             foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
 
-            if (quest.getNeedApproveCount().getValue().equals(foundQuestState.getCurrentApproveCount().getValue())) {
+            if (quest.getNeedApproveCount().getValue() >= (foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
                 questStateRepository.save(foundQuestState);
                 updateQuestProgress(UpdateQuestStateRequestDto.builder()
@@ -208,6 +218,8 @@ public class QuestStateService {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
             }
+
+            return;
         }
     }
 
