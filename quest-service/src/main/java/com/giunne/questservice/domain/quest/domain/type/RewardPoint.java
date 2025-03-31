@@ -28,12 +28,12 @@ public class RewardPoint {
 
     public Long calculatedPoint(Long starPoint, Boolean hasExtraPoints) {
         final double EXTRA_POINTS = hasExtraPoints ? 0.2 : 0.0;
-        final double STAR_2_MULTIPLIER = 1.2 +  EXTRA_POINTS;
-        final double STAR_3_MULTIPLIER = 1.4 + EXTRA_POINTS;
+        final double STAR_2_MULTIPLIER =  hasExtraPoints ? 0.2 : 0.0;
+        final double STAR_3_MULTIPLIER = hasExtraPoints ? 0.4 : 0.0;
 
         return switch (starPoint.intValue()) {
-            case 2 -> (long) Math.ceil(this.value * STAR_2_MULTIPLIER);
-            case 3 -> (long) Math.ceil(this.value * STAR_3_MULTIPLIER);
+            case 2 -> (long) Math.ceil(this.value * (1.0 + STAR_2_MULTIPLIER+ EXTRA_POINTS));
+            case 3 -> (long) Math.ceil(this.value * (1.0 + STAR_3_MULTIPLIER+ EXTRA_POINTS));
             default -> this.value;
         };
     }
