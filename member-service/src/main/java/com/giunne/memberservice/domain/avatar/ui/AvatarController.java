@@ -7,10 +7,12 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.UpdatePasswordChangeForTeacherRequestDto;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
+import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
@@ -224,5 +226,19 @@ public class AvatarController {
     public Response<GetMySchoolInfoResponseDto> getMySchoolInfo(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
         GetMySchoolInfoResponseDto mySchoolInfo = avatarService.getMySchoolInfo(memberPrincipal);
         return Response.ok(mySchoolInfo);
+    }
+
+    @Operation(summary = "특정 아바타의 비밀번호 변경(선생님용)", description = """
+            ## 기능설명
+            * 정 아바타의 비밀번호 변경(선생님용)
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/teacher/password-change")
+    public Response<String> passwordChange(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                           @RequestBody UpdatePasswordChangeForTeacherRequestDto dto) {
+        avatarService.passwordChange(memberPrincipal, dto);
+        return Response.ok("성공");
     }
 }

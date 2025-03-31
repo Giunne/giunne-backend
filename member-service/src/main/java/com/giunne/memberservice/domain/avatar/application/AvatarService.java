@@ -12,6 +12,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.UpdatePasswordChangeForTeacherRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
@@ -20,6 +21,8 @@ import com.giunne.commonservice.jwt.service.TokenManager;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
+import com.giunne.memberservice.domain.auth.application.AuthService;
+import com.giunne.memberservice.domain.auth.application.dto.request.PasswordChangeRequestDto;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
@@ -58,6 +61,7 @@ public class AvatarService {
     private final LevelUpPolicyRepository levelUpPolicyRepository;
     private final QuestInfoClient questInfoClient;
     private final SchoolService schoolService;
+    private final AuthService authService;
 
     @Transactional
     public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto) {
@@ -326,6 +330,20 @@ public class AvatarService {
                 .studentNumber(avatar.getClassRoom().getStudentNumber())
                 .nickName(avatar.getNickname().getNickname())
                 .build();
+    }
+
+    @Transactional
+    public void passwordChange(MemberPrincipal memberPrincipal, UpdatePasswordChangeForTeacherRequestDto dto) {
+        if(memberPrincipal.getRole() != MemberRole.ROLE_TEACHER){
+            throw new IllegalArgumentException("선생님이 아닙니다.");
+        }
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+
+        Avatar avatar = avatarRepository.findById(dto.avatarId());
+        Member member = avatar.getMember();
+        authService.passwordChange(new PasswordChangeRequestDto(member.getLoginId().getLoginId(), dto.password()));
     }
 
 }
