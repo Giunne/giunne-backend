@@ -73,6 +73,20 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
         return stateEntities.stream().map(QuestStateEntity::toQuestState).toList();
     }
 
+    public boolean existByCheckQuest(QuestState questState){
+        return !queryFactory
+                .selectFrom(qQuestStateEntity)
+                .leftJoin(qQuestEntity).on(qQuestStateEntity.quest.id.eq(qQuestEntity.id))
+                .leftJoin(qCourseEntity).on(qCourseEntity.id.eq(qQuestEntity.course.id))
+                .where(
+                        qQuestStateEntity.questProgress.eq(QuestProgress.CHECK),
+                        qCourseEntity.roadMap.id.eq(questState.getQuest().getCourse().getRoadMap().getId()),
+                        qQuestStateEntity.player.avatarId.eq(questState.getPlayer().getAvatarId())
+                )
+                .fetch()
+                .isEmpty();
+    }
+
     @Transactional
     public void updateChildQuestOpen(QuestState questState) {
 

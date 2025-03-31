@@ -18,6 +18,8 @@ public interface QuestStateRepository {
 
     void updateChildQuestOpen(QuestState questState);
 
+    boolean existByCheckQuest(QuestState questState);
+
     List<QuestInfoResponseDto> findInProgressQuestByRoadMap(Long roadMapId, Long avatarId);
 
     List<QuestInfoResponseDto> findConfirmQuestByRoadMap(Long roadMapId, Long avatarId);
