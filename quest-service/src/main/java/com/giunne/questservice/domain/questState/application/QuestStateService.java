@@ -94,6 +94,11 @@ public class QuestStateService {
         QuestState questState = questStateRepository.findById(dto.questStateId());
 
         QuestProgress questProgress = QuestProgress.from(dto.questProgress());
+        if (QuestProgress.CHECK.equals(questProgress) &&
+                questStateRepository.existByCheckQuest(questState)) {
+            throw new IllegalArgumentException("현재 로드맵에 체크상태가 이미 존재합니다.");
+        }
+
         questState.updateQuestProgress(questProgress);
         QuestState save = questStateRepository.save(questState);
 
