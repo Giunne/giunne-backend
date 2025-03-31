@@ -4,6 +4,7 @@ import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.dto.JwtTokenDto;
 import com.giunne.commonservice.jwt.service.TokenManager;
+import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.memberservice.domain.auth.application.dto.request.*;
 import com.giunne.memberservice.domain.auth.application.dto.response.AccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
@@ -83,14 +84,22 @@ public class AuthService {
     }
 
     @Transactional
+    public void changePassword(MemberPrincipal memberPrincipal, UpdatePasswordForStudentRequestDto dto) {
+        Member member = memberRepository.findById(memberPrincipal.getMemberId());
+        member.changePassword(dto.password());
+
+        memberRepository.passwordChange(member.getLoginId().getLoginId(), member.getPassword().getPassword());
+        memberAuthRepository.passwordChange(member.getLoginId().getLoginId(), member.getPassword().getPassword());
+    }
+
+    @Transactional
     public MemberAccessTokenResponseDto passwordChange(PasswordChangeRequestDto dto) {
 
         Member member = memberRepository.findByLoginId(dto.loginId());
         member.changePassword(dto.password());
         MemberAuth memberAuth = memberAuthRepository.findByLoginId(dto.loginId());
-        memberAuth.changePassword(dto.password());
 
-        memberRepository.passwordChange(member.getLoginId().getLoginId(), dto.password());
+        memberRepository.passwordChange(member.getLoginId().getLoginId(), member.getPassword().getPassword());
         memberAuthRepository.passwordChange(member.getLoginId().getLoginId(), member.getPassword().getPassword());
 
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());

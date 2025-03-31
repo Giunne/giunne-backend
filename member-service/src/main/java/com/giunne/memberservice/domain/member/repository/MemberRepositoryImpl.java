@@ -5,10 +5,12 @@ import com.giunne.memberservice.domain.member.application.interfaces.MemberRepos
 import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.member.domain.exception.ErrorCode;
 import com.giunne.memberservice.domain.member.domain.exception.InvalidGenderException;
+import com.giunne.memberservice.domain.member.domain.type.Password;
 import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
 import com.giunne.memberservice.domain.member.repository.jpa.JpaMemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -53,11 +55,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    @Transactional
     public void passwordChange(String loginId, String password) {
         MemberEntity memberEntity = jpaMemberRepository.findByLoginId_LoginId(loginId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 아이디입니다.")
         );
         memberEntity.getPassword().changePassword(password);
+        jpaMemberRepository.save(memberEntity);
     }
 
 }

@@ -13,6 +13,7 @@ import com.giunne.memberservice.domain.auth.repository.entity.MemberAuthEntity;
 import com.giunne.memberservice.domain.auth.repository.jpa.JpaMemberAuthRepository;
 import com.giunne.memberservice.domain.member.application.interfaces.MemberRepository;
 import com.giunne.memberservice.domain.member.domain.Member;
+import com.giunne.memberservice.domain.member.domain.type.Password;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -114,11 +115,13 @@ public class MemberAuthRepositoryImpl implements MemberAuthRepository {
     }
 
     @Override
+    @Transactional
     public void passwordChange(String loginId, String password) {
         MemberAuthEntity memberAuthEntity = jpaMemberAuthRepository.findByLoginId(loginId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 아이디입니다.")
         );
         memberAuthEntity.changePassword(password);
+        jpaMemberAuthRepository.save(memberAuthEntity);
     }
 
 }

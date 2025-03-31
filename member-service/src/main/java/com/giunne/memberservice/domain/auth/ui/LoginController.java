@@ -9,6 +9,7 @@ import com.giunne.memberservice.domain.auth.application.AuthService;
 import com.giunne.memberservice.domain.auth.application.dto.request.AccessTokenRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.request.LoginRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.request.PasswordChangeRequestDto;
+import com.giunne.memberservice.domain.auth.application.dto.request.UpdatePasswordForStudentRequestDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.AccessTokenResponseDto;
 import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,10 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 
@@ -74,9 +72,23 @@ public class LoginController {
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    @PostMapping("/password-change")
+    @PostMapping("/admin/password-change")
     public Response<MemberAccessTokenResponseDto> passwordChange(@RequestBody PasswordChangeRequestDto dto) {
         return Response.ok(authService.passwordChange(dto));
+    }
+
+    @Operation(summary = "비밀번호 변경(학생용)", description = """
+            ## 기능설명
+            * 비밀번호 변경(학생용)
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/student/password-change")
+    public Response<String> changePassword(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                                                 @RequestBody UpdatePasswordForStudentRequestDto dto) {
+        authService.changePassword(memberPrincipal, dto);
+        return Response.ok("성공");
     }
 
 }
