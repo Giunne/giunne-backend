@@ -198,7 +198,7 @@ public class QuestStateService {
             foundQuestState.getCurrentApproveCount().increase();
             foundQuestState.getHasExtraPoints().updateExtraPoints(dto.hasExtraPoints());
 
-            if (quest.getNeedApproveCount().getValue() >= (foundQuestState.getCurrentApproveCount().getValue())) {
+            if (quest.getNeedApproveCount().getValue() <= (foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
                 questStateRepository.save(foundQuestState);
                 updateQuestProgress(UpdateQuestStateRequestDto.builder()
@@ -213,12 +213,11 @@ public class QuestStateService {
                 }
 
                 // 포인트 증가
-                Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().calculatedPoint(dto.starPoint()));
+                Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(questPost.getPlayer().getAvatarId(), quest.getRewardPoint().calculatedPoint(dto.starPoint(), dto.hasExtraPoints()));
                 if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
             }
-
             return;
         }
     }
