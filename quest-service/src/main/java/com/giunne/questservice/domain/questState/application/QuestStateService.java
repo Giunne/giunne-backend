@@ -218,6 +218,11 @@ public class QuestStateService {
                 if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
+            } else {
+                updateQuestProgress(UpdateQuestStateRequestDto.builder()
+                        .questStateId(foundQuestState.getId())
+                        .questProgress(QuestProgress.CHECK.name())
+                        .build());
             }
             return;
         }
