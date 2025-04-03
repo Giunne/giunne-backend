@@ -94,7 +94,7 @@ public class QuestStateService {
         QuestState questState = questStateRepository.findById(dto.questStateId());
 
         QuestProgress questProgress = QuestProgress.from(dto.questProgress());
-        if (QuestProgress.UPLOAD.equals(questProgress) &&
+        if (QuestProgress.CHECK.equals(questProgress) &&
                 questStateRepository.existByCheckQuest(questState, QuestProgress.UPLOAD)) {
             throw new IllegalArgumentException(String.format("아직 %s 학생이 업로드한 퀘스트가 있습니다.\n인증 탭으로 가서 확인해주세요!",
                     questState.getPlayer().getAvatarNickname()));
