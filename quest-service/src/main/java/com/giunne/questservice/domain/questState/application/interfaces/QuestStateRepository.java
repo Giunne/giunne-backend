@@ -2,6 +2,7 @@ package com.giunne.questservice.domain.questState.application.interfaces;
 
 import com.giunne.questservice.domain.questState.application.dto.response.QuestInfoResponseDto;
 import com.giunne.questservice.domain.questState.domain.QuestState;
+import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface QuestStateRepository {
 
     void updateChildQuestOpen(QuestState questState);
 
-    boolean existByCheckQuest(QuestState questState);
+    boolean existByCheckQuest(QuestState questState, QuestProgress questProgress);
 
     List<QuestInfoResponseDto> findInProgressQuestByRoadMap(Long roadMapId, Long avatarId);
 
