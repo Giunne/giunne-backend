@@ -31,12 +31,7 @@ class QuestStateRepositoryImplTest {
 
     @Test
     public void updateChildQuestOpen(){
-        UpdateQuestStateRequestDto updateQuestStateRequestDto = UpdateQuestStateRequestDto.builder()
-                .questStateId(3046L)
-                .questProgress(QuestProgress.CONFIRM.name())
-                .build();
-
-        questStateService.updateQuestProgress(updateQuestStateRequestDto);
+        questStateService.updateQuestProgress(3046L,QuestProgress.CONFIRM);
     }
 
 
