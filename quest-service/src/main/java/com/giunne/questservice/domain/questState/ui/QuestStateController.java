@@ -62,7 +62,7 @@ public class QuestStateController {
     })
     @PutMapping("/quest-progress")
     Response<String> savePlayerQuestStates2(@RequestBody UpdateQuestStateRequestDto dto) {
-        questStateService.updateQuestProgress(dto);
+        questStateService.updateQuestProgressForTeacher(dto);
         return Response.ok("성공");
     }
 

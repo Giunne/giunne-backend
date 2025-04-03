@@ -90,7 +90,17 @@ public class QuestStateService {
     }
 
     @Transactional
-    public void updateQuestProgress(UpdateQuestStateRequestDto dto) {
+    public void updateQuestProgress(Long questStateId,QuestProgress questProgress) {
+        QuestState questState = questStateRepository.findById(questStateId);
+        questState.updateQuestProgress(questProgress);
+        QuestState save = questStateRepository.save(questState);
+
+        questStateRepository.updateChildQuestOpen(save);
+
+    }
+
+    @Transactional
+    public void updateQuestProgressForTeacher(UpdateQuestStateRequestDto dto) {
         QuestState questState = questStateRepository.findById(dto.questStateId());
 
         QuestProgress questProgress = QuestProgress.from(dto.questProgress());
@@ -191,10 +201,7 @@ public class QuestStateService {
 
         if (questPost.getQuestPostProgressType() == QuestPostProgressType.UPLOAD ||
                 questPost.getQuestPostProgressType() == QuestPostProgressType.FAIL) {
-            updateQuestProgress(UpdateQuestStateRequestDto.builder()
-                    .questStateId(foundQuestState.getId())
-                    .questProgress(QuestProgress.CHECK.name())
-                    .build());
+            updateQuestProgress(foundQuestState.getId(),QuestProgress.CHECK);
 
             return;
         }
@@ -207,10 +214,7 @@ public class QuestStateService {
             if (quest.getNeedApproveCount().getValue() <= (foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
                 questStateRepository.save(foundQuestState);
-                updateQuestProgress(UpdateQuestStateRequestDto.builder()
-                        .questStateId(foundQuestState.getId())
-                        .questProgress(QuestProgress.CONFIRM.name())
-                        .build());
+                updateQuestProgress(foundQuestState.getId(),QuestProgress.CONFIRM);
 
                 // 경험치 증가
                 Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(questPost.getPlayer().getAvatarId(), quest.getRewardExp().getValue());
@@ -224,10 +228,7 @@ public class QuestStateService {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
             } else {
-                updateQuestProgress(UpdateQuestStateRequestDto.builder()
-                        .questStateId(foundQuestState.getId())
-                        .questProgress(QuestProgress.CHECK.name())
-                        .build());
+                updateQuestProgress(foundQuestState.getId(),QuestProgress.CHECK);
             }
             return;
         }
