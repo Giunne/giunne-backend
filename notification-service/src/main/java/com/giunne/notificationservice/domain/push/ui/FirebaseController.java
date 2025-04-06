@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "FCM 관리", description = "FCM 전송")
 @RestController
-@RequestMapping("/v1/api/fcm")
+@RequestMapping("/v1/api/notification/fcm")
 @RequiredArgsConstructor
 public class FirebaseController {
 

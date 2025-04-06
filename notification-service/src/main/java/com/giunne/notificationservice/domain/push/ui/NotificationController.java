@@ -14,13 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "알림 관리", description = "알림 조회 및 전송")
 @RestController
-@RequestMapping("/v1/api/notification")
+@RequestMapping("/v1/api/notification/notification")
 @RequiredArgsConstructor
 public class NotificationController {
 
