@@ -1,7 +1,6 @@
 package com.giunne.memberservice.domain.push.repository.entity;
 
 import com.giunne.commonservice.domain.common.BaseEntity;
-import com.giunne.memberservice.domain.member.repository.entity.MemberEntity;
 import com.giunne.memberservice.domain.push.domain.FcmToken;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

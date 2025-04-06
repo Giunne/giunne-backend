@@ -17,7 +17,7 @@ import java.util.List;
 
 @Tag(name = "FCM토큰 관리", description = "FCM토큰 조회 및 저장")
 @RestController
-@RequestMapping("/v1/api/fcm")
+@RequestMapping("/v1/api/member/fcm")
 @RequiredArgsConstructor
 public class FcmMessageController {
 

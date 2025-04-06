@@ -28,6 +28,7 @@ public class FcmMessageRepositoryImpl implements FcmMessageRepository {
         return save.toFcmToken();
     }
 
+
     @Override
     public List<FcmToken> findByMemberId(Long memberId) {
         return jpaFcmTokenRepository.findByMemberId(memberId)
