@@ -63,6 +63,10 @@ public class AvatarService {
     private final SchoolService schoolService;
     private final AuthService authService;
 
+    public Avatar getAvatar(Long id) {
+        return avatarRepository.findById(id);
+    }
+
     @Transactional
     public CreateAvatarResponseDto creatPlayer(MemberPrincipal memberPrincipal, CreateAvatarRequestDto dto) {
 
