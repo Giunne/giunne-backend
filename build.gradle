@@ -76,3 +76,10 @@ project(':community-service') { // 커뮤니티 서비스
         implementation(testFixtures(project(":common-service")))
     }
 }
+
+project(':notification-service') { // 커뮤니티 서비스
+    dependencies {
+        implementation project(':common-service')
+        implementation(testFixtures(project(":common-service")))
+    }
+}

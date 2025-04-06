@@ -67,7 +67,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/v1/api/member/**",
                         "/v1/api/items/**",
                         "/v1/api/quest/**",
-                        "/v1/api/community/**"
+                        "/v1/api/community/**",
+                        "/v1/api/notification/**"
                         );
 
         registry.addInterceptor(adminAuthorizationInterceptor)

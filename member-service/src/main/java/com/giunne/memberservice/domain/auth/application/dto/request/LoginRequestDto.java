@@ -13,6 +13,10 @@ public record LoginRequestDto(
                 description = "로그인 패스워드",
                 example = "123***"
         )
-        String password
+        String password,
+        @Schema(
+                description = "fcm토큰"
+        )
+        String fcmToken
 ) {
 }

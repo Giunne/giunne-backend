@@ -48,7 +48,11 @@ public record CreateTeacherAuthRequestDto(
                 description = "학교ID",
                 example = "1000"
         )
-        Long schoolId
+        Long schoolId,
+        @Schema(
+                description = "fcm토큰"
+        )
+        String fcmToken
 ) {
 
     public Member toMember(School school) {

@@ -173,9 +173,9 @@ public class AvatarRepositoryImpl implements AvatarRepository {
         whereClause.and(inventoryEntity.isWear.isWear.eq(true));
 
         // playerId가 null이 아닐 때만 avatarEntity.id.ne(playerId) 조건 추가
-        if (playerId != null) {
-            whereClause.and(avatarEntity.id.ne(playerId));
-        }
+//        if (playerId != null) {
+//            whereClause.and(avatarEntity.id.ne(playerId));
+//        }
 
 
         List<Tuple> joinResults = queryFactory

@@ -1,6 +1,7 @@
 package com.giunne.commonservice.infra.external.domain.member.client;
 
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.*;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetFcmTokenResponseDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.commonservice.ui.Response;
 import org.springdoc.core.annotations.ParameterObject;
@@ -35,5 +36,8 @@ public interface MemberInfoClient {
     @GetMapping(value = "/avatar/decrease-point")
     Response<String> decreasePoint(@RequestPart(name = "playerId") Long playerId,
                                    @RequestPart(name = "point") Long point);
+
+    @GetMapping(value = "/fcm/{memberId}")
+    Response<List<GetFcmTokenResponseDto>> findFcmTokenByMemberId(@PathVariable("memberId") Long memberId);
 
 }
