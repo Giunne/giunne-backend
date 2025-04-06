@@ -1,12 +1,12 @@
 package com.giunne.notificationservice.domain.push.ui;
 
+import com.giunne.commonservice.ui.Response;
 import com.giunne.notificationservice.domain.push.application.dto.request.SendFcmMessageDto;
 import com.giunne.notificationservice.domain.push.application.FirebaseMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +29,8 @@ public class FirebaseController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @PostMapping("/send-message")
-    public ResponseEntity<String> sendMessage(@RequestBody SendFcmMessageDto requestDto) {
+    public Response<String> sendMessage(@RequestBody SendFcmMessageDto requestDto) {
         firebaseMessageService.sendMessage(requestDto);
-        return ResponseEntity.ok("성공");
+        return Response.ok("성공");
     }
 }
