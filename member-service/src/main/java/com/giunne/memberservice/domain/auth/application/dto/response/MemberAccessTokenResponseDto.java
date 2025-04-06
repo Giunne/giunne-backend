@@ -3,6 +3,7 @@ package com.giunne.memberservice.domain.auth.application.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.giunne.commonservice.domain.auth.MemberRole;
 import com.giunne.commonservice.jwt.dto.JwtTokenDto;
+import com.giunne.memberservice.domain.member.domain.Member;
 import lombok.*;
 
 import java.util.Date;
@@ -27,14 +28,17 @@ public class MemberAccessTokenResponseDto {
 
     private MemberRole role;
 
-    public static MemberAccessTokenResponseDto of(JwtTokenDto jwtTokenDto, MemberRole role) {
+    private Long memberId;
+
+    public static MemberAccessTokenResponseDto of(JwtTokenDto jwtTokenDto, Member member) {
         return MemberAccessTokenResponseDto.builder()
                 .grantType(jwtTokenDto.getGrantType())
                 .accessToken(jwtTokenDto.getAccessToken())
                 .accessTokenExpireTime(jwtTokenDto.getAccessTokenExpireTime())
                 .refreshToken(jwtTokenDto.getRefreshToken())
                 .refreshTokenExpireTime(jwtTokenDto.getRefreshTokenExpireTime())
-                .role(role)
+                .role(member.getRole())
+                .memberId(member.getId())
                 .build();
     }
 }

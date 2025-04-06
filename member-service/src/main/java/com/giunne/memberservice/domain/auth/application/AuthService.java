@@ -47,8 +47,8 @@ public class AuthService {
         memberAuth = memberAuthRepository.registerMember(memberAuth, member);
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
         memberAuthRepository.updateRefreshToken(memberAuth.getLoginId(), jwtToken);
-
-        return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
+        Member savedMemember = memberRepository.findByLoginId(memberAuth.getLoginId());
+        return MemberAccessTokenResponseDto.of(jwtToken, savedMemember);
     }
     @Transactional
     public MemberAccessTokenResponseDto registerStudent(CreateStudentAuthRequestDto dto) {
@@ -71,8 +71,8 @@ public class AuthService {
 
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
         memberAuthRepository.updateRefreshToken(memberAuth.getLoginId(), jwtToken);
-
-        return  MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
+        Member savedMember = memberRepository.findByLoginId(memberAuth.getLoginId());
+        return  MemberAccessTokenResponseDto.of(jwtToken, savedMember);
     }
     @Transactional
     public MemberAccessTokenResponseDto loginMember(LoginRequestDto loginRequestDto) {
@@ -80,7 +80,8 @@ public class AuthService {
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
         memberAuthRepository.updateRefreshToken(memberAuth.getLoginId(), jwtToken);
 
-        return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
+        Member loginMember = memberRepository.findByLoginId(memberAuth.getLoginId());
+        return MemberAccessTokenResponseDto.of(jwtToken, loginMember);
     }
 
     @Transactional
@@ -104,7 +105,9 @@ public class AuthService {
 
         JwtTokenDto jwtToken = tokenManager.createJwtTokenDto(memberAuth.getMemberId(), null, memberAuth.getRole());
         memberAuthRepository.updateRefreshToken(memberAuth.getLoginId(), jwtToken);
-        return MemberAccessTokenResponseDto.of(jwtToken, memberAuth.getRole());
+
+        Member loginMember = memberRepository.findByLoginId(memberAuth.getLoginId());
+        return MemberAccessTokenResponseDto.of(jwtToken, loginMember);
     }
 
     public void logout(String accessToken) {
