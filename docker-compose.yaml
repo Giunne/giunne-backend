@@ -73,6 +73,22 @@ services:
       - TZ=Asia/Seoul
     restart: on-failure
 
+  giunne-notification:
+    depends_on:
+      - redis
+      - giunne-discovery-server
+      - giunne-api-gateway
+      - giunne-member
+    container_name: giunne-notification
+    image: giunne-notification-service:0.0.1-SNAPSHOT
+    ports:
+      - "8055:8055"
+    networks:
+      - giunne_network
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+
   redis:
     image: "redis:latest"
     ports:
