@@ -11,11 +11,11 @@ import java.util.concurrent.CompletableFuture;
 @FeignClient(url = "${app.apiUrl.notification-service}", name = "notificationInfoClient")
 public interface NotificationInfoClient {
 
-    @PostMapping("/send-message")
+    @PostMapping("/notification/send-message")
     Response<String> sendMessage(@RequestBody SendNotificationDto requestDto);
 
     // 비동기 메소드 추가
-    @PostMapping("/send-message")
+    @PostMapping("/notification/send-message")
     CompletableFuture<Response<String>> sendMessageAsync(@RequestBody SendNotificationDto requestDto);
 
 }
