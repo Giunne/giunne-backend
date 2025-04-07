@@ -20,6 +20,7 @@ import com.giunne.questservice.domain.questPost.domain.QuestPost;
 import com.giunne.questservice.domain.questPost.domain.QuestPostComment;
 import com.giunne.questservice.domain.questPost.domain.comment.type.QuestPostCommentContent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class QuestCommentService {
 
@@ -68,8 +70,11 @@ public class QuestCommentService {
                 .notificationType(NotificationType.POST_COMMENT)
                 .build();
 
-        notificationInfoClient.sendMessageAsync(notificationDto);
-
+        try {
+            notificationInfoClient.sendMessage(notificationDto);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         return questCommentRepository.save(comment);
     }
@@ -146,7 +151,11 @@ public class QuestCommentService {
                 .notificationType(NotificationType.COMMENT_LIKE)
                 .build();
 
-        notificationInfoClient.sendMessageAsync(notificationDto);
+        try {
+            notificationInfoClient.sendMessage(notificationDto);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public void unlikeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
