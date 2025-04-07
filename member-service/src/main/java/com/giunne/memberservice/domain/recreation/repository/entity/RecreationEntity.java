@@ -12,7 +12,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "recreation")
@@ -51,7 +50,7 @@ public class RecreationEntity extends BaseEntity {
         this.recreationCode = recreation.getRecreationCode();
         this.baseNumber = recreation.getBaseNumber();
         this.school = new SchoolEntity(recreation.getSchool());
-        this.teacher = new MemberEntity(recreation.getMember());
+        this.teacher = new MemberEntity(recreation.getTeacher());
     }
 
     public Recreation toRecreation() {
@@ -61,7 +60,7 @@ public class RecreationEntity extends BaseEntity {
                 .recreationCode(this.recreationCode)
                 .baseNumber(baseNumber)
                 .school(this.school.toSchool())
-                .member(this.teacher.toMember())
+                .teacher(this.teacher.toMember())
                 .build();
     }
 

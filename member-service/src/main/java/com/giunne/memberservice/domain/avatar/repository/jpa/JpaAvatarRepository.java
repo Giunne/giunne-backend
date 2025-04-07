@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface JpaAvatarRepository extends JpaRepository<AvatarEntity, Long> {
 
     List<AvatarEntity> findByMemberId(Long memberId);
+    List<AvatarEntity> findByRecreation_Id(Long recreationId);
 
     Optional<AvatarEntity> findByMemberIdAndRecreation_Id(Long memberId, Long recreationId);
 }

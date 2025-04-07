@@ -47,7 +47,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -348,6 +347,22 @@ public class AvatarService {
         Avatar avatar = avatarRepository.findById(dto.avatarId());
         Member member = avatar.getMember();
         authService.passwordChange(new PasswordChangeRequestDto(member.getLoginId().getLoginId(), dto.password()));
+    }
+
+    public Long getMemberId(Long avatarId) {
+        Avatar avatar = avatarRepository.findById(avatarId);
+        Member member = avatar.getMember();
+        return member.getId();
+    }
+
+    public Long getTeacherId(Long avatarId) {
+        Avatar avatar = avatarRepository.findById(avatarId);
+        Member teacher = avatar.getRecreation().getTeacher();
+        return teacher.getId();
+    }
+
+    public List<Avatar> getAllAvatarByRecreationId(Long recreationId) {
+        return avatarRepository.findByRecreationId(recreationId);
     }
 
 }

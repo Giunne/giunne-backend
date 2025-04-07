@@ -1,12 +1,13 @@
-package com.giunne.notificationservice.domain.push.application.dto.request;
+package com.giunne.commonservice.infra.external.domain.notification.client.dto.request;
 
-import com.giunne.notificationservice.domain.push.domain.Notification;
-import com.giunne.notificationservice.domain.push.domain.type.NotificationType;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,15 +40,4 @@ public class SendNotificationDto {
             nullable = true)
     private Long recreationId;
 
-    public Notification toNotification() {
-        return Notification.builder()
-                .targetId(targetId)
-                .senderId(senderId)
-                .title(title)
-                .content(content)
-                .notificationType(notificationType)
-                .referenceId(referenceId)
-                .referenceId(recreationId)
-                .build();
-    }
 }

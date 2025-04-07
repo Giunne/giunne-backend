@@ -1,4 +1,4 @@
-package com.giunne.notificationservice.domain.push.domain.type;
+package com.giunne.commonservice.domain.notification;
 
 import com.giunne.commonservice.domain.common.EnumMapperType;
 
@@ -10,7 +10,7 @@ public enum NotificationType implements EnumMapperType {
     COMMENT_LIKE("댓글 좋아요"),
     POST_COMMENT("게시물 댓글"),
     QUEST_COMPLETE_NOTIFICATION("퀘스트 인증(선생님용)"),
-    QUEST_CERTIFICATION_REQUEST("퀘스트 인증(학생용)"),
+    QUEST_CERTIFICATION_REQUEST("퀘스트 인증 요청(학생용)"),
     TEACHER_NOTICE("공지사항"),
     ;
 

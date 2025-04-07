@@ -17,6 +17,6 @@ public class Recreation {
     private RecreationName recreationName; // 레크레이션명
     private RecreationCode recreationCode; // 레크레이션 코드
     private School school; // 학교
-    private Member member; // 회원
+    private Member teacher; // 회원
     private BaseNumber baseNumber; // 기수번호
 }

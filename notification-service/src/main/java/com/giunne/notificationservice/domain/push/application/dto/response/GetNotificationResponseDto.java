@@ -1,6 +1,6 @@
 package com.giunne.notificationservice.domain.push.application.dto.response;
 
-import com.giunne.notificationservice.domain.push.domain.type.NotificationType;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
