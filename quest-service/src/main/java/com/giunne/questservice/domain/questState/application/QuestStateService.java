@@ -34,6 +34,7 @@ import com.giunne.questservice.domain.questState.application.interfaces.QuestSta
 import com.giunne.questservice.domain.questState.domain.QuestState;
 import com.giunne.questservice.domain.questState.domain.type.QuestProgress;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ import java.util.Optional;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class QuestStateService {
 
@@ -199,7 +201,12 @@ public class QuestStateService {
                     .notificationType(NotificationType.QUEST_CERTIFICATION_REQUEST)
                     .build();
 
-            notificationInfoClient.sendMessageAsync(notificationDto);
+            try {
+                notificationInfoClient.sendMessage(notificationDto);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+
         }
 
     }
@@ -262,8 +269,11 @@ public class QuestStateService {
                         .notificationType(NotificationType.QUEST_COMPLETE_NOTIFICATION)
                         .build();
 
-                notificationInfoClient.sendMessageAsync(notificationDto);
-
+                try {
+                    notificationInfoClient.sendMessage(notificationDto);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
 
             } else {
                 updateQuestProgress(foundQuestState.getId(),QuestProgress.CHECK);

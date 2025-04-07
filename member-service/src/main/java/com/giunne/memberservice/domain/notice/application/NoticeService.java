@@ -18,12 +18,14 @@ import com.giunne.memberservice.domain.notice.domain.Notice;
 import com.giunne.memberservice.domain.recreation.application.RecreationService;
 import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -69,7 +71,12 @@ public class NoticeService {
                     .notificationType(NotificationType.TEACHER_NOTICE)
                     .build();
 
-            notificationInfoClient.sendMessageAsync(notificationDto);
+            try {
+                notificationInfoClient.sendMessage(notificationDto);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+
         }
     }
 
