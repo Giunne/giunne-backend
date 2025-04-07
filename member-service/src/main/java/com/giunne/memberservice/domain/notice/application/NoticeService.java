@@ -1,11 +1,14 @@
 package com.giunne.memberservice.domain.notice.application;
 
 import com.giunne.commonservice.domain.auth.MemberRole;
+import com.giunne.commonservice.domain.notification.NotificationTemplate;
+import com.giunne.commonservice.domain.notification.NotificationType;
+import com.giunne.commonservice.infra.external.domain.notification.client.NotificationInfoClient;
+import com.giunne.commonservice.infra.external.domain.notification.client.dto.request.SendNotificationDto;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
-import com.giunne.memberservice.domain.member.domain.Member;
 import com.giunne.memberservice.domain.notice.application.dto.request.CreateNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.UpdateNoticeRequestDto;
@@ -18,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,6 +31,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final RecreationService recreationService;
     private final AvatarService avatarService;
+    private final NotificationInfoClient notificationInfoClient;
 
     @Transactional
     public void saveNotice(MemberPrincipal memberPrincipal, CreateNoticeRequestDto dto) {
@@ -37,14 +42,35 @@ public class NoticeService {
             throw new IllegalArgumentException("선생님이 아닙니다.");
         }
         Recreation recreation = recreationService.getRecreation(dto.recreationId());
-        Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
+        Avatar writer = avatarService.getAvatar(memberPrincipal.getPlayerId());
         Notice notice = Notice.builder()
                 .title(dto.title())
                 .content(dto.content())
                 .recreation(recreation)
-                .writer(avatar)
+                .writer(writer)
                 .build();
         noticeRepository.saveNotice(notice);
+
+        List<Avatar> allAvatarByRecreationId = avatarService.getAllAvatarByRecreationId(recreation.getId());
+
+        for (Avatar studentAvatar : allAvatarByRecreationId) {
+
+            if (studentAvatar.getId().equals(memberPrincipal.getPlayerId())) {
+                continue;
+            }
+
+            SendNotificationDto notificationDto = SendNotificationDto.builder()
+                    .targetId(
+                            studentAvatar.getMember().getId()
+                    )
+                    .senderId(memberPrincipal.getMemberId())
+                    .title("기운내 프로젝트")
+                    .content(NotificationTemplate.TEACHER_NOTICE.getTemplate())
+                    .notificationType(NotificationType.TEACHER_NOTICE)
+                    .build();
+
+            notificationInfoClient.sendMessageAsync(notificationDto);
+        }
     }
 
     @Transactional

@@ -4,7 +4,7 @@ import com.giunne.commonservice.domain.common.Pageable;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.notificationservice.domain.push.application.dto.request.SendFcmMessageDto;
-import com.giunne.notificationservice.domain.push.application.dto.request.SendNotificationDto;
+import com.giunne.commonservice.infra.external.domain.notification.client.dto.request.SendNotificationDto;
 import com.giunne.notificationservice.domain.push.application.dto.response.GetNotificationResponseDto;
 import com.giunne.notificationservice.domain.push.application.interfaces.NotificationRepository;
 import com.giunne.notificationservice.domain.push.domain.Notification;
@@ -21,9 +21,18 @@ public class NotificationService {
     private final FirebaseMessageService firebaseMessageService;
 
     @Transactional
-    public void saveNotification(MemberPrincipal memberPrincipal, SendNotificationDto dto) {
-        validateMemberPrincipal(memberPrincipal);
-        Notification notification = dto.toNotification();
+    public void saveNotification(SendNotificationDto dto) {
+        Notification notification = Notification.builder()
+                .targetId(dto.getTargetId())
+                .senderId(dto.getSenderId())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .notificationType(dto.getNotificationType())
+                .referenceId(dto.getReferenceId())
+                .referenceId(dto.getRecreationId())
+                .build();
+
+
         notificationRepository.saveNotification(notification);
 
         SendFcmMessageDto sendFcmMessageDto = SendFcmMessageDto.builder()

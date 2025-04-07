@@ -2,7 +2,11 @@ package com.giunne.questservice.domain.questState.application;
 
 
 import com.giunne.commonservice.domain.auth.MemberRole;
+import com.giunne.commonservice.domain.notification.NotificationTemplate;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
+import com.giunne.commonservice.infra.external.domain.notification.client.NotificationInfoClient;
+import com.giunne.commonservice.infra.external.domain.notification.client.dto.request.SendNotificationDto;
 import com.giunne.commonservice.infra.external.domain.synology.client.SynologyInfoClient;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.Response;
@@ -54,6 +58,7 @@ public class QuestStateService {
     private final QuestPostRepository questPostRepository;
     private final SynologyInfoClient synologyInfoClient;
     private final MemberInfoClient memberInfoClient;
+    private final NotificationInfoClient notificationInfoClient;
 
     private final String CATEGORY = "certificate";
     private static final String FILE_UPLOAD_FAIL = "파일 업로드 실패";
@@ -178,6 +183,25 @@ public class QuestStateService {
         QuestProgress questProgress = QuestProgress.UPLOAD;
         questState.updateQuestProgress(questProgress);
         questStateRepository.save(questState);
+
+        Response<Long> teacherIdResponse = memberInfoClient.getTeacherId(memberPrincipal.getPlayerId());
+        if(teacherIdResponse.code() == HttpStatus.OK.value()){
+            SendNotificationDto notificationDto = SendNotificationDto.builder()
+                    .targetId(
+                            teacherIdResponse.value()
+                    )
+                    .senderId(memberPrincipal.getMemberId())
+                    .title("기운내 프로젝트")
+                    .content(NotificationTemplate.QUEST_CERTIFICATION_REQUEST.format(
+                            questState.getPlayer().getNickname(),
+                            questState.getQuest().getQuestName()
+                    ))
+                    .notificationType(NotificationType.QUEST_CERTIFICATION_REQUEST)
+                    .build();
+
+            notificationInfoClient.sendMessageAsync(notificationDto);
+        }
+
     }
 
     @Transactional
@@ -213,7 +237,7 @@ public class QuestStateService {
 
             if (quest.getNeedApproveCount().getValue() <= (foundQuestState.getCurrentApproveCount().getValue())) {
                 foundQuestState.getStarPoint().updateStartPoint(dto.starPoint());
-                questStateRepository.save(foundQuestState);
+                QuestState clearQuestState = questStateRepository.save(foundQuestState);
                 updateQuestProgress(foundQuestState.getId(),QuestProgress.CONFIRM);
 
                 // 경험치 증가
@@ -227,6 +251,20 @@ public class QuestStateService {
                 if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                     throw new IllegalArgumentException("포인트 증가 실패");
                 }
+
+                SendNotificationDto notificationDto = SendNotificationDto.builder()
+                        .targetId(clearQuestState.getPlayer().getMemberId())
+                        .senderId(memberPrincipal.getMemberId())
+                        .title("기운내 프로젝트")
+                        .content(NotificationTemplate.QUEST_COMPLETE.format(
+                                quest.getQuestName()
+                        ))
+                        .notificationType(NotificationType.QUEST_COMPLETE_NOTIFICATION)
+                        .build();
+
+                notificationInfoClient.sendMessageAsync(notificationDto);
+
+
             } else {
                 updateQuestProgress(foundQuestState.getId(),QuestProgress.CHECK);
             }

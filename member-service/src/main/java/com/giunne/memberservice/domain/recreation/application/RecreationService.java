@@ -37,7 +37,7 @@ public class RecreationService {
                 .recreationCode(RecreationCode.from(RandomCodeGenerator.generateCode()))
                 .baseNumber(BaseNumber.from(dto.baseNumber()))
                 .school(school)
-                .member(member)
+                .teacher(member)
                 .build();
 
         Recreation repositoryRecreation = recreationRepository.createRecreation(recreation);

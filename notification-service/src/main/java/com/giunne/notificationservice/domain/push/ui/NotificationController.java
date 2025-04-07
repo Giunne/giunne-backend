@@ -6,7 +6,7 @@ import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.notificationservice.domain.push.application.NotificationService;
-import com.giunne.notificationservice.domain.push.application.dto.request.SendNotificationDto;
+import com.giunne.commonservice.infra.external.domain.notification.client.dto.request.SendNotificationDto;
 import com.giunne.notificationservice.domain.push.application.dto.response.GetNotificationResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,9 +33,8 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @PostMapping("/send-message")
-    public Response<String> sendMessage(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
-                                        @RequestBody SendNotificationDto requestDto) {
-        notificationService.saveNotification(memberPrincipal, requestDto);
+    public Response<String> sendMessage(@RequestBody SendNotificationDto requestDto) {
+        notificationService.saveNotification(requestDto);
         return Response.ok("성공");
     }
 

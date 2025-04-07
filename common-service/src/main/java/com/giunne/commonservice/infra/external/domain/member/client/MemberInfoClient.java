@@ -40,4 +40,10 @@ public interface MemberInfoClient {
     @GetMapping(value = "/fcm/{memberId}")
     Response<List<GetFcmTokenResponseDto>> findFcmTokenByMemberId(@PathVariable("memberId") Long memberId);
 
+    @GetMapping("/avatar/member/{avatarId}")
+    Response<Long> getMemberId(@PathVariable Long avatarId);
+
+    @GetMapping("/avatar/teacher/{avatarId}")
+    Response<Long> getTeacherId(@PathVariable Long avatarId);
+
 }

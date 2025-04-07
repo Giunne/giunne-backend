@@ -1,7 +1,11 @@
 package com.giunne.questservice.domain.questPost.application.interfaces;
 
 import com.giunne.commonservice.domain.auth.MemberRole;
+import com.giunne.commonservice.domain.notification.NotificationTemplate;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoClient;
+import com.giunne.commonservice.infra.external.domain.notification.client.NotificationInfoClient;
+import com.giunne.commonservice.infra.external.domain.notification.client.dto.request.SendNotificationDto;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.player.application.interfaces.PlayerRepository;
@@ -32,6 +36,7 @@ public class QuestCommentService {
     private final PlayerRepository playerRepository;
     private final QuestPostCommentLikeRepository likeRepository;
     private final MemberInfoClient memberInfoClient;
+    private final NotificationInfoClient notificationInfoClient;
 
 
     public QuestPostComment getComment(Long id) {
@@ -50,6 +55,21 @@ public class QuestCommentService {
                 .player(player)
                 .post(post)
                 .build();
+
+        Long targetId = comment.getPost().getPlayer().getMemberId();
+
+        SendNotificationDto notificationDto = SendNotificationDto.builder()
+                .targetId(targetId)
+                .senderId(memberPrincipal.getMemberId())
+                .title("기운내 프로젝트")
+                .content(NotificationTemplate.POST_COMMENT.format(
+                        memberPrincipal.getRole() == MemberRole.ROLE_TEACHER ? "선생님" : player.getNickname()
+                ))
+                .notificationType(NotificationType.POST_COMMENT)
+                .build();
+
+        notificationInfoClient.sendMessageAsync(notificationDto);
+
 
         return questCommentRepository.save(comment);
     }
@@ -116,6 +136,17 @@ public class QuestCommentService {
                 throw new IllegalArgumentException("포인트 증가 실패");
             }
         }
+
+        Long targetId = comment.getPlayer().getMemberId();
+        SendNotificationDto notificationDto = SendNotificationDto.builder()
+                .targetId(targetId)
+                .senderId(memberPrincipal.getMemberId())
+                .title("기운내 프로젝트")
+                .content(NotificationTemplate.COMMENT_LIK.getTemplate())
+                .notificationType(NotificationType.COMMENT_LIKE)
+                .build();
+
+        notificationInfoClient.sendMessageAsync(notificationDto);
     }
 
     public void unlikeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {

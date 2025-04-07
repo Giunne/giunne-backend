@@ -2,7 +2,7 @@ package com.giunne.notificationservice.domain.push.repository.entity;
 
 import com.giunne.commonservice.domain.common.BaseEntity;
 import com.giunne.notificationservice.domain.push.domain.Notification;
-import com.giunne.notificationservice.domain.push.domain.type.NotificationType;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -12,7 +12,6 @@ import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
-import com.giunne.memberservice.domain.auth.application.dto.response.MemberAccessTokenResponseDto;
 import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
@@ -241,4 +240,31 @@ public class AvatarController {
         avatarService.passwordChange(memberPrincipal, dto);
         return Response.ok("성공");
     }
+
+    @Operation(summary = "회원번호 조회", description = """
+            ## 기능설명
+            * 회원번호 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/member/{avatarId}")
+    public Response<Long> getMemberId(@PathVariable Long avatarId) {
+        Long memberId = avatarService.getMemberId(avatarId);
+        return Response.ok(memberId);
+    }
+
+    @Operation(summary = "선생님 ID 조회", description = """
+            ## 기능설명
+            * 선생님 ID 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @GetMapping("/teacher/{avatarId}")
+    public Response<Long> getTeacherId(@PathVariable Long avatarId) {
+        Long memberId = avatarService.getTeacherId(avatarId);
+        return Response.ok(memberId);
+    }
+
 }

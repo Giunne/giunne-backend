@@ -1,6 +1,6 @@
 package com.giunne.notificationservice.domain.push.domain;
 
-import com.giunne.notificationservice.domain.push.domain.type.NotificationType;
+import com.giunne.commonservice.domain.notification.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

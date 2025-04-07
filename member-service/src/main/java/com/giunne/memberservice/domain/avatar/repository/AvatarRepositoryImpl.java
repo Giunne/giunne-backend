@@ -58,6 +58,11 @@ public class AvatarRepositoryImpl implements AvatarRepository {
         return entity.toAvatar();
     }
 
+    public List<Avatar> findByRecreationId(Long recreationId) {
+        List<AvatarEntity> entity = jpaAvatarRepository.findByRecreation_Id(recreationId);
+        return entity.stream().map(AvatarEntity::toAvatar).toList();
+    }
+
     public boolean existAvatarByMemberIdAndRecreationId(Long memberId, Long recreationId) {
         return jpaAvatarRepository.findByMemberIdAndRecreation_Id(memberId, recreationId).isPresent();
     }
