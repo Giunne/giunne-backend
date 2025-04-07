@@ -195,7 +195,7 @@ public class QuestStateService {
                     .senderId(memberPrincipal.getMemberId())
                     .title("기운내 프로젝트")
                     .content(NotificationTemplate.QUEST_CERTIFICATION_REQUEST.format(
-                            questState.getPlayer().getNickname(),
+                            questState.getPlayer().getAvatarNickname(),
                             questState.getQuest().getQuestName().getValue()
                     ))
                     .notificationType(NotificationType.QUEST_CERTIFICATION_REQUEST)

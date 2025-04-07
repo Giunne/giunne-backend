@@ -65,7 +65,7 @@ public class QuestCommentService {
                 .senderId(memberPrincipal.getMemberId())
                 .title("기운내 프로젝트")
                 .content(NotificationTemplate.POST_COMMENT.format(
-                        memberPrincipal.getRole() == MemberRole.ROLE_TEACHER ? "선생님" : player.getNickname()
+                        memberPrincipal.getRole() == MemberRole.ROLE_TEACHER ? "선생님" : player.getAvatarNickname()
                 ))
                 .notificationType(NotificationType.POST_COMMENT)
                 .build();
