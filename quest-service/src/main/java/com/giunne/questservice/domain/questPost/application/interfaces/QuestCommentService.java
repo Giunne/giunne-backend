@@ -126,7 +126,6 @@ public class QuestCommentService {
         likeRepository.like(comment, player);
 
         Long targetAvatarId = comment.getPlayer().getAvatarId();
-        String extraPoint = NotificationTemplate.EXTRA_POINT.format();
         boolean hasExtraExp = false;
         boolean hasExtraPoint = false;
         StringBuilder extraRewardMessage = new StringBuilder();
