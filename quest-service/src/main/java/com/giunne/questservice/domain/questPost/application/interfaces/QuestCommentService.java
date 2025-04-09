@@ -65,7 +65,7 @@ public class QuestCommentService {
                 .senderId(memberPrincipal.getMemberId())
                 .title("기운내 프로젝트")
                 .content(NotificationTemplate.POST_COMMENT.format(
-                        memberPrincipal.getRole() == MemberRole.ROLE_TEACHER ? "선생님" : player.getAvatarNickname()
+                        memberPrincipal.getRole() == MemberRole.ROLE_TEACHER ? "선생" : player.getAvatarNickname()
                 ))
                 .notificationType(NotificationType.POST_COMMENT)
                 .build();
@@ -126,20 +126,43 @@ public class QuestCommentService {
         likeRepository.like(comment, player);
 
         Long targetAvatarId = comment.getPlayer().getAvatarId();
+        boolean hasExtraExp = false;
+        boolean hasExtraPoint = false;
+        StringBuilder extraRewardMessage = new StringBuilder();
+
         // 경험치 증가
         if(!(dto.rewardExp() == null || dto.rewardExp() == 0L)) {
+            hasExtraExp = true;
+            extraRewardMessage.append(dto.rewardExp()).append("경험치");
             Response<String> memberPointExperiencResponse = memberInfoClient.increaseExperience(targetAvatarId, dto.rewardExp());
             if (memberPointExperiencResponse.code() != HttpStatus.OK.value()) {
                 throw new IllegalArgumentException("경험치 증가 실패");
             }
+
         }
 
         if(!(dto.rewardPoint() == null || dto.rewardPoint() == 0L)) {
             // 포인트 증가
+            hasExtraPoint = true;
+            // 경험치도 있다면 쉼표 추가
+            if(hasExtraExp) {
+                extraRewardMessage.append(", ");
+            }
+            extraRewardMessage.append(dto.rewardPoint()).append("코인");
+
+
             Response<String> memberPointIncreaseResponse = memberInfoClient.increasePoint(targetAvatarId, dto.rewardPoint());
             if (memberPointIncreaseResponse.code() != HttpStatus.OK.value()) {
                 throw new IllegalArgumentException("포인트 증가 실패");
             }
+
+        }
+
+        String likTemplate = NotificationTemplate.COMMENT_LIK.getTemplate();
+        // 추가 보상이 있는 경우에만 메시지 추가
+        if(hasExtraExp || hasExtraPoint) {
+            String extraReward = NotificationTemplate.EXTRA_POINT.format(extraRewardMessage.toString());
+            likTemplate += extraReward;
         }
 
         Long targetId = comment.getPlayer().getMemberId();
@@ -147,7 +170,7 @@ public class QuestCommentService {
                 .targetId(targetId)
                 .senderId(memberPrincipal.getMemberId())
                 .title("기운내 프로젝트")
-                .content(NotificationTemplate.COMMENT_LIK.getTemplate())
+                .content(likTemplate)
                 .notificationType(NotificationType.COMMENT_LIKE)
                 .build();
 
