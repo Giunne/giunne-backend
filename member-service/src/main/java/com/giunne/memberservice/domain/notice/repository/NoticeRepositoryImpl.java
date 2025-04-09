@@ -81,11 +81,10 @@ public class NoticeRepositoryImpl implements NoticeRepository {
                 .select(
                         Projections.fields(
                                 GetNoticeResponseDto.class,
-                                qNoticeEntity.id,
-                                qNoticeEntity.writer.id,
+                                qNoticeEntity.id.as("id"),
+                                qNoticeEntity.writer.id.as("writerId"),
                                 qNoticeEntity.title,
                                 qNoticeEntity.content,
-                                qNoticeEntity.recreation.id,
                                 qNoticeEntity.createTime,
                                 qNoticeEntity.updateTime
                         )

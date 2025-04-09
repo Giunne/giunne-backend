@@ -4,6 +4,7 @@ public enum NotificationTemplate {
     // 사용자용 알림 메시지
     COMMENT_LIK("선생님이 회원님의 댓글을 좋아합니다.") ,
     POST_COMMENT("%s님이 회원님의 게시물에 댓글을 작성했어요."),
+    EXTRA_POINT(" (추가 %s 보상을 얻었어요! )"),
     QUEST_COMPLETE("%s 단계의 인증이 완료되었어요."),
 
     // 선생님용 알림 메시지
