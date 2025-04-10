@@ -124,7 +124,7 @@ public class NoticeController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @PutMapping("/count")
-    public Response<GetNotReadNoticeCountDto> countNotReadNotice(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,) {
+    public Response<GetNotReadNoticeCountDto> countNotReadNotice(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
 
         GetNotReadNoticeCountDto getNotReadNoticeCountDto = noticeService.countNotReadNotice(memberPrincipal);
         return Response.ok(getNotReadNoticeCountDto);
