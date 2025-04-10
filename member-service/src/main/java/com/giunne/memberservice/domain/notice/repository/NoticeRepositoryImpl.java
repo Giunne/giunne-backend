@@ -43,6 +43,18 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     private final QNoticeEntity qNoticeEntity = QNoticeEntity.noticeEntity;
     private final QNoticeReadEntity qNoticeReadEntity = QNoticeReadEntity.noticeReadEntity;
 
+    public Long countNotReadNotice(Avatar avatar) {
+        return queryFactory
+                .select(qNoticeReadEntity.count())
+                .from(qNoticeReadEntity)
+                .where(
+                        qNoticeReadEntity.id.playerId.eq(avatar.getId()),
+                        qNoticeReadEntity.isRead.isFalse()
+                )
+                .fetchOne()
+                ;
+    }
+
     public Notice getNotice(Long id) {
         return jpaNoticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지입니다."))

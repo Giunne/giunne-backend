@@ -8,6 +8,7 @@ import com.giunne.memberservice.domain.notice.application.NoticeService;
 import com.giunne.memberservice.domain.notice.application.dto.request.CreateNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.UpdateNoticeRequestDto;
+import com.giunne.memberservice.domain.notice.application.dto.response.GetNotReadNoticeCountDto;
 import com.giunne.memberservice.domain.notice.application.dto.response.GetNoticeResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -113,5 +114,19 @@ public class NoticeController {
 
         noticeService.readNotice(memberPrincipal, id);
         return Response.ok("성공");
+    }
+
+    @Operation(summary = "읽지 않은 메시지 수 조회", description = """
+            ## 기능설명
+            * 읽지 않은 메시지 수 조회
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/count")
+    public Response<GetNotReadNoticeCountDto> countNotReadNotice(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal) {
+
+        GetNotReadNoticeCountDto getNotReadNoticeCountDto = noticeService.countNotReadNotice(memberPrincipal);
+        return Response.ok(getNotReadNoticeCountDto);
     }
 }

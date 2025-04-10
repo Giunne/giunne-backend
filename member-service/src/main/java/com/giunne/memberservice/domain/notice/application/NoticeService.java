@@ -12,6 +12,7 @@ import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.notice.application.dto.request.CreateNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.request.UpdateNoticeRequestDto;
+import com.giunne.memberservice.domain.notice.application.dto.response.GetNotReadNoticeCountDto;
 import com.giunne.memberservice.domain.notice.application.dto.response.GetNoticeResponseDto;
 import com.giunne.memberservice.domain.notice.application.interfaces.NoticeRepository;
 import com.giunne.memberservice.domain.notice.domain.Notice;
@@ -97,7 +98,7 @@ public class NoticeService {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
         notice.updateNoticeInfo(dto.title(), dto.content());
-       noticeRepository.updateNotice(notice);
+        noticeRepository.updateNotice(notice);
     }
 
     public PaginationModel<GetNoticeResponseDto> getNoticeList(MemberPrincipal memberPrincipal, GetNoticeRequestDto dto) {
@@ -125,6 +126,19 @@ public class NoticeService {
 
         Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
         noticeRepository.readNotice(notice, avatar);
+    }
+
+    public GetNotReadNoticeCountDto countNotReadNotice(MemberPrincipal memberPrincipal) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
+
+        Long count = noticeRepository.countNotReadNotice(avatar);
+
+        return GetNotReadNoticeCountDto.builder()
+                .count(count)
+                .build();
     }
 
 }
