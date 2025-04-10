@@ -65,8 +65,9 @@ public class NoticeController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping()
-    public Response<PaginationModel<GetNoticeResponseDto>> getNoticeList(@ParameterObject GetNoticeRequestDto dto) {
-        PaginationModel<GetNoticeResponseDto> noticeList = noticeService.getNoticeList(dto);
+    public Response<PaginationModel<GetNoticeResponseDto>> getNoticeList(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                                                         @ParameterObject GetNoticeRequestDto dto) {
+        PaginationModel<GetNoticeResponseDto> noticeList = noticeService.getNoticeList(memberPrincipal, dto);
         return Response.ok(noticeList);
     }
 
@@ -78,9 +79,9 @@ public class NoticeController {
             @ApiResponse(responseCode = "200", description = "성공")
     })
     @GetMapping("/{id}")
-    public Response<GetNoticeResponseDto> getNoticeList(@PathVariable Long id) {
-
-        GetNoticeResponseDto notice = noticeService.getNotice(id);
+    public Response<GetNoticeResponseDto> getNoticeList(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                                        @PathVariable Long id) {
+        GetNoticeResponseDto notice = noticeService.getNotice(memberPrincipal, id);
         return Response.ok(notice);
     }
 
@@ -96,6 +97,21 @@ public class NoticeController {
                                              @PathVariable Long id) {
 
         noticeService.deleteById(memberPrincipal, id);
+        return Response.ok("성공");
+    }
+
+    @Operation(summary = "공지 읽음 처리", description = """
+            ## 기능설명
+            * 공지 읽음 처리
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PutMapping("/read/{id}")
+    public Response<String> readNotice(@AuthPrincipal @Parameter(hidden = true) MemberPrincipal memberPrincipal,
+                                                        @PathVariable Long id) {
+
+        noticeService.readNotice(memberPrincipal, id);
         return Response.ok("성공");
     }
 }

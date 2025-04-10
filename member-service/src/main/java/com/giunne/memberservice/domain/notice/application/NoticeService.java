@@ -51,9 +51,10 @@ public class NoticeService {
                 .recreation(recreation)
                 .writer(writer)
                 .build();
-        noticeRepository.saveNotice(notice);
+        Notice saveNotice = noticeRepository.saveNotice(notice);
 
         List<Avatar> allAvatarByRecreationId = avatarService.getAllAvatarByRecreationId(recreation.getId());
+        noticeRepository.initNoticeRead(saveNotice, allAvatarByRecreationId);
 
         for (Avatar studentAvatar : allAvatarByRecreationId) {
 
@@ -99,20 +100,31 @@ public class NoticeService {
        noticeRepository.updateNotice(notice);
     }
 
-    public PaginationModel<GetNoticeResponseDto> getNoticeList(GetNoticeRequestDto dto) {
-        return noticeRepository.getNoticeList(dto);
+    public PaginationModel<GetNoticeResponseDto> getNoticeList(MemberPrincipal memberPrincipal, GetNoticeRequestDto dto) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
+        return noticeRepository.getNoticeList(dto, avatar);
     }
 
-    public GetNoticeResponseDto getNotice(Long id) {
+    public GetNoticeResponseDto getNotice(MemberPrincipal memberPrincipal, Long id) {
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+        Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
+        return noticeRepository.getMyNotice(id, avatar);
+    }
+
+    @Transactional
+    public void readNotice(MemberPrincipal memberPrincipal, Long id) {
         Notice notice = noticeRepository.getNotice(id);
-        return GetNoticeResponseDto.builder()
-                .id(notice.getId())
-                .writerId(notice.getWriter().getId())
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .createTime(notice.getCreatedTime())
-                .updateTime(notice.getUpdatedTime())
-                .build();
+        if (memberPrincipal.getPlayerId() == null) {
+            throw new IllegalArgumentException("아바타 정보가 없습니다.");
+        }
+
+        Avatar avatar = avatarService.getAvatar(memberPrincipal.getPlayerId());
+        noticeRepository.readNotice(notice, avatar);
     }
 
 }
