@@ -9,5 +9,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JpaNoticeReadRepository extends JpaRepository<NoticeReadEntity, NoticeReadId> {
-    Optional<NoticeReadEntity> findByNoticeIdAndPlayerId(Long noticeId, Long playerId);
 }

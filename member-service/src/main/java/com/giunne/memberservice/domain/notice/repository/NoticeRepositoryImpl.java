@@ -6,6 +6,7 @@ import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeR
 import com.giunne.memberservice.domain.notice.application.dto.response.GetNoticeResponseDto;
 import com.giunne.memberservice.domain.notice.application.interfaces.NoticeRepository;
 import com.giunne.memberservice.domain.notice.domain.Notice;
+import com.giunne.memberservice.domain.notice.domain.type.NoticeReadId;
 import com.giunne.memberservice.domain.notice.repository.entity.NoticeEntity;
 import com.giunne.memberservice.domain.notice.repository.entity.NoticeReadEntity;
 import com.giunne.memberservice.domain.notice.repository.entity.QNoticeEntity;
@@ -95,7 +96,8 @@ public class NoticeRepositoryImpl implements NoticeRepository {
 
     @Transactional
     public void readNotice(Notice notice, Avatar avatar) {
-        NoticeReadEntity noticeReadId = jpaNoticeReadRepository.findByNoticeIdAndPlayerId(notice.getId(), avatar.getId())
+
+        NoticeReadEntity noticeReadId =  jpaNoticeReadRepository.findById(new NoticeReadId(notice.getId(), avatar.getId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지입니다."));
         noticeReadId.read();
 
