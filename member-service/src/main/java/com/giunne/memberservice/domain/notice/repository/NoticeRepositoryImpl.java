@@ -1,13 +1,16 @@
 package com.giunne.memberservice.domain.notice.repository;
 
 import com.giunne.commonservice.ui.PaginationModel;
+import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeRequestDto;
-import com.giunne.memberservice.domain.notice.application.dto.request.UpdateNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.response.GetNoticeResponseDto;
 import com.giunne.memberservice.domain.notice.application.interfaces.NoticeRepository;
 import com.giunne.memberservice.domain.notice.domain.Notice;
 import com.giunne.memberservice.domain.notice.repository.entity.NoticeEntity;
+import com.giunne.memberservice.domain.notice.repository.entity.NoticeReadEntity;
 import com.giunne.memberservice.domain.notice.repository.entity.QNoticeEntity;
+import com.giunne.memberservice.domain.notice.repository.entity.QNoticeReadEntity;
+import com.giunne.memberservice.domain.notice.repository.jpa.JpaNoticeReadRepository;
 import com.giunne.memberservice.domain.notice.repository.jpa.JpaNoticeRepository;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.giunne.commonservice.util.PaginationUtil.getPageRequest;
 import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
@@ -34,7 +38,9 @@ import static com.giunne.commonservice.util.PaginationUtil.toPaginationModel;
 public class NoticeRepositoryImpl implements NoticeRepository {
     private final JPAQueryFactory queryFactory;
     private final JpaNoticeRepository jpaNoticeRepository;
+    private final JpaNoticeReadRepository jpaNoticeReadRepository;
     private final QNoticeEntity qNoticeEntity = QNoticeEntity.noticeEntity;
+    private final QNoticeReadEntity qNoticeReadEntity = QNoticeReadEntity.noticeReadEntity;
 
     public Notice getNotice(Long id) {
         return jpaNoticeRepository.findById(id)
@@ -42,10 +48,58 @@ public class NoticeRepositoryImpl implements NoticeRepository {
                 .toDomain();
     }
 
+    public GetNoticeResponseDto getMyNotice(Long id, Avatar avatar) {
+        return queryFactory
+                .select(
+                        Projections.fields(
+                                GetNoticeResponseDto.class,
+                                qNoticeEntity.id.as("id"),
+                                qNoticeEntity.writer.id.as("writerId"),
+                                qNoticeEntity.title,
+                                qNoticeEntity.content,
+                                qNoticeEntity.createTime,
+                                qNoticeEntity.updateTime,
+                                qNoticeReadEntity.isRead
+                        )
+                )
+                .from(qNoticeEntity)
+                .join(qNoticeReadEntity).on(qNoticeEntity.id.eq(qNoticeReadEntity.id.noticeId))
+                .where(
+                        qNoticeEntity.id.eq(id),
+                        qNoticeReadEntity.id.playerId.eq(avatar.getId())
+                )
+                .fetchOne();
+    }
+
     @Transactional
     public Notice saveNotice(Notice notice) {
         NoticeEntity save = jpaNoticeRepository.save(new NoticeEntity(notice));
         return save.toDomain();
+    }
+
+    @Transactional
+    public void initNoticeRead(Notice notice, List<Avatar> avatars) {
+        List<NoticeReadEntity> noticeReadEntities = avatars.stream()
+                .map(avatar ->
+                        {
+                            if (Objects.equals(avatar.getId(), notice.getWriter().getId())) {
+                                return new NoticeReadEntity(notice.getId(), avatar.getId(), true);
+                            }
+                            return new NoticeReadEntity(notice.getId(), avatar.getId(), false);
+                        }
+                )
+                .toList();
+
+        jpaNoticeReadRepository.saveAll(noticeReadEntities);
+    }
+
+    @Transactional
+    public void readNotice(Notice notice, Avatar avatar) {
+        NoticeReadEntity noticeReadId = jpaNoticeReadRepository.findByNoticeIdAndPlayerId(notice.getId(), avatar.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지입니다."));
+        noticeReadId.read();
+
+        jpaNoticeReadRepository.save(noticeReadId);
     }
 
     @Transactional
@@ -61,7 +115,7 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     }
 
     @Transactional(readOnly = true)
-    public PaginationModel<GetNoticeResponseDto> getNoticeList(GetNoticeRequestDto dto) {
+    public PaginationModel<GetNoticeResponseDto> getNoticeList(GetNoticeRequestDto dto, Avatar avatar) {
         Pageable pageable = getPageRequest(
                 dto.getPageIndex(),
                 dto.getPageSize(),
@@ -86,12 +140,15 @@ public class NoticeRepositoryImpl implements NoticeRepository {
                                 qNoticeEntity.title,
                                 qNoticeEntity.content,
                                 qNoticeEntity.createTime,
-                                qNoticeEntity.updateTime
+                                qNoticeEntity.updateTime,
+                                qNoticeReadEntity.isRead
                         )
                 )
                 .from(qNoticeEntity)
+                .join(qNoticeReadEntity).on(qNoticeEntity.id.eq(qNoticeReadEntity.id.noticeId))
                 .where(
-                        qNoticeEntity.recreation.id.eq(dto.getRecreationId())
+                        qNoticeEntity.recreation.id.eq(dto.getRecreationId()),
+                        qNoticeReadEntity.id.playerId.eq(avatar.getId())
                 )
                 .orderBy(getOrderSpecifier(dto.getSortProperty(), dto.getDirection()))
                 .offset(pageable.getOffset())

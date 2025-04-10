@@ -31,4 +31,8 @@ public class GetNoticeResponseDto {
             description = "수정날짜"
     )
     LocalDateTime updateTime;
+    @Schema(
+            description = "읽음 유무",
+            example = "true")
+    Boolean isRead;
 }
