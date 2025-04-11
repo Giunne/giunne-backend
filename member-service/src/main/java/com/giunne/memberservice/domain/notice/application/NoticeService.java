@@ -88,6 +88,7 @@ public class NoticeService {
         if (!Objects.equals(notice.getWriter().getId(), memberPrincipal.getPlayerId())) {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
+        noticeRepository.deleteNoticeReadByNoticeId(id);
         noticeRepository.deleteById(id);
     }
 

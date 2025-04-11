@@ -107,6 +107,11 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     }
 
     @Transactional
+    public void deleteNoticeReadByNoticeId(Long noticeId) {
+        jpaNoticeReadRepository.deleteById_NoticeId(noticeId);
+    }
+
+    @Transactional
     public void readNotice(Notice notice, Avatar avatar) {
 
         NoticeReadEntity noticeReadId =  jpaNoticeReadRepository.findById(new NoticeReadId(notice.getId(), avatar.getId()))

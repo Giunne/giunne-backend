@@ -26,4 +26,6 @@ public interface NoticeRepository {
     GetNoticeResponseDto getMyNotice(Long id, Avatar avatar);
 
     Long countNotReadNotice(Avatar avatar);
+
+    void deleteNoticeReadByNoticeId(Long noticeId);
 }
