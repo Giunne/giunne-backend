@@ -116,9 +116,9 @@ public class NoticeController {
         return Response.ok("성공");
     }
 
-    @Operation(summary = "읽지 않은 메시지 수 조회", description = """
+    @Operation(summary = "읽지 않은 공지 수 조회", description = """
             ## 기능설명
-            * 읽지 않은 메시지 수 조회
+            * 읽지 않은 공지 수 조회
             ---
             """, responses = {
             @ApiResponse(responseCode = "200", description = "성공")
