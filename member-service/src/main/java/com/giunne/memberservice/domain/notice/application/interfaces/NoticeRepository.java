@@ -5,6 +5,7 @@ import com.giunne.memberservice.domain.avatar.domain.Avatar;
 import com.giunne.memberservice.domain.notice.application.dto.request.GetNoticeRequestDto;
 import com.giunne.memberservice.domain.notice.application.dto.response.GetNoticeResponseDto;
 import com.giunne.memberservice.domain.notice.domain.Notice;
+import com.giunne.memberservice.domain.recreation.domain.Recreation;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface NoticeRepository {
     Long countNotReadNotice(Avatar avatar);
 
     void deleteNoticeReadByNoticeId(Long noticeId);
+
+    void singUpNoticeRead(Recreation recreation, Avatar avatar);
 }

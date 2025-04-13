@@ -13,6 +13,7 @@ import com.giunne.memberservice.domain.notice.repository.entity.QNoticeEntity;
 import com.giunne.memberservice.domain.notice.repository.entity.QNoticeReadEntity;
 import com.giunne.memberservice.domain.notice.repository.jpa.JpaNoticeReadRepository;
 import com.giunne.memberservice.domain.notice.repository.jpa.JpaNoticeRepository;
+import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -101,6 +102,29 @@ public class NoticeRepositoryImpl implements NoticeRepository {
                             return new NoticeReadEntity(notice.getId(), avatar.getId(), false);
                         }
                 )
+                .toList();
+
+        jpaNoticeReadRepository.saveAll(noticeReadEntities);
+    }
+
+    @Transactional
+    public void singUpNoticeRead(Recreation recreation, Avatar avatar) {
+
+        List<NoticeEntity> noticeEntities = queryFactory
+                .select(qNoticeEntity)
+                .from(qNoticeEntity)
+                .where(
+                        qNoticeEntity.recreation.id.eq(recreation.getId())
+                )
+                .fetch();
+
+        List<NoticeReadEntity> noticeReadEntities = noticeEntities.stream()
+                .map(noticeEntity -> {
+                    if (noticeEntity.getWriter().getId().equals(avatar.getId())) {
+                        return new NoticeReadEntity(noticeEntity.getId(), avatar.getId(), true);
+                    }
+                    return new NoticeReadEntity(noticeEntity.getId(), avatar.getId(), false);
+                })
                 .toList();
 
         jpaNoticeReadRepository.saveAll(noticeReadEntities);
