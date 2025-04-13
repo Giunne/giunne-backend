@@ -36,6 +36,7 @@ import com.giunne.memberservice.domain.levelUpPolicy.application.interfaces.Leve
 import com.giunne.memberservice.domain.levelUpPolicy.domain.LevelUpPolicy;
 import com.giunne.memberservice.domain.member.application.MemberService;
 import com.giunne.memberservice.domain.member.domain.Member;
+import com.giunne.memberservice.domain.notice.application.interfaces.NoticeRepository;
 import com.giunne.memberservice.domain.recreation.application.RecreationService;
 import com.giunne.memberservice.domain.recreation.domain.Recreation;
 import com.giunne.memberservice.domain.school.application.SchoolService;
@@ -61,6 +62,7 @@ public class AvatarService {
     private final QuestInfoClient questInfoClient;
     private final SchoolService schoolService;
     private final AuthService authService;
+    private final NoticeRepository noticeRepository;
 
     public Avatar getAvatar(Long id) {
         return avatarRepository.findById(id);
@@ -99,10 +101,13 @@ public class AvatarService {
 
         Avatar createdAvatar = avatarRepository.createAvatar(avatar);
 
+        // 인벤토리 초기화
         inventoryService.insertInventory(createdAvatar, itemInfoResponseDto);
         Date accessTokenExpireTime = tokenManager.createAccessTokenExpireTime();
         String accessToken = tokenManager.createAccessToken(memberPrincipal.getMemberId(), createdAvatar.getId(), memberPrincipal.getRole(), accessTokenExpireTime);
 
+        // 공지사항 초기화
+        noticeRepository.singUpNoticeRead(createdAvatar.getRecreation(), createdAvatar);
 
         // TODO: 로드맵 번호 하드코딩 수정예정
         Response<String> saveTrainingQuestStates = questInfoClient.savePlayerQuestStates(

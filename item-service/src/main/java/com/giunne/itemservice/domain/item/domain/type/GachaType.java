@@ -20,7 +20,7 @@ public enum GachaType {
     }}
     ),
 
-    PREMIUM("고급", 200L, new LinkedHashMap<>() {{
+    PREMIUM("고급", 300L, new LinkedHashMap<>() {{
         put(ItemGrade.S, 20);
         put(ItemGrade.A, 30);
         put(ItemGrade.B, 50);
