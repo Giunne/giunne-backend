@@ -10,4 +10,6 @@ public interface QuestPostCommentLikeRepository {
     void like(QuestPostComment comment, Player player);
 
     void unlike(QuestPostComment comment, Player player);
+
+    void deleteByComment(QuestPostComment comment);
 }

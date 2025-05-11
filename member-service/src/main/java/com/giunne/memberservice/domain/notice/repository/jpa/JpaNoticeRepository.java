@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface JpaNoticeRepository extends JpaRepository<NoticeEntity, Long> {
     List<NoticeEntity> findAllByRecreation_Id(Long recreationId);
+    void deleteByWriter_Id(Long writerId);
 }

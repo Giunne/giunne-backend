@@ -99,6 +99,20 @@ public class QuestPostRepositoryImpl implements QuestPostRepository {
         return postEntity.toQuestPost();
     }
 
+    public List<QuestPost> findByPlayer(Long playerId) {
+        return queryFactory
+                .selectFrom(qQuestPostEntity)
+                .where(qQuestPostEntity.player.id.eq(playerId))
+                .fetch()
+                .stream()
+                .map(QuestPostEntity::toQuestPost)
+                .collect(Collectors.toList());
+
+    }
+
+    public void deleteById(Long questPostId) {
+        jpaQuestPostRepository.deleteById(questPostId);
+    }
 
     public List<GetPostDetailResponseDto> findMyQuest(Long questId, Long playerId) {
         return queryFactory

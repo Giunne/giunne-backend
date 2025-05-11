@@ -26,4 +26,6 @@ public interface QuestStateRepository {
     List<QuestInfoResponseDto> findConfirmQuestByRoadMap(Long roadMapId, Long avatarId);
 
     QuestState findByQuestPostId(Long questPostId);
+
+    void deleteById(Long questStateId);
 }

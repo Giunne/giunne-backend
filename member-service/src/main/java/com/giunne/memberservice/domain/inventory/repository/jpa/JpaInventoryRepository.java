@@ -30,4 +30,7 @@ public interface JpaInventoryRepository extends JpaRepository<InventoryEntity, L
     )
     int takeOffItems(@Param("playerId")Long playerId);
 
+    @Transactional
+    void deleteByAvatar_Id(Long avatarId);
+
 }

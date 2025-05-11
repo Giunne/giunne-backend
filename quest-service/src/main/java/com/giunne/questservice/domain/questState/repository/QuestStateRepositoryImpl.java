@@ -368,4 +368,8 @@ public class QuestStateRepositoryImpl implements QuestStateRepository {
         return questStateEntity.toQuestState();
     }
 
+    public void deleteById(Long questStateId){
+        jpaQuestStateRepository.deleteById(questStateId);
+    }
+
 }

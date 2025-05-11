@@ -34,4 +34,9 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return jpaPlayerRepository.save(playerEntity).toPlayer();
     }
 
+    @Transactional
+    public void deleteByAvatarId(Long avatarId) {
+        jpaPlayerRepository.deleteByAvatarId(avatarId);
+    }
+
 }

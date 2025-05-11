@@ -10,4 +10,5 @@ public interface InventoryRepository {
     List<Inventory> findInventoryByAvatar(Avatar avatar);
     void wearingItems(Avatar avatar, List<Long> itemidList);
     void takeOffItems(Avatar avatar);
+    void deleteByAvatar(Avatar avatar);
 }

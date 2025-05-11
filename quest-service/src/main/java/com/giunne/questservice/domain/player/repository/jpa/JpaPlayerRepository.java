@@ -9,4 +9,6 @@ public interface JpaPlayerRepository extends JpaRepository<PlayerEntity, Long> {
     Optional<PlayerEntity> findByAvatarId(Long avatarId);
 
     boolean existsByAvatarId(Long avatarId);
+
+    int deleteByAvatarId(Long avatarId);
 }

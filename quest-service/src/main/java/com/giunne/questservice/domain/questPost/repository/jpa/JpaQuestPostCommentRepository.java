@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCommentEntity, Long> {
 
     @Modifying
@@ -22,4 +24,6 @@ public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCo
             + "c.updateTime = now() "
             + "WHERE c.id = :#{#comment.getId()}")
     void updateComment(@Param("comment")QuestPostComment comment);
+
+    List<QuestPostCommentEntity> findByPlayer_id(Long playerId);
 }

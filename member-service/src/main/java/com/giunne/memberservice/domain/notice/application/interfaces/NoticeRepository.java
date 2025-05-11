@@ -16,6 +16,10 @@ public interface NoticeRepository {
 
     void deleteById(Long id);
 
+    void deleteNoticeByWriterId(Long writerId);
+
+    void deleteNoticeReadByWriterId(Long playerId);
+
     Notice updateNotice(Notice notice);
 
     PaginationModel<GetNoticeResponseDto> getNoticeList(GetNoticeRequestDto dto, Avatar avatar);

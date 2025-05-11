@@ -25,4 +25,8 @@ public interface QuestPostRepository {
     PaginationModel<GetUploadQuestResponseDto> findUploadQuest(GetUploadQuestForStudentRequestDto dto);
 
     QuestPost updatePostProgress(QuestPost questPost);
+
+    List<QuestPost> findByPlayer(Long playerId);
+
+    void deleteById(Long questPostId);
 }

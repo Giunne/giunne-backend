@@ -5,9 +5,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.UpdatePasswordChangeForTeacherRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.*;
 import com.giunne.commonservice.principal.AuthPrincipal;
 import com.giunne.commonservice.principal.MemberPrincipal;
 import com.giunne.commonservice.ui.PaginationModel;
@@ -16,7 +14,6 @@ import com.giunne.memberservice.domain.avatar.application.AvatarService;
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -265,6 +262,20 @@ public class AvatarController {
     public Response<Long> getTeacherId(@PathVariable Long avatarId) {
         Long memberId = avatarService.getTeacherId(avatarId);
         return Response.ok(memberId);
+    }
+
+
+    @Operation(summary = "학생 아바타 정보 삭제", description = """
+            ## 기능설명
+            * 아바타 정보 삭제
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    @PostMapping("/student/delete")
+    public Response<String> deleteStudentAvatar(@RequestBody DeleteStudentAvatarRequestDto dto) {
+        avatarService.deleteStudentAvatar(dto);
+        return Response.ok("성공");
     }
 
 }

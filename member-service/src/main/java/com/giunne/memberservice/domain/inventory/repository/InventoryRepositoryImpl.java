@@ -45,6 +45,12 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
+    @Transactional
+    public void deleteByAvatar(Avatar avatar) {
+        jpaInventoryRepository.deleteByAvatar_Id(avatar.getId());
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void wearingItems(Avatar avatar, List<Long> itemidList) {
         if(itemidList.isEmpty())

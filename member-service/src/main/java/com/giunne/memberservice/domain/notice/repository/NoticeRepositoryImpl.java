@@ -150,6 +150,14 @@ public class NoticeRepositoryImpl implements NoticeRepository {
         jpaNoticeRepository.deleteById(id);
     }
 
+    public void deleteNoticeByWriterId(Long writerId) {
+        jpaNoticeRepository.deleteByWriter_Id(writerId);
+    }
+
+    public void deleteNoticeReadByWriterId(Long playerId) {
+        jpaNoticeReadRepository.deleteById_PlayerId(playerId);
+    }
+
     @Transactional
     public Notice updateNotice(Notice notice) {
         NoticeEntity updateNotice = new NoticeEntity(notice);

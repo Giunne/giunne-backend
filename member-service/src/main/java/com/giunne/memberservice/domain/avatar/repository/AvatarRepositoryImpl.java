@@ -64,7 +64,7 @@ public class AvatarRepositoryImpl implements AvatarRepository {
     }
 
     public boolean existAvatarByMemberIdAndRecreationId(Long memberId, Long recreationId) {
-        return jpaAvatarRepository.findByMemberIdAndRecreation_Id(memberId, recreationId).isPresent();
+        return jpaAvatarRepository.findByMember_IdAndRecreation_Id(memberId, recreationId).isPresent();
     }
 
     @Override
@@ -407,6 +407,12 @@ public class AvatarRepositoryImpl implements AvatarRepository {
         AvatarEntity avatarEntity = new AvatarEntity(avatar);
         AvatarEntity entity = jpaAvatarRepository.save(avatarEntity);
         return entity.toAvatar();
+    }
+
+    @Override
+    @Transactional
+    public void delete(Avatar avatar) {
+        jpaAvatarRepository.deleteById(avatar.getId());
     }
 
 }
