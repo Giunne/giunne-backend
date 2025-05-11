@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface JpaNoticeReadRepository extends JpaRepository<NoticeReadEntity, NoticeReadId> {
     void deleteById_NoticeId(Long noticeId);
+    void deleteById_PlayerId(Long playerId);
 }

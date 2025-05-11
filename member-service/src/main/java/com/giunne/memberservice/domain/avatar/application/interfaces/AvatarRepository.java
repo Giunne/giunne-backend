@@ -26,6 +26,8 @@ public interface AvatarRepository {
 
     Avatar save(Avatar avatar);
 
+    void delete(Avatar avatar);
+
     boolean existAvatarByMemberIdAndRecreationId(Long memberId, Long recreationId);
 
     List<Avatar> findByRecreationId(Long recreationId);

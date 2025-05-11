@@ -10,11 +10,10 @@ import com.giunne.commonservice.infra.external.domain.member.client.dto.request.
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.GetAvatarProfileRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdateExpRequestDto;
 import com.giunne.commonservice.infra.external.domain.member.client.dto.request.UpdatePointRequestDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyPointResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMySchoolInfoResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.UpdatePasswordChangeForTeacherRequestDto;
+import com.giunne.commonservice.infra.external.domain.member.client.dto.response.*;
 import com.giunne.commonservice.infra.external.domain.quest.client.QuestInfoClient;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.CreateQuestStateRequestDto;
+import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.DeletePlayerRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
 import com.giunne.commonservice.jwt.constant.GrantType;
 import com.giunne.commonservice.jwt.service.TokenManager;
@@ -26,7 +25,6 @@ import com.giunne.memberservice.domain.auth.application.dto.request.PasswordChan
 import com.giunne.memberservice.domain.avatar.application.dto.reqeuest.*;
 import com.giunne.memberservice.domain.avatar.application.dto.response.AvatarWithWearingItemResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.CreateAvatarResponseDto;
-import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.memberservice.domain.avatar.application.dto.response.LoginPlayerResponseDto;
 import com.giunne.memberservice.domain.avatar.application.interfaces.AvatarRepository;
 import com.giunne.memberservice.domain.avatar.domain.Avatar;
@@ -63,6 +61,7 @@ public class AvatarService {
     private final SchoolService schoolService;
     private final AuthService authService;
     private final NoticeRepository noticeRepository;
+
 
     public Avatar getAvatar(Long id) {
         return avatarRepository.findById(id);
@@ -368,6 +367,35 @@ public class AvatarService {
 
     public List<Avatar> getAllAvatarByRecreationId(Long recreationId) {
         return avatarRepository.findByRecreationId(recreationId);
+    }
+
+    @Transactional
+    public void deleteStudentAvatar(DeleteStudentAvatarRequestDto dto) {
+
+        Avatar avatar = avatarRepository.findById(dto.avatarId());
+
+        if (MemberRole.ROLE_TEACHER.equals(avatar.getMember().getRole())) {
+            throw new IllegalArgumentException("선생님은 삭제할 수 없습니다.");
+        }
+
+        DeletePlayerRequestDto deletePlayerRequestDto = DeletePlayerRequestDto.builder()
+                .avatarId(avatar.getId())
+                .build();
+
+        // 퀘스트 플레이어 삭제
+        Response<String> questDeleteResponse = questInfoClient.deletePlayer(deletePlayerRequestDto);
+        if(questDeleteResponse.code() != HttpStatus.OK.value()) {
+            throw new IllegalArgumentException("퀘스트 플레이어 삭제 실패");
+        }
+
+        // 공지 읽음 삭제
+        noticeRepository.deleteNoticeReadByNoticeId(avatar.getId());
+        // 공지 삭제
+//        noticeRepository.deleteNoticeByWriterId(avatar.getId());
+        // 인벤토리 삭제
+        inventoryService.deleteByAvatar(avatar);
+        // 아바타 삭제
+        avatarRepository.delete(avatar);
     }
 
 }

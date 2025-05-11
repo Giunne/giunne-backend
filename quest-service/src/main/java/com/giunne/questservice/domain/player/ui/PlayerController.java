@@ -1,6 +1,8 @@
 package com.giunne.questservice.domain.player.ui;
 
+import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.DeletePlayerRequestDto;
 import com.giunne.commonservice.infra.external.domain.quest.client.dto.request.UpdatePlayerRequestDto;
+import com.giunne.commonservice.ui.Response;
 import com.giunne.questservice.domain.player.application.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,4 +28,19 @@ public class PlayerController {
     public void updatePlayer(@RequestBody UpdatePlayerRequestDto dto) {
         playerService.updatePlayer(dto);
     }
+
+
+    @Operation(summary = "플레이어 정보 삭제", description = """
+            ## 기능설명
+            * 플레이어 정보 삭제합니다.
+            ---
+            """, responses = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    }, hidden = true)
+    @PostMapping("/delete")
+    public Response<String> deletePlayer(@RequestBody DeletePlayerRequestDto dto) {
+        playerService.deletePlayer(dto);
+        return Response.ok("성공");
+    }
+
 }

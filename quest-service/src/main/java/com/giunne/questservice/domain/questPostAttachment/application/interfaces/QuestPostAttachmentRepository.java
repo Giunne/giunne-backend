@@ -4,4 +4,6 @@ import com.giunne.questservice.domain.questPostAttachment.domain.QuestPostAttach
 
 public interface QuestPostAttachmentRepository {
     QuestPostAttachment save(QuestPostAttachment questPostAttachment);
+
+    void deleteByQuestPostId(Long questPostId);
 }

@@ -4,4 +4,5 @@ import com.giunne.questservice.domain.questPostAttachment.repository.entity.Ques
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaQuestPostAttachmentRepository extends JpaRepository<QuestPostAttachmentEntity, Long> {
+    int deleteByQuestPost_id(Long id);
 }

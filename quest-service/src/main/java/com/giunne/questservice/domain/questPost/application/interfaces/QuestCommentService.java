@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -109,7 +110,10 @@ public class QuestCommentService {
         questCommentRepository.delete(comment);
     }
 
-
+    @Transactional
+    public void deleteComment(QuestPostComment comment) {
+        questCommentRepository.delete(comment);
+    }
 
     @Transactional
     public void likeComment(MemberPrincipal memberPrincipal, CommentLikeRequestDto dto) {
@@ -191,6 +195,19 @@ public class QuestCommentService {
             comment.unlike();
             likeRepository.unlike(comment, player);
         }
+    }
+
+    // 특정 회원의 댓글좋아요 목록 삭제 삭제
+    public void unlikeCommentByPlayer(QuestPostComment comment, Player player) {
+        if (likeRepository.checkLike(comment, player)) {
+            comment.unlike();
+            likeRepository.unlike(comment, player);
+        }
+    }
+
+
+    public List<QuestPostComment> findByPlayerId(Player player){
+        return questCommentRepository.findByPlayerId(player.getId());
     }
 
 }

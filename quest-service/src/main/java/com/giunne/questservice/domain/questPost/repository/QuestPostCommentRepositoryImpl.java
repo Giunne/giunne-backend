@@ -5,6 +5,7 @@ import com.giunne.commonservice.infra.external.domain.member.client.MemberInfoCl
 import com.giunne.commonservice.infra.external.domain.member.client.dto.response.GetMyRecreationAvatarResponseDto;
 import com.giunne.commonservice.ui.PaginationModel;
 import com.giunne.commonservice.ui.Response;
+import com.giunne.questservice.domain.player.domain.Player;
 import com.giunne.questservice.domain.player.repository.entity.QPlayerEntity;
 import com.giunne.questservice.domain.questPost.application.dto.response.GetQuestCommentResponseDto;
 import com.giunne.questservice.domain.questPost.application.interfaces.QuestPostCommentRepository;
@@ -51,6 +52,12 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
     public QuestPostComment findById(Long id) {
         QuestPostCommentEntity entity = jpaQuestPostCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
         return entity.toQuestPostComment();
+    }
+
+    @Override
+    public List<QuestPostComment> findByPlayerId(Long playerId) {
+        List<QuestPostCommentEntity> entityList = jpaQuestPostCommentRepository.findByPlayer_id(playerId);
+        return entityList.stream().map(QuestPostCommentEntity::toQuestPostComment).toList();
     }
 
     @Override

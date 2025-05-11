@@ -17,6 +17,7 @@ import com.giunne.memberservice.domain.inventory.domain.Inventory;
 import com.giunne.memberservice.domain.inventory.domain.type.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -104,6 +105,11 @@ public class InventoryService {
         inventoryRepository.takeOffItems(avatar);
         inventoryRepository.wearingItems(avatar, dto.getItemidList());
 
+    }
+
+    @Transactional
+    public void deleteByAvatar(Avatar avatar) {
+        inventoryRepository.deleteByAvatar(avatar);
     }
 
 }

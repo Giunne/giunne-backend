@@ -21,4 +21,9 @@ public class QuestPostAttachmentRepositoryImpl implements QuestPostAttachmentRep
         QuestPostAttachmentEntity save = jpaQuestPostAttachmentRepository.save(new QuestPostAttachmentEntity(questPostAttachment));
         return save.toQuestPostAttachment();
     }
+
+    @Transactional
+    public void deleteByQuestPostId(Long questPostId) {
+        jpaQuestPostAttachmentRepository.deleteByQuestPost_id(questPostId);
+    }
 }

@@ -93,6 +93,12 @@ public class NoticeService {
     }
 
     @Transactional
+    public void deleteByAvatar(Avatar avatar) {
+        noticeRepository.deleteNoticeReadByWriterId(avatar.getId());
+        noticeRepository.deleteNoticeByWriterId(avatar.getId());
+    }
+
+    @Transactional
     public void updateNotice(MemberPrincipal memberPrincipal, UpdateNoticeRequestDto dto) {
         Notice notice = noticeRepository.getNotice(dto.id());
         if (!Objects.equals(notice.getWriter().getId(), memberPrincipal.getPlayerId())) {
