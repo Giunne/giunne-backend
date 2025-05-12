@@ -65,6 +65,8 @@ public class PlayerService {
             // 회원이 댓글 좋아요한 내역 삭제
             questCommentService.unlikeCommentByPlayer(item, player);
         });
+
+        // 댓글 좋아요 삭제
         questPostComments.forEach(item -> {
             // 회원의 댓글에 좋아요한 내역 삭제
             questPostCommentLikeRepository.deleteByComment(item);
@@ -83,6 +85,21 @@ public class PlayerService {
         questPosts.forEach(item -> {
             // 퀘스트 포스트 첨부파일 삭제
             questPostAttachmentRepository.deleteByQuestPostId(item.getId());
+        });
+
+        // 퀘스트 포스트의 댓글 삭제
+        questPosts.forEach(item -> {
+            List<QuestPostComment> myQuestPostComments = questCommentService.findByQuestPost(item);
+
+            // 퀘스트 포스트의 댓글 좋아요 삭제
+            for (QuestPostComment questPostComment : myQuestPostComments) {
+                questPostCommentLikeRepository.deleteByComment(questPostComment);
+            }
+
+            // 퀘스트 포스트의 댓글 삭제
+            for (QuestPostComment questPostComment : myQuestPostComments) {
+                questCommentService.deleteComment(questPostComment);
+            }
         });
 
         // 퀘스트 포스트 삭제

@@ -61,6 +61,12 @@ public class QuestPostCommentRepositoryImpl implements QuestPostCommentRepositor
     }
 
     @Override
+    public List<QuestPostComment> findByQuestPost(Long postId) {
+        List<QuestPostCommentEntity> entityList = jpaQuestPostCommentRepository.findByPost_Id(postId);
+        return entityList.stream().map(QuestPostCommentEntity::toQuestPostComment).toList();
+    }
+
+    @Override
     @Transactional
     public QuestPostComment save(QuestPostComment comment) {
         if (comment.getId() != null) {
