@@ -210,4 +210,8 @@ public class QuestCommentService {
         return questCommentRepository.findByPlayerId(player.getId());
     }
 
+    public List<QuestPostComment> findByQuestPost(QuestPost questPost){
+        return questCommentRepository.findByQuestPost(questPost.getId());
+    }
+
 }

@@ -26,4 +26,5 @@ public interface JpaQuestPostCommentRepository extends JpaRepository<QuestPostCo
     void updateComment(@Param("comment")QuestPostComment comment);
 
     List<QuestPostCommentEntity> findByPlayer_id(Long playerId);
+    List<QuestPostCommentEntity> findByPost_Id(Long postId);
 }

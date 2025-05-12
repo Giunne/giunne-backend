@@ -13,4 +13,6 @@ public interface QuestPostCommentRepository {
     void delete(QuestPostComment comment);
 
     List<QuestPostComment> findByPlayerId(Long playerId);
+
+    List<QuestPostComment> findByQuestPost(Long playerId);
 }
